@@ -1,0 +1,263 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 45 100% 97%;
+    --foreground: 220 20% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 20%;
+
+    --primary: 18 95% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 178 47% 60%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 45 30% 90%;
+    --muted-foreground: 220 15% 45%;
+
+    --accent: 48 100% 70%;
+    --accent-foreground: 220 20% 20%;
+
+    --success: 142 76% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 45 20% 85%;
+    --input: 45 20% 90%;
+    --ring: 18 95% 55%;
+
+    --radius: 1rem;
+
+    /* Emotion colors */
+    --emotion-happy: 48 100% 65%;
+    --emotion-sad: 215 60% 60%;
+    --emotion-angry: 0 85% 65%;
+    --emotion-surprised: 280 70% 70%;
+    --emotion-scared: 270 50% 55%;
+    --emotion-excited: 30 100% 60%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(25 95% 62%), hsl(45 95% 60%));
+    --gradient-secondary: linear-gradient(135deg, hsl(195 95% 60%), hsl(220 90% 65%));
+    --gradient-success: linear-gradient(135deg, hsl(142 70% 45%), hsl(142 70% 60%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(0 0% 98%));
+
+    /* App background (soft orange, kid-friendly) */
+    --app-bg: radial-gradient(60rem 60rem at 15% 10%, hsla(25 95% 70% / 0.25), transparent 60%),
+             radial-gradient(50rem 50rem at 85% 20%, hsla(45 95% 70% / 0.22), transparent 55%),
+             radial-gradient(45rem 45rem at 70% 85%, hsla(178 47% 70% / 0.20), transparent 55%),
+             linear-gradient(180deg, hsl(45 100% 97%), hsl(35 100% 97%));
+    --app-pattern: radial-gradient(circle at 10px 10px, hsla(18 95% 55% / 0.08) 2px, transparent 2.5px);
+
+
+    /* Shadows */
+    --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 12px 40px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 16px 50px rgba(251, 146, 60, 0.4);
+    --shadow-success: 0 4px 16px hsla(142 76% 45% / 0.3);
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 220 15% 30%;
+    --sidebar-primary: 14 100% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 45 40% 95%;
+    --sidebar-accent-foreground: 220 15% 30%;
+    --sidebar-border: 45 20% 88%;
+    --sidebar-ring: 14 100% 60%;
+  }
+
+  .dark {
+    --background: 220 25% 12%;
+    --foreground: 45 30% 95%;
+
+    --card: 220 20% 15%;
+    --card-foreground: 45 30% 95%;
+
+    --popover: 220 20% 15%;
+    --popover-foreground: 45 30% 95%;
+
+    --primary: 18 95% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 178 47% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 20% 20%;
+    --muted-foreground: 45 20% 65%;
+
+    --accent: 48 100% 65%;
+    --accent-foreground: 220 25% 12%;
+
+    --success: 142 76% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 20% 25%;
+    --input: 220 20% 20%;
+    --ring: 18 95% 55%;
+
+    --sidebar-background: 220 25% 10%;
+    --sidebar-foreground: 45 30% 90%;
+    --sidebar-primary: 14 100% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 20% 18%;
+    --sidebar-accent-foreground: 45 30% 90%;
+    --sidebar-border: 220 20% 20%;
+    --sidebar-ring: 14 100% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+
+  .gradient-success {
+    background: var(--gradient-success);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  /* Soft, friendly background wrapper for all pages */
+  /* Soft, friendly background wrapper for all pages */
+.app-bg {
+  position: relative;
+  overflow: hidden;
+  background-image: var(--app-bg), var(--app-pattern);
+  background-size: auto, 24px 24px;
+  background-repeat: no-repeat, repeat;
+  background-attachment: fixed, fixed;
+}
+
+/* Friendly stickers (inline SVG) - subtle so kids can focus */
+.app-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22220%22%20height%3D%22140%22%20viewBox%3D%220%200%20220%20140%22%3E%0A%20%20%3Cg%20fill%3D%22none%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M55%20105h105c22%200%2040-14%2040-31%200-15-14-28-33-31C161%2026%20145%2015%20126%2015c-22%200-41%2014-46%2032-2-1-6-2-10-2-16%200-29%2010-31%2024-17%203-29%2015-29%2029%200%2017%2018%2031%2045%2031z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.90%29%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M75%2099h95c18%200%2033-11%2033-25%200-12-11-22-27-25-4-14-19-23-35-23-18%200-34%2011-38%2025-2-1-5-1-8-1-13%200-23%208-25%2019-14%202-23%2012-23%2023%200%2014%2015%2025%2033%2025z%22%20fill%3D%22rgba%28255%2C206%2C170%2C0.62%29%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E'),
+    url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22220%22%20height%3D%22160%22%20viewBox%3D%220%200%20220%20160%22%3E%0A%20%20%3Cpath%20d%3D%22M30%20140a80%2080%200%200%201%20160%200%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C163%2C102%2C0.55%29%22%20stroke-width%3D%2218%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M45%20140a65%2065%200%200%201%20130%200%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C210%2C128%2C0.55%29%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M60%20140a50%2050%200%200%201%20100%200%22%20fill%3D%22none%22%20stroke%3D%22rgba%28162%2C233%2C201%2C0.55%29%22%20stroke-width%3D%2214%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M75%20140a35%2035%200%200%201%2070%200%22%20fill%3D%22none%22%20stroke%3D%22rgba%28165%2C202%2C255%2C0.55%29%22%20stroke-width%3D%2212%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2255%22%20cy%3D%22142%22%20r%3D%2210%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%22142%22%20r%3D%2210%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%2F%3E%0A%3C%2Fsvg%3E'),
+    url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22220%22%20viewBox%3D%220%200%20160%20220%22%3E%0A%20%20%3Cellipse%20cx%3D%2280%22%20cy%3D%2278%22%20rx%3D%2246%22%20ry%3D%2258%22%20fill%3D%22rgba%28255%2C183%2C77%2C0.45%29%22%2F%3E%0A%20%20%3Cellipse%20cx%3D%2268%22%20cy%3D%2260%22%20rx%3D%2212%22%20ry%3D%2218%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.55%29%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80%20136c0%208-8%2012-8%2018h16c0-6-8-10-8-18z%22%20fill%3D%22rgba%28255%2C140%2C90%2C0.35%29%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80%20154c-10%2016-18%2032-10%2056%22%20fill%3D%22none%22%20stroke%3D%22rgba%28120%2C120%2C120%2C0.35%29%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%0A%3C%2Fsvg%3E'),
+    url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22180%22%20height%3D%22160%22%20viewBox%3D%220%200%20180%20160%22%3E%0A%20%20%3Cpath%20d%3D%22M90%20145s-52-30-68-62C8%2055%2022%2030%2048%2030c16%200%2028%209%2034%2020%206-11%2018-20%2034-20%2026%200%2040%2025%2026%2053-16%2032-68%2062-68%2062z%22%20fill%3D%22rgba%28255%2C140%2C140%2C0.40%29%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M55%2045c-10%200-18%209-16%2020%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.55%29%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%2F%3E%0A%3C%2Fsvg%3E'),
+    url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22170%22%20height%3D%22170%22%20viewBox%3D%220%200%20170%20170%22%3E%0A%20%20%3Ccircle%20cx%3D%2285%22%20cy%3D%2285%22%20r%3D%2266%22%20fill%3D%22rgba%28255%2C214%2C165%2C0.55%29%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2262%22%20cy%3D%2274%22%20r%3D%227%22%20fill%3D%22rgba%2864%2C64%2C64%2C0.45%29%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22108%22%20cy%3D%2274%22%20r%3D%227%22%20fill%3D%22rgba%2864%2C64%2C64%2C0.45%29%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M55%2097c8%2018%2020%2027%2030%2027s22-9%2030-27%22%20fill%3D%22none%22%20stroke%3D%22rgba%2864%2C64%2C64%2C0.38%29%22%20stroke-width%3D%228%22%20stroke-linecap%3D%22round%22%2F%3E%0A%3C%2Fsvg%3E'),
+    url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22180%22%20height%3D%22180%22%20viewBox%3D%220%200%20180%20180%22%3E%0A%20%20%3Cpath%20d%3D%22M90%2016l18%2044%2047%204-36%2030%2011%2046-40-25-40%2025%2011-46-36-30%2047-4z%22%20fill%3D%22rgba%28255%2C183%2C77%2C0.68%29%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2262%22%20cy%3D%2263%22%20r%3D%226%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.82%29%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22110%22%20r%3D%224%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.72%29%22%2F%3E%0A%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position:
+    1.25rem 1.15rem,                         /* cloud (top-left) */
+    calc(100% - 13rem) 1.35rem,              /* rainbow (top-right) */
+    calc(100% - 7rem) 38%,                   /* balloon (mid-right) */
+    18% calc(100% - 6.2rem),                 /* heart (bottom-left-ish) */
+    1.35rem calc(100% - 10.2rem),            /* smile (bottom-left) */
+    calc(100% - 9rem) calc(100% - 9rem);     /* star (bottom-right) */
+  background-size: 185px, 175px, 120px, 120px, 145px, 155px;
+  opacity: 1;
+  filter: saturate(1.08);
+  z-index: 0;
+}
+
+/* Soft overlay to keep text readable even with stickers */
+.app-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, hsla(0 0% 100% / 0.35), transparent 30%, hsla(0 0% 100% / 0.25));
+  z-index: 0;
+}
+
+
+  .app-bg > * { position: relative; z-index: 1; }
+  /* Glassy surface for content cards on top of app-bg */.app-surface {
+    @apply bg-white/85 backdrop-blur border border-white/40;
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .shadow-hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .shadow-active {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .animate-bounce-gentle {
+    animation: bounce-gentle 2s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.3s ease-out;
+  }
+
+  @keyframes bounce-gentle {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+  }
+
+  @keyframes scale-in {
+    0% {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}

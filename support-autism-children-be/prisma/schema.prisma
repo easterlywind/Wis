@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum QuestionType {
+  image
+  video
+  audio
+  text
+}
+
+enum AnswerChoice {
+  A
+  B
+  C
+  D
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  birthDate DateTime?
+  avatarUrl String?
+
+  email    String  @unique
+  password String
+
+  totalPoints Int @default(0)
+  streakDays  Int @default(0)
+
+  accuracyRate         Float @default(0.0)
+  totalPracticeMinutes Int   @default(0)
+  currentLevel         Int   @default(1)
+
+  lastActiveDate DateTime? @default(now())
+
+  // Relations
+  unlockedLevels UnlockedLevel[]
+  attemptQuizzes AttemptQuiz[]
+  attemptLevels AttemptLevel[]
+  practices      Practice[]
+}
+
+model Emotion {
+  id           String  @id @default(uuid())
+  name         String  @unique
+  iconUrl      String?
+  videoUrl     String?
+  hintText     String?
+  hintMediaUrl String?
+  description  String?
+
+  // Relations
+  questions      Question[]
+  practices      Practice[]
+}
+
+model Level {
+  id             String  @id @default(uuid())
+  name           String
+  description    String?
+  difficulty     Int
+  requiredPoints Int     @default(0)
+
+  quizzes        Quiz[]
+  unlockedLevels UnlockedLevel[]
+  attemptLevels AttemptLevel[]
+}
+
+model UnlockedLevel {
+  id      String @id @default(uuid())
+  userId  String
+  levelId String
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  level Level @relation(fields: [levelId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, levelId])
+}
+
+model Quiz {
+  id        String   @id @default(uuid())
+  levelId   String
+  title     String
+  createdAt DateTime @default(now())
+
+  level     Level      @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  questions Question[]
+  attempts  AttemptQuiz[]
+}
+
+model Question {
+  id           String       @id @default(uuid())
+  quizId       String
+  emotionId    String
+  questionType QuestionType
+  content      String
+  mediaUrl     String?
+
+  optionA       String
+  optionB       String
+  optionC       String?
+  optionD       String?
+  correctAnswer AnswerChoice
+
+  hintText     String?
+  hintMediaUrl String?
+
+  quiz    Quiz    @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  emotion Emotion @relation(fields: [emotionId], references: [id], onDelete: Cascade)
+}
+
+model AttemptQuiz {
+  id            String    @id @default(uuid())
+  userId        String
+  quizId        String?
+  startTime     DateTime  @default(now())
+  endTime       DateTime?
+  maxScore      Int       @default(0)
+  attemptsCount Int       @default(0)
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz    Quiz?   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model AttemptLevel {
+  id            String    @id @default(uuid())
+  userId        String
+  levelId        String?
+  startTime     DateTime  @default(now())
+  endTime       DateTime?
+  maxScore      Int       @default(0)
+  attemptsCount Int       @default(0)
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  level   Level?   @relation(fields: [levelId], references: [id], onDelete: Cascade)
+}
+
+model Practice {
+  id            String    @id @default(uuid())
+  userId        String
+  emotionId     String
+  startTime     DateTime  @default(now())
+  endTime       DateTime?
+  attemptsCount Int       @default(0)
+  correctCount  Int       @default(0)
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emotion Emotion @relation(fields: [emotionId], references: [id], onDelete: Cascade)
+}
