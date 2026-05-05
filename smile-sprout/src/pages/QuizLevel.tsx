@@ -1,21 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Volume2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Quiz } from "@/types/quiz";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { getDataWithRetry } from "@/lib/apiRetry";
 import { QuizCard } from "@/components/QuizCard";
 import { useNavigate, useParams } from "react-router-dom";
-
-interface QuizCardProps {
-  id: string;
-  title: string;
-  maxScore: number;
-  attemptCount: number;
-  onClick?: () => void;
-  locked?: boolean;
-  className?: string;
-}
 
 export function QuizLevel() {
   const navigate = useNavigate();
@@ -58,36 +48,43 @@ export function QuizLevel() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-6 pb-28 app-bg">
-      <div className="w-full max-w-5xl">
+    <div className="min-h-screen p-4 app-bg">
+      <div className="container mx-auto max-w-5xl">
         <Button
           variant="outline"
           onClick={() => navigate("/levels")}
-          className="mb-4"
+          className="mb-5 rounded-xl font-bold border-2 bg-white/80"
+          id="quizlevel-back-btn"
         >
-          <ArrowLeft className="mr-2" size={20} />
+          <ArrowLeft className="mr-2" size={18} />
           Quay lại
         </Button>
 
         {loading && (
           <div className="text-center py-12">
-            <p className="text-lg">Đang tải...</p>
+            <div className="text-5xl mb-4 animate-bounce-gentle">📝</div>
+            <p className="text-lg font-bold text-foreground">Đang tải...</p>
           </div>
         )}
 
         {error && !loading && (
-          <div className="max-w-md mx-auto p-6 bg-red-50 border border-red-200 rounded-lg text-center">
-            <div className="text-4xl mb-2">❌</div>
-            <h2 className="text-xl font-bold mb-2 text-red-800">Lỗi tải Level</h2>
-            <p className="text-red-700 mb-4">{error}</p>
-            <Button onClick={() => navigate("/levels")}>Quay lại Levels</Button>
+          <div className="max-w-md mx-auto p-6 bg-white/80 rounded-2xl border-2 border-destructive/20 text-center shadow-soft">
+            <div className="text-4xl mb-3">😔</div>
+            <h2 className="text-xl font-extrabold mb-2 text-foreground">Không tải được</h2>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <Button
+              onClick={() => navigate("/levels")}
+              className="rounded-xl font-bold gradient-primary text-white"
+            >
+              ← Quay lại Levels
+            </Button>
           </div>
         )}
 
         {!loading && !error && quizzes.length > 0 && (
           <>
-            {/* Emotion Grid */}
-            <div className="mb-6 grid gap-5 grid-cols-3 sm:grid-cols-4 md:grid-cols-4">
+            {/* Quiz Grid */}
+            <div className="mb-5 grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
               {quizzes.map((quiz) => (
                 <QuizCard
                   key={quiz.id}
@@ -101,15 +98,18 @@ export function QuizLevel() {
             </div>
 
             {/* Progress Summary */}
-            <p className="text-[var(--emo-text)]">
-              {triedCount} of {quizzes.length} learned
-            </p>
+            <div className="text-center p-4 bg-white/60 rounded-2xl border border-white/60">
+              <p className="text-base font-bold text-foreground">
+                ✅ Đã học: <span className="text-primary">{triedCount}</span> / {quizzes.length} bài
+              </p>
+            </div>
           </>
         )}
 
         {!loading && !error && quizzes.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-lg text-muted-foreground">Chưa có quiz cho level này</p>
+            <div className="text-5xl mb-4">📭</div>
+            <p className="text-lg text-muted-foreground font-semibold">Chưa có quiz cho level này</p>
           </div>
         )}
       </div>

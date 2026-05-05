@@ -24,10 +24,12 @@ const Auth = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
+    setIsLoading(true);
 
     try {
       if (isLogin) {
@@ -45,6 +47,7 @@ const Auth = () => {
 
         if (validationError) {
           setErrorMessage(validationError);
+          setIsLoading(false);
           return;
         }
 
@@ -58,19 +61,25 @@ const Auth = () => {
       }
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Lỗi hệ thống");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 app-bg">
-      <Card className="max-w-md w-full p-8 gradient-card shadow-active animate-scale-in">
+      <Card
+        className="max-w-md w-full p-8 rounded-3xl bg-white/90 backdrop-blur-sm shadow-hover border-2 border-white/60 animate-scale-in"
+        id="auth-card"
+      >
+        {/* Header */}
         <div className="text-center mb-8">
           <img
             src={mascot}
             alt="Mascot"
-            className="w-24 h-24 mx-auto mb-4 animate-float"
+            className="w-20 h-20 mx-auto mb-4 animate-float"
           />
-          <h1 className="text-3xl font-bold mb-2 text-foreground">
+          <h1 className="text-3xl font-extrabold mb-2 text-foreground">
             {isLogin ? "Chào mừng trở lại! 👋" : "Tạo tài khoản mới 🎉"}
           </h1>
           <p className="text-muted-foreground">
@@ -80,53 +89,55 @@ const Auth = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
           {!isLogin && (
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-foreground">
+              <Label htmlFor="username" className="text-foreground font-bold">
                 Tên người dùng
               </Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="username"
+                placeholder="Nhập tên bé"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="h-12"
+                className="h-12 rounded-xl text-base border-2 focus:border-primary"
               />
             </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-foreground">
+            <Label htmlFor="email" className="text-foreground font-bold">
               Email phụ huynh
             </Label>
             <Input
               id="email"
               type="email"
+              placeholder="email@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-12"
+              className="h-12 rounded-xl text-base border-2 focus:border-primary"
             />
           </div>
 
           {!isLogin && (
             <div className="space-y-2">
-              <Label htmlFor="birthDate" className="text-foreground">
-                Ngày sinh (optional)
+              <Label htmlFor="birthDate" className="text-foreground font-bold">
+                Ngày sinh (tùy chọn)
               </Label>
               <Input
                 id="birthDate"
                 type="date"
                 value={birthDate}
                 onChange={(e) => setBirthDate(e.target.value)}
-                className="h-12"
+                className="h-12 rounded-xl text-base border-2 focus:border-primary"
               />
             </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-foreground">
+            <Label htmlFor="password" className="text-foreground font-bold">
               Mật khẩu
             </Label>
             <Input
@@ -158,17 +169,19 @@ const Auth = () => {
                   }
                 }
               }}
-              className="h-12"
+              className="h-12 rounded-xl text-base border-2 focus:border-primary"
             />
           </div>
 
           {passwordError && (
-            <p className="text-sm text-red-500">{passwordError}</p>
+            <div className="p-3 rounded-xl bg-destructive/10 text-destructive text-sm font-semibold">
+              ⚠️ {passwordError}
+            </div>
           )}
 
           {!isLogin && (
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-foreground">
+              <Label htmlFor="confirmPassword" className="text-foreground font-bold">
                 Xác nhận mật khẩu
               </Label>
               <Input
@@ -186,38 +199,52 @@ const Auth = () => {
                     );
                   else setConfirmPasswordError("");
                 }}
-                className="h-12"
+                className="h-12 rounded-xl text-base border-2 focus:border-primary"
               />
             </div>
           )}
 
           {confirmPasswordError && (
-            <p className="text-sm text-red-500">{confirmPasswordError}</p>
+            <div className="p-3 rounded-xl bg-destructive/10 text-destructive text-sm font-semibold">
+              ⚠️ {confirmPasswordError}
+            </div>
           )}
 
           {errorMessage && (
-            <p className="text-red-500 text-sm">{errorMessage}</p>
+            <div className="p-3 rounded-xl bg-destructive/10 text-destructive text-sm font-semibold">
+              ❌ {errorMessage}
+            </div>
           )}
 
           <Button
             type="submit"
-            className="w-full h-12 text-lg gradient-primary text-gray-900"
+            disabled={isLoading}
+            className="w-full h-14 text-lg font-extrabold rounded-2xl gradient-primary text-white shadow-glow hover:shadow-lg transition-all"
+            id="auth-submit-btn"
           >
-            {isLogin ? "Đăng nhập" : "Đăng ký"}
+            {isLoading
+              ? "Đang xử lý..."
+              : isLogin
+              ? "Đăng nhập →"
+              : "Đăng ký →"}
           </Button>
         </form>
 
+        {/* Toggle */}
         <div className="mt-6 text-center">
           <button
             onClick={() => {
               setErrorMessage("");
+              setPasswordError("");
+              setConfirmPasswordError("");
               setIsLogin(!isLogin);
             }}
-            className="text-primary hover:underline font-semibold"
+            className="text-primary hover:underline font-bold text-sm"
+            id="auth-toggle-btn"
           >
             {isLogin
-              ? "Chưa có tài khoản? Đăng ký ngay"
-              : "Đã có tài khoản? Đăng nhập"}
+              ? "Chưa có tài khoản? Đăng ký ngay →"
+              : "← Đã có tài khoản? Đăng nhập"}
           </button>
         </div>
       </Card>

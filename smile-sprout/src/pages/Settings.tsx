@@ -22,28 +22,32 @@ const Settings = () => {
         <Button 
           variant="outline" 
           onClick={() => navigate("/home")}
-          className="mb-6 bg-white/80 border-orange-300 text-gray-800 hover:bg-orange-50"
+          className="mb-6 rounded-xl font-bold border-2 bg-white/80"
+          id="settings-back-btn"
         >
-          <ArrowLeft className="mr-2" size={20} />
+          <ArrowLeft className="mr-2" size={18} />
           Quay lại
         </Button>
 
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold mb-4 text-gray-900">
-            Cài đặt ⚙️
+          <div className="text-5xl mb-3">⚙️</div>
+          <h1 className="text-3xl md:text-4xl font-extrabold mb-3 text-foreground">
+            Cài đặt
           </h1>
-          <p className="text-xl text-gray-700">
+          <p className="text-lg text-muted-foreground font-semibold">
             Tùy chỉnh ứng dụng theo ý thích
           </p>
         </div>
 
-        <Card className="p-8 gradient-card shadow-hover mb-6 animate-scale-in">
+        <Card className="p-8 rounded-3xl bg-white/90 backdrop-blur-sm shadow-soft border-2 border-white/60 mb-5 animate-scale-in">
           <div className="space-y-8">
             {/* Volume Setting */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <Volume2 size={32} className="text-primary" />
-                <Label htmlFor="volume" className="text-2xl font-bold text-foreground">
+                <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+                  <Volume2 size={20} className="text-white" />
+                </div>
+                <Label htmlFor="volume" className="text-xl font-extrabold text-foreground">
                   Âm lượng 🔊
                 </Label>
               </div>
@@ -56,10 +60,10 @@ const Settings = () => {
                   step={10}
                   className="w-full"
                 />
-                <div className="flex justify-between text-muted-foreground text-lg">
-                  <span>Nhỏ</span>
-                  <span className="font-bold text-primary text-2xl">{volume[0]}%</span>
-                  <span>Lớn</span>
+                <div className="flex justify-between text-muted-foreground text-base font-semibold">
+                  <span>🔈 Nhỏ</span>
+                  <span className="font-extrabold text-primary text-xl">{volume[0]}%</span>
+                  <span>🔊 Lớn</span>
                 </div>
               </div>
             </div>
@@ -67,21 +71,24 @@ const Settings = () => {
             {/* Language Setting */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <Globe size={32} className="text-primary" />
-                <Label className="text-2xl font-bold text-foreground">
+                <div className="w-10 h-10 rounded-xl gradient-secondary flex items-center justify-center">
+                  <Globe size={20} className="text-white" />
+                </div>
+                <Label className="text-xl font-extrabold text-foreground">
                   Ngôn ngữ 🌍
                 </Label>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <Button
                   variant={language === "vi" ? "default" : "outline"}
                   size="lg"
                   onClick={() => setLanguage("vi")}
-                  className={`text-xl h-16 ${
+                  className={`text-lg h-14 rounded-2xl font-bold ${
                     language === "vi" 
-                      ? "bg-gradient-to-r from-orange-400 to-orange-600 text-white" 
-                      : ""
+                      ? "gradient-primary text-white shadow-glow" 
+                      : "border-2"
                   }`}
+                  id="settings-lang-vi-btn"
                 >
                   🇻🇳 Tiếng Việt
                 </Button>
@@ -89,11 +96,12 @@ const Settings = () => {
                   variant={language === "en" ? "default" : "outline"}
                   size="lg"
                   onClick={() => setLanguage("en")}
-                  className={`text-xl h-16 ${
+                  className={`text-lg h-14 rounded-2xl font-bold ${
                     language === "en" 
-                      ? "bg-gradient-to-r from-blue-400 to-blue-600 text-white" 
-                      : ""
+                      ? "gradient-secondary text-white shadow-glow" 
+                      : "border-2"
                   }`}
+                  id="settings-lang-en-btn"
                 >
                   🇬🇧 English
                 </Button>
@@ -104,7 +112,8 @@ const Settings = () => {
             <Button
               onClick={handleSave}
               size="lg"
-              className="w-full bg-gradient-to-r from-green-400 to-green-600 text-white hover:opacity-90 text-2xl py-8 h-auto"
+              className="w-full rounded-2xl font-extrabold gradient-success text-white text-xl py-7 h-auto shadow-sm hover:shadow-hover transition-all"
+              id="settings-save-btn"
             >
               💾 Lưu cài đặt
             </Button>
@@ -112,9 +121,9 @@ const Settings = () => {
         </Card>
 
         {/* Info Card */}
-        <Card className="p-6 bg-white/90 backdrop-blur">
+        <Card className="p-5 rounded-2xl bg-white/70 backdrop-blur-sm border border-white/60">
           <div className="text-center">
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base text-muted-foreground font-semibold">
               💡 <strong>Mẹo:</strong> Điều chỉnh âm lượng phù hợp để nghe rõ hướng dẫn nhé!
             </p>
           </div>

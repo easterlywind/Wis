@@ -30,10 +30,10 @@ const Progress = () => {
 
   // Dữ liệu mẫu cho biểu đồ độ chính xác theo cảm xúc
   const emotionAccuracy = [
-    { emotion: "Vui", accuracy: 95 },
-    { emotion: "Buồn", accuracy: 88 },
-    { emotion: "Giận", accuracy: 82 },
-    { emotion: "Ngạc nhiên", accuracy: 78 },
+    { emotion: "Vui 😊", accuracy: 95 },
+    { emotion: "Buồn 😢", accuracy: 88 },
+    { emotion: "Giận 😠", accuracy: 82 },
+    { emotion: "Ngạc nhiên 😲", accuracy: 78 },
   ];
 
   return (
@@ -43,17 +43,19 @@ const Progress = () => {
           <Button 
             variant="outline" 
             onClick={() => navigate("/home")}
-            className="mb-6 bg-white/80 border-orange-300 text-gray-800 hover:bg-orange-50"
+            className="mb-6 rounded-xl font-bold border-2 bg-white/80"
+            id="progress-back-btn"
           >
-            <ArrowLeft className="mr-2" size={20} />
+            <ArrowLeft className="mr-2" size={18} />
             Quay lại
           </Button>
           
           <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold mb-4 text-gray-900">
-              Tiến trình của bạn 🎯
+            <div className="text-5xl mb-3">🎯</div>
+            <h1 className="text-3xl md:text-4xl font-extrabold mb-3 text-foreground">
+              Tiến trình của bạn
             </h1>
-            <p className="text-2xl text-gray-700">
+            <p className="text-lg text-muted-foreground font-semibold">
               Hãy xem bạn đã tiến bộ như thế nào!
             </p>
           </div>
@@ -61,183 +63,188 @@ const Progress = () => {
 
         {loading ? (
           <div className="text-center py-12">
-            <p className="text-white text-lg">Đang tải dữ liệu...</p>
+            <div className="text-5xl mb-4 animate-bounce-gentle">📊</div>
+            <p className="text-lg font-bold text-foreground">Đang tải dữ liệu...</p>
           </div>
         ) : (
           <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-scale-in">
-          <ProgressCard
-            icon={<Flame size={28} />}
-            title="Chuỗi ngày học"
-            value="7"
-            subtitle="Ngày liên tiếp"
-            color="var(--gradient-primary)"
-          />
-          
-          <ProgressCard
-            icon={<Target size={28} />}
-            title="Bài đã hoàn thành"
-            value="24"
-            subtitle="Quiz hoàn thành"
-            color="var(--gradient-secondary)"
-          />
-          
-          <ProgressCard
-            icon={<TrendingUp size={28} />}
-            title="Độ chính xác"
-            value="87%"
-            subtitle="Tỷ lệ đúng"
-            color="var(--gradient-success)"
-          />
-          
-          <ProgressCard
-            icon={<Award size={28} />}
-            title="Thành tích"
-            value="12"
-            subtitle="Huy chương đạt được"
-            color="hsl(48 100% 65%)"
-          />
-        </div>
+            {/* Stats cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-scale-in">
+              <ProgressCard
+                icon={<Flame size={24} />}
+                title="Chuỗi ngày học"
+                value="7"
+                subtitle="Ngày liên tiếp 🔥"
+                color="var(--gradient-primary)"
+              />
+              <ProgressCard
+                icon={<Target size={24} />}
+                title="Bài đã hoàn thành"
+                value="24"
+                subtitle="Quiz hoàn thành ✅"
+                color="var(--gradient-secondary)"
+              />
+              <ProgressCard
+                icon={<TrendingUp size={24} />}
+                title="Độ chính xác"
+                value="87%"
+                subtitle="Tỷ lệ đúng 📈"
+                color="var(--gradient-success)"
+              />
+              <ProgressCard
+                icon={<Award size={24} />}
+                title="Thành tích"
+                value="12"
+                subtitle="Huy chương 🏅"
+                color="hsl(200 50% 72%)"
+              />
+            </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <Card className="p-6 bg-white/95 backdrop-blur shadow-soft">
-            <h3 className="text-2xl font-bold mb-4 text-foreground">
-              📈 Tiến trình 7 ngày
-            </h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={progressData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="day" stroke="hsl(var(--foreground))" />
-                <YAxis stroke="hsl(var(--foreground))" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "hsl(var(--card))", 
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "8px"
-                  }} 
-                />
-                <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="score" 
-                  stroke="hsl(38 92% 60%)" 
-                  strokeWidth={3}
-                  name="Điểm số"
-                  dot={{ fill: "hsl(38 92% 60%)", r: 5 }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="accuracy" 
-                  stroke="hsl(199 89% 48%)" 
-                  strokeWidth={3}
-                  name="Độ chính xác (%)"
-                  dot={{ fill: "hsl(199 89% 48%)", r: 5 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </Card>
-
-          <Card className="p-6 bg-white/95 backdrop-blur shadow-soft">
-            <h3 className="text-2xl font-bold mb-4 text-foreground">
-              🎯 Độ chính xác theo cảm xúc
-            </h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={emotionAccuracy}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="emotion" stroke="hsl(var(--foreground))" />
-                <YAxis stroke="hsl(var(--foreground))" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "hsl(var(--card))", 
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "8px"
-                  }} 
-                />
-                <Bar 
-                  dataKey="accuracy" 
-                  fill="hsl(38 92% 60%)" 
-                  name="Độ chính xác (%)"
-                  radius={[8, 8, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <div className="p-8 rounded-2xl bg-white/95 backdrop-blur shadow-soft">
-            <h3 className="text-3xl font-bold mb-6 text-foreground">
-              📊 Tiến độ theo cấp độ
-            </h3>
-            
-            <div className="space-y-4">
-              {[
-                { level: "Cấp độ 1", progress: 100, color: "var(--gradient-success)" },
-                { level: "Cấp độ 2", progress: 65, color: "var(--gradient-primary)" },
-                { level: "Cấp độ 3", progress: 20, color: "var(--gradient-secondary)" },
-                { level: "Cấp độ 4", progress: 0, color: "hsl(var(--muted))" },
-              ].map((item) => (
-                <div key={item.level}>
-                  <div className="flex justify-between mb-2">
-                    <span className="font-semibold text-foreground">{item.level}</span>
-                    <span className="text-muted-foreground">{item.progress}%</span>
-                  </div>
-                  <div className="w-full bg-muted rounded-full h-3">
-                    <div 
-                      className="h-3 rounded-full transition-all duration-500"
-                      style={{ 
-                        width: `${item.progress}%`,
-                        background: item.color 
-                      }}
+            {/* Charts */}
+            <div className="grid md:grid-cols-2 gap-5 mb-8">
+              <Card className="p-6 bg-white/90 backdrop-blur-sm shadow-soft rounded-2xl border-2 border-white/60">
+                <h3 className="text-xl font-extrabold mb-4 text-foreground">
+                  📈 Tiến trình 7 ngày
+                </h3>
+                <ResponsiveContainer width="100%" height={220}>
+                  <LineChart data={progressData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 18%, 90%)" />
+                    <XAxis dataKey="day" stroke="hsl(230, 25%, 25%)" fontSize={13} fontWeight={600} />
+                    <YAxis stroke="hsl(230, 25%, 25%)" fontSize={12} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: "white", 
+                        border: "2px solid hsl(220, 18%, 90%)",
+                        borderRadius: "12px",
+                        fontWeight: 600,
+                      }} 
                     />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                    <Legend />
+                    <Line 
+                      type="monotone" 
+                      dataKey="score" 
+                      stroke="hsl(250, 45%, 65%)" 
+                      strokeWidth={3}
+                      name="Điểm số"
+                      dot={{ fill: "hsl(250, 45%, 65%)", r: 4 }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="accuracy" 
+                      stroke="hsl(160, 35%, 55%)" 
+                      strokeWidth={3}
+                      name="Độ chính xác (%)"
+                      dot={{ fill: "hsl(160, 35%, 55%)", r: 4 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Card>
 
-          <div className="p-8 rounded-2xl bg-white/95 backdrop-blur shadow-soft">
-            <h3 className="text-3xl font-bold mb-6 text-foreground">
-              🏆 Thành tích gần đây
-            </h3>
-            
-            <div className="space-y-4">
-              {[
-                { icon: "🎯", title: "Hoàn thành 20 quiz", date: "Hôm nay" },
-                { icon: "🔥", title: "Chuỗi 7 ngày", date: "Hôm nay" },
-                { icon: "⭐", title: "Đạt 90% độ chính xác", date: "Hôm qua" },
-                { icon: "🚀", title: "Mở khóa Cấp độ 2", date: "2 ngày trước" },
-              ].map((achievement, index) => (
-                <div 
-                  key={index}
-                  className="flex items-center gap-4 p-4 bg-background/50 rounded-lg"
-                >
-                  <div className="text-3xl">{achievement.icon}</div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-foreground">{achievement.title}</p>
-                    <p className="text-sm text-muted-foreground">{achievement.date}</p>
-                  </div>
-                </div>
-              ))}
+              <Card className="p-6 bg-white/90 backdrop-blur-sm shadow-soft rounded-2xl border-2 border-white/60">
+                <h3 className="text-xl font-extrabold mb-4 text-foreground">
+                  🎯 Độ chính xác theo cảm xúc
+                </h3>
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={emotionAccuracy}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 18%, 90%)" />
+                    <XAxis dataKey="emotion" stroke="hsl(230, 25%, 25%)" fontSize={12} fontWeight={600} />
+                    <YAxis stroke="hsl(230, 25%, 25%)" fontSize={12} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: "white", 
+                        border: "2px solid hsl(220, 18%, 90%)",
+                        borderRadius: "12px",
+                        fontWeight: 600,
+                      }} 
+                    />
+                    <Bar 
+                      dataKey="accuracy" 
+                      fill="hsl(250, 45%, 75%)" 
+                      name="Độ chính xác (%)"
+                      radius={[10, 10, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
             </div>
-          </div>
-        </div>
 
-        <div className="text-center p-8 rounded-2xl gradient-primary text-gray-900 shadow-soft">
-          <h3 className="text-2xl font-bold mb-4">
-            Tiếp tục phát huy nhé! 💪
-          </h3>
-          <p className="text-lg opacity-90 mb-6">
-            Bạn đang làm rất tốt! Hãy tiếp tục học mỗi ngày để giữ vững chuỗi ngày học của mình.
-          </p>
-          <Button 
-            size="lg"
-            onClick={() => navigate("/quiz")}
-            className="bg-white text-primary hover:bg-white/90"
-          >
-            Tiếp tục học
-          </Button>
-        </div>
+            {/* Level progress & achievements */}
+            <div className="grid md:grid-cols-2 gap-5 mb-8">
+              <div className="p-6 rounded-2xl bg-white/90 backdrop-blur-sm shadow-soft border-2 border-white/60">
+                <h3 className="text-xl font-extrabold mb-5 text-foreground">
+                  📊 Tiến độ theo cấp độ
+                </h3>
+                
+                <div className="space-y-4">
+                  {[
+                    { level: "Cấp độ 1", progress: 100, color: "var(--gradient-success)" },
+                    { level: "Cấp độ 2", progress: 65, color: "var(--gradient-primary)" },
+                    { level: "Cấp độ 3", progress: 20, color: "var(--gradient-secondary)" },
+                    { level: "Cấp độ 4", progress: 0, color: "hsl(var(--muted))" },
+                  ].map((item) => (
+                    <div key={item.level}>
+                      <div className="flex justify-between mb-2">
+                        <span className="font-bold text-foreground text-sm">{item.level}</span>
+                        <span className="text-muted-foreground font-bold text-sm">{item.progress}%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-3">
+                        <div 
+                          className="h-3 rounded-full transition-all duration-700"
+                          style={{ 
+                            width: `${item.progress}%`,
+                            background: item.color 
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-white/90 backdrop-blur-sm shadow-soft border-2 border-white/60">
+                <h3 className="text-xl font-extrabold mb-5 text-foreground">
+                  🏆 Thành tích gần đây
+                </h3>
+                
+                <div className="space-y-3">
+                  {[
+                    { icon: "🎯", title: "Hoàn thành 20 quiz", date: "Hôm nay" },
+                    { icon: "🔥", title: "Chuỗi 7 ngày", date: "Hôm nay" },
+                    { icon: "⭐", title: "Đạt 90% độ chính xác", date: "Hôm qua" },
+                    { icon: "🚀", title: "Mở khóa Cấp độ 2", date: "2 ngày trước" },
+                  ].map((achievement, index) => (
+                    <div 
+                      key={index}
+                      className="flex items-center gap-3 p-3 bg-background/50 rounded-xl"
+                    >
+                      <div className="text-2xl">{achievement.icon}</div>
+                      <div className="flex-1">
+                        <p className="font-bold text-foreground text-sm">{achievement.title}</p>
+                        <p className="text-xs text-muted-foreground font-semibold">{achievement.date}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="text-center p-8 rounded-2xl gradient-primary shadow-glow">
+              <h3 className="text-2xl font-extrabold mb-3 text-white">
+                Tiếp tục phát huy nhé! 💪
+              </h3>
+              <p className="text-lg text-white/80 mb-5 font-semibold">
+                Bạn đang làm rất tốt! Hãy tiếp tục học mỗi ngày!
+              </p>
+              <Button 
+                size="lg"
+                onClick={() => navigate("/quiz")}
+                className="rounded-2xl font-extrabold bg-white text-primary hover:bg-white/90 shadow-lg px-8 py-5 h-auto"
+                id="progress-continue-btn"
+              >
+                Tiếp tục học →
+              </Button>
+            </div>
           </>
         )}
       </div>

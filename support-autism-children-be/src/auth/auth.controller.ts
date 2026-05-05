@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto, SignInDto } from './dto/auth.dto';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
@@ -22,5 +22,14 @@ export class AuthController {
   @Post('logout')
   async logout() {
     return this.authService.logout();
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(@Body('refreshToken') refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('Missing refresh token');
+    }
+    return this.authService.refreshTokens(refreshToken);
   }
 }

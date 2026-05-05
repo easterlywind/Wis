@@ -53,17 +53,19 @@ const Levels = () => {
           <Button
             variant="outline"
             onClick={() => navigate("/home")}
-            className="mb-6"
+            className="mb-6 rounded-xl font-bold border-2 bg-white/80"
+            id="levels-back-btn"
           >
-            <ArrowLeft className="mr-2" size={20} />
+            <ArrowLeft className="mr-2" size={18} />
             Quay lại
           </Button>
 
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4 text-foreground">
-              Các cấp độ học tập 📚
+            <div className="text-5xl mb-3">📚</div>
+            <h1 className="text-3xl md:text-4xl font-extrabold mb-3 text-foreground">
+              Các cấp độ học tập
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-muted-foreground font-semibold">
               Hoàn thành từng cấp độ để mở khóa thử thách mới!
             </p>
           </div>
@@ -71,22 +73,28 @@ const Levels = () => {
 
         {loading && (
           <div className="text-center py-12">
-            <p className="text-lg">Đang tải cấp độ...</p>
+            <div className="text-5xl mb-4 animate-bounce-gentle">📖</div>
+            <p className="text-lg font-bold text-foreground">Đang tải cấp độ...</p>
           </div>
         )}
 
         {error && !loading && (
-          <div className="max-w-md mx-auto p-6 bg-red-50 border border-red-200 rounded-lg text-center">
-            <div className="text-4xl mb-2">❌</div>
-            <h2 className="text-xl font-bold mb-2 text-red-800">Lỗi tải Levels</h2>
-            <p className="text-red-700 mb-4">{error}</p>
-            <Button onClick={() => navigate("/home")}>Quay lại Trang chủ</Button>
+          <div className="max-w-md mx-auto p-6 bg-white/80 rounded-2xl border-2 border-destructive/20 text-center shadow-soft">
+            <div className="text-4xl mb-3">😔</div>
+            <h2 className="text-xl font-extrabold mb-2 text-foreground">Không tải được</h2>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <Button
+              onClick={() => navigate("/home")}
+              className="rounded-xl font-bold gradient-primary text-white"
+            >
+              ← Quay lại
+            </Button>
           </div>
         )}
 
         {!loading && !error && levels.length > 0 && (
           <>
-            <div className="space-y-6 animate-scale-in">
+            <div className="space-y-5 animate-scale-in">
               {levels.map((level) => (
                 <LevelCard
                   key={level.difficulty}
@@ -96,11 +104,11 @@ const Levels = () => {
               ))}
             </div>
 
-            <div className="mt-12 text-center p-8 rounded-2xl gradient-card shadow-soft">
-              <h3 className="text-2xl font-bold mb-2 text-foreground">
+            <div className="mt-10 text-center p-6 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/60 shadow-xs">
+              <h3 className="text-xl font-extrabold mb-2 text-foreground">
                 💡 Mẹo nhỏ
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground font-semibold">
                 Hoàn thành ít nhất 80% câu hỏi đúng để mở khóa cấp độ tiếp theo!
               </p>
             </div>
@@ -109,7 +117,8 @@ const Levels = () => {
 
         {!loading && !error && levels.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-lg text-muted-foreground">Chưa có cấp độ nào</p>
+            <div className="text-5xl mb-4">📭</div>
+            <p className="text-lg text-muted-foreground font-semibold">Chưa có cấp độ nào</p>
           </div>
         )}
       </div>

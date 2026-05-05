@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  # ── PostgreSQL Database ──
+  postgres:
+    image: postgres:16-alpine
+    container_name: smile-sprout-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: autismsupport
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── NestJS Backend ──
+  backend:
+    build:
+      context: ./support-autism-children-be
+      dockerfile: Dockerfile
+    container_name: smile-sprout-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/autismsupport"
+      JWT_SECRET: "smile-sprout-dev-secret-key-2026"
+      JWT_ACCESS_SECRET: "smile-sprout-access-secret-2026"
+      JWT_REFRESH_SECRET: "smile-sprout-refresh-secret-2026"
+      PORT: "3000"
+      CORS_ORIGIN: "http://localhost:8080"
+    ports:
+      - "3000:3000"
+
+  # ── React Frontend ──
+  frontend:
+    build:
+      context: ./smile-sprout
+      dockerfile: Dockerfile
+    container_name: smile-sprout-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:

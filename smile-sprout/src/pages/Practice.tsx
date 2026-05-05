@@ -6,10 +6,10 @@ import { ArrowLeft, Camera } from "lucide-react";
 import { toast } from "sonner";
 
 const emotions = [
-  { id: "happy", emoji: "😊", name: "Vui vẻ", instruction: "Cười tươi lên nhé!" },
-  { id: "sad", emoji: "😢", name: "Buồn", instruction: "Hơi buồn chút nào." },
-  { id: "angry", emoji: "😠", name: "Giận", instruction: "Nhíu mày lại nào!" },
-  { id: "surprised", emoji: "😲", name: "Ngạc nhiên", instruction: "Mắt mở to nhé!" },
+  { id: "happy", emoji: "😊", name: "Vui vẻ", instruction: "Cười tươi lên nhé! 😊" },
+  { id: "sad", emoji: "😢", name: "Buồn", instruction: "Hơi buồn chút nào... 😢" },
+  { id: "angry", emoji: "😠", name: "Giận", instruction: "Nhíu mày lại nào! 😠" },
+  { id: "surprised", emoji: "😲", name: "Ngạc nhiên", instruction: "Mắt mở to nhé! 😲" },
 ];
 
 const AI_API_URL = import.meta.env.VITE_AI_API_URL || "http://localhost:8000";
@@ -39,7 +39,7 @@ const Practice = () => {
       });
       setStream(mediaStream);
       setCameraActive(true);
-      toast.success("Camera đã bật!");
+      toast.success("Camera đã bật! 📸");
     } catch (err) {
       console.error(err);
       toast.error("Không thể bật camera");
@@ -221,8 +221,16 @@ const Practice = () => {
     setMatchPercentage(0);
 
     if (!cameraActive) startCamera();
-    toast("Bắt đầu chế độ luyện tập tự động!");
+    toast("Bắt đầu chế độ luyện tập tự động! 🎯");
   };
+
+  // Color for match bar
+  const matchColor =
+    matchPercentage >= 80
+      ? "hsl(155, 40%, 55%)"
+      : matchPercentage >= 50
+      ? "hsl(200, 50%, 65%)"
+      : "hsl(250, 45%, 70%)";
 
   // ============ 5. RENDER ============
   return (
@@ -232,7 +240,8 @@ const Practice = () => {
         <Button
           variant="outline"
           onClick={() => navigate("/home")}
-          className="mb-3 bg-white/80 border-orange-300 text-gray-800 hover:bg-orange-50"
+          className="mb-3 rounded-xl font-bold border-2 bg-white/80"
+          id="practice-back-btn"
         >
           <ArrowLeft className="mr-2" size={18} />
           Quay lại
@@ -249,31 +258,36 @@ const Practice = () => {
                 setMatchPercentage(0);
                 setHasMatched(false);
               }}
-              className={`p-3 text-center cursor-pointer transition-all duration-300
-                ${selectedEmotion.id === emotion.id ? "ring-4 ring-primary shadow-active" : ""}
+              className={`p-3 text-center cursor-pointer transition-all duration-300 rounded-2xl border-2
+                ${selectedEmotion.id === emotion.id
+                  ? "ring-2 ring-primary shadow-glow border-primary/40 bg-primary/5"
+                  : "bg-white/80 border-white/60 hover:border-primary/20"
+                }
               `}
+              id={`practice-emotion-${emotion.id}`}
             >
               <div className="text-3xl mb-1">{emotion.emoji}</div>
-              <h3 className="text-sm font-bold text-foreground">{emotion.name}</h3>
+              <h3 className="text-sm font-extrabold text-foreground">{emotion.name}</h3>
             </Card>
           ))}
         </div>
 
         {/* AUTO PRACTICE BUTTON */}
         <Button
-          className="mb-3 bg-blue-600 text-white hover:bg-blue-700"
+          className="mb-3 rounded-xl font-bold gradient-secondary text-white shadow-sm"
           onClick={startAutoPractice}
+          id="practice-auto-btn"
         >
-          Tập lần lượt
+          🎯 Tập lần lượt
         </Button>
 
         {/* MAIN CAMERA AREA */}
-        <Card className="flex-1 p-6 bg-white/95 shadow-hover flex flex-col min-h-0">
-          <h3 className="text-lg font-semibold text-foreground mb-3">
+        <Card className="flex-1 p-5 bg-white/90 shadow-soft rounded-3xl flex flex-col min-h-0 border-2 border-white/60 relative">
+          <h3 className="text-lg font-extrabold text-foreground mb-3">
             {selectedEmotion.instruction}
           </h3>
 
-          <div className="bg-muted/50 rounded-2xl flex-1 flex items-center justify-center min-h-0">
+          <div className="bg-muted/30 rounded-2xl flex-1 flex items-center justify-center min-h-0 overflow-hidden">
             {cameraActive ? (
               <video
                 ref={videoRef}
@@ -283,14 +297,15 @@ const Practice = () => {
                 className="w-full h-full object-cover rounded-xl"
               />
             ) : (
-              <div className="text-center">
-                <Camera size={80} className="mx-auto mb-4 text-muted-foreground" />
+              <div className="text-center p-8">
+                <Camera size={64} className="mx-auto mb-4 text-muted-foreground" />
                 <Button
                   onClick={startCamera}
                   size="lg"
-                  className="gradient-primary text-gray-900 text-lg px-8 py-6"
+                  className="rounded-2xl font-extrabold gradient-primary text-white text-lg px-8 py-5 shadow-glow"
+                  id="practice-start-camera-btn"
                 >
-                  <Camera className="mr-2" size={24} />
+                  <Camera className="mr-2" size={22} />
                   Bật camera
                 </Button>
               </div>
@@ -299,18 +314,36 @@ const Practice = () => {
 
           {/* 🎉 OVERLAY HOÀN THÀNH NORMAL MODE */}
           {hasMatched && !autoMode && (
-            <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center rounded-xl animate-fadeIn">
-              <div className="text-6xl text-green-400 font-bold">✓</div>
-              <div className="text-2xl text-white mt-2">Bạn đã làm đúng!</div>
+            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center rounded-3xl animate-scale-in">
+              <div className="text-7xl mb-3">✅</div>
+              <div className="text-2xl text-white font-extrabold">Tuyệt vời! Bạn làm đúng rồi!</div>
             </div>
           )}
 
           {/* MATCH PERCENTAGE */}
           {cameraActive && (
-            <div className="text-center mt-4">
-              <p className="text-xl font-bold">Độ khớp: {matchPercentage}%</p>
+            <div className="text-center mt-4 space-y-3">
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-lg font-bold text-foreground">Độ khớp:</span>
+                <span className="text-2xl font-extrabold" style={{ color: matchColor }}>
+                  {matchPercentage}%
+                </span>
+              </div>
 
-              <Button onClick={stopCamera} className="mt-2" variant="outline">
+              {/* Match bar */}
+              <div className="w-full max-w-md mx-auto h-4 rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{ width: `${matchPercentage}%`, background: matchColor }}
+                />
+              </div>
+
+              <Button
+                onClick={stopCamera}
+                variant="outline"
+                className="rounded-xl font-bold border-2"
+                id="practice-stop-camera-btn"
+              >
                 Tắt camera
               </Button>
             </div>
@@ -318,35 +351,36 @@ const Practice = () => {
         </Card>
       </div>
 
-      {/* PANEL ĐỘ KHỚP BÊN PHẢI */}
+      {/* PANEL ĐỘ KHỚP BÊN PHẢI (desktop only) */}
       <div
-        className="hidden md:flex fixed right-4 top-1/2 -translate-y-1/2 
-                   w-64 flex-col gap-3 bg-white/90 rounded-2xl shadow-lg 
-                   border border-black/5 p-4 z-20"
+        className="hidden lg:flex fixed right-4 top-1/2 -translate-y-1/2 
+                   w-56 flex-col gap-3 bg-white/90 rounded-2xl shadow-soft 
+                   border-2 border-white/60 p-4 z-20"
       >
-        <h4 className="text-sm font-semibold text-gray-700 mb-1">
+        <h4 className="text-sm font-extrabold text-foreground mb-1">
           Độ khớp hiện tại
         </h4>
 
-        <p className="text-xs text-gray-500">
-          Cảm xúc: <span className="font-semibold">{selectedEmotion.name}</span>
+        <p className="text-xs text-muted-foreground font-semibold">
+          Cảm xúc: <span className="text-foreground">{selectedEmotion.name} {selectedEmotion.emoji}</span>
         </p>
 
-        <div className="flex items-baseline justify-between">
-          <span className="text-3xl font-bold">{matchPercentage}%</span>
+        <div className="flex items-baseline gap-1">
+          <span className="text-3xl font-extrabold" style={{ color: matchColor }}>
+            {matchPercentage}%
+          </span>
         </div>
 
-        <div className="w-full h-3 rounded-full bg-gray-200 overflow-hidden mt-1">
+        <div className="w-full h-3 rounded-full bg-muted overflow-hidden">
           <div
-            className="h-full bg-blue-500 transition-all duration-300"
-            style={{ width: `${matchPercentage}%` }}
+            className="h-full rounded-full transition-all duration-500"
+            style={{ width: `${matchPercentage}%`, background: matchColor }}
           />
         </div>
 
-        <p className="text-[11px] text-gray-500 mt-1">
-          Hãy làm đúng khuôn mặt{" "}
-          <span className="font-semibold">{selectedEmotion.name.toLowerCase()}</span> để
-          thanh này đạt ≥ 80%.
+        <p className="text-xs text-muted-foreground mt-1">
+          Hãy làm khuôn mặt{" "}
+          <span className="font-bold">{selectedEmotion.name.toLowerCase()}</span> để đạt ≥ 80%.
         </p>
       </div>
     </div>

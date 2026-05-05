@@ -12,19 +12,19 @@ interface ProgressCardProps {
 
 export const ProgressCard = ({ icon, title, value, subtitle, color, className }: ProgressCardProps) => {
   return (
-    <Card className={cn("p-6 gradient-card hover:shadow-hover transition-all duration-300", className)}>
-      <div className="flex items-center gap-4">
+    <Card className={cn("p-5 rounded-2xl bg-white/90 border-2 border-white/60 hover:shadow-hover transition-all duration-300", className)}>
+      <div className="flex items-center gap-3">
         <div 
-          className="flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-white"
+          className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-sm"
           style={{ background: color || "var(--gradient-primary)" }}
         >
           {icon}
         </div>
         
-        <div className="flex-1">
-          <p className="text-sm text-muted-foreground mb-1">{title}</p>
-          <p className="text-3xl font-bold text-foreground">{value}</p>
-          {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
+        <div className="flex-1 min-w-0">
+          <p className="text-xs text-muted-foreground mb-0.5 font-semibold truncate">{title}</p>
+          <p className="text-2xl font-extrabold text-foreground">{value}</p>
+          {subtitle && <p className="text-xs text-muted-foreground font-semibold truncate">{subtitle}</p>}
         </div>
       </div>
     </Card>

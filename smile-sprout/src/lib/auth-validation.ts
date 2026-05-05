@@ -27,17 +27,7 @@ export function isValidBirthDate(value: string) {
   }
 
   const today = new Date();
-  let age = today.getFullYear() - year;
-  const hasBirthdayPassed =
-    today.getMonth() > birthDate.getMonth() ||
-    (today.getMonth() === birthDate.getMonth() &&
-      today.getDate() >= birthDate.getDate());
-
-  if (!hasBirthdayPassed) {
-    age -= 1;
-  }
-
-  return age >= 5;
+  return birthDate.getTime() <= today.getTime();
 }
 
 interface RegistrationValidationInput {

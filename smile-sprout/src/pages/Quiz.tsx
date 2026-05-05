@@ -78,20 +78,28 @@ const QuizPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center app-bg">
-        <p>Đang tải quiz...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center app-bg gap-4">
+        <div className="text-5xl animate-bounce-gentle">📝</div>
+        <p className="text-xl font-bold text-foreground">Đang tải quiz...</p>
+        <p className="text-muted-foreground">Chờ chút nhé!</p>
       </div>
     );
   }
 
   if (error || !quiz) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="max-w-md w-full p-8 text-center">
-          <div className="text-4xl mb-4">❌</div>
-          <h2 className="text-2xl font-bold mb-2">Lỗi tải Quiz</h2>
+      <div className="min-h-screen flex items-center justify-center p-4 app-bg">
+        <Card className="max-w-md w-full p-8 text-center rounded-3xl bg-white/90 border-2 border-white/60 shadow-hover">
+          <div className="text-5xl mb-4">😔</div>
+          <h2 className="text-2xl font-extrabold mb-3 text-foreground">Không tải được Quiz</h2>
           <p className="text-muted-foreground mb-6">{error || "Quiz không tồn tại"}</p>
-          <Button onClick={() => navigate("/home")}>Quay lại Trang chủ</Button>
+          <Button
+            onClick={() => navigate("/home")}
+            className="rounded-2xl font-bold gradient-primary text-white px-6 py-3"
+            id="quiz-error-home-btn"
+          >
+            ← Quay lại Trang chủ
+          </Button>
         </Card>
       </div>
     );
@@ -100,12 +108,16 @@ const QuizPage = () => {
   const currentQuestion = quiz.questions?.[currentIdx];
   if (!currentQuestion) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="max-w-md w-full p-8 text-center">
-          <div className="text-4xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold mb-2">Lỗi</h2>
-          <p className="text-muted-foreground mb-6">Không có câu hỏi</p>
-          <Button onClick={() => navigate("/home")}>Quay lại Trang chủ</Button>
+      <div className="min-h-screen flex items-center justify-center p-4 app-bg">
+        <Card className="max-w-md w-full p-8 text-center rounded-3xl bg-white/90 border-2 border-white/60">
+          <div className="text-5xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-extrabold mb-3">Không có câu hỏi</h2>
+          <Button
+            onClick={() => navigate("/home")}
+            className="rounded-2xl font-bold gradient-primary text-white"
+          >
+            ← Quay lại
+          </Button>
         </Card>
       </div>
     );
@@ -133,7 +145,7 @@ const QuizPage = () => {
       } else {
         setCurrentIdx((i) => i + 1);
       }
-    }, 1500);
+    }, 1800);
   };
 
   const options = [
@@ -187,21 +199,29 @@ const QuizPage = () => {
 
   if (showResult) {
     const totalQuestions = quiz?.questions?.length ?? 0;
+    const percentage = Math.round((score / totalQuestions) * 100);
+    const isExcellent = percentage >= 80;
+
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-        <Card className="max-w-2xl w-full p-8 text-center gradient-card shadow-active animate-scale-in">
-          <div className="text-6xl mb-6 animate-bounce-gentle">
-            {score === totalQuestions ? "🎉" : "🌟"}
+      <div className="min-h-screen flex items-center justify-center p-4 app-bg">
+        <Card className="max-w-lg w-full p-10 text-center rounded-3xl bg-white/90 shadow-hover border-2 border-white/60 animate-scale-in">
+          <div className="text-7xl mb-6 animate-bounce-gentle">
+            {isExcellent ? "🎉" : "🌟"}
           </div>
-          <h1 className="text-4xl font-bold mb-4 text-foreground">
-            Hoàn thành!
+          <h1 className="text-4xl font-extrabold mb-4 text-foreground">
+            {isExcellent ? "Tuyệt vời!" : "Hoàn thành!"}
           </h1>
-          <p className="text-2xl mb-6 text-muted-foreground">
-            Bạn đã trả lời đúng{" "}
-            <span className="text-primary font-bold">{score}</span> /{" "}
-            {totalQuestions} câu
+          <p className="text-2xl mb-2 text-muted-foreground">
+            Bạn đã trả lời đúng
           </p>
-          <div className="flex gap-4 justify-center">
+          <p className="text-5xl font-extrabold text-primary mb-2">
+            {score}/{totalQuestions}
+          </p>
+          <p className="text-lg text-muted-foreground mb-8">
+            ({percentage}% chính xác)
+          </p>
+
+          <div className="flex gap-3 justify-center">
             <Button
               size="lg"
               onClick={() => {
@@ -209,16 +229,19 @@ const QuizPage = () => {
                 setScore(0);
                 setShowResult(false);
               }}
-              className="gradient-primary text-gray-900"
+              className="rounded-2xl font-extrabold gradient-primary text-white px-6 py-5 h-auto shadow-glow"
+              id="quiz-retry-btn"
             >
-              Làm lại
+              🔄 Làm lại
             </Button>
             <Button
               size="lg"
               variant="outline"
               onClick={() => navigate("/home")}
+              className="rounded-2xl font-bold border-2 px-6 py-5 h-auto"
+              id="quiz-home-btn"
             >
-              Về trang chủ
+              🏠 Về trang chủ
             </Button>
           </div>
         </Card>
@@ -226,99 +249,119 @@ const QuizPage = () => {
     );
   }
 
+  const totalQ = quiz?.questions?.length ?? 1;
+  const progressPercent = ((currentIdx + 1) / totalQ) * 100;
+
   return (
     <div className="min-h-screen p-4 app-bg">
+      {/* ── Result Dialog Overlay ── */}
       {resultDialog.isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full">
-            <h2 className="text-2xl font-bold mb-4">
-              {resultDialog.isCorrect ? "🎉 Chính xác!" : "❌ Sai rồi!"}
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 animate-scale-in">
+          <div className="bg-white p-8 rounded-3xl shadow-lg text-center max-w-sm w-full mx-4">
+            <div className="text-6xl mb-4">
+              {resultDialog.isCorrect ? "🎉" : "💪"}
+            </div>
+            <h2 className="text-2xl font-extrabold mb-3 text-foreground">
+              {resultDialog.isCorrect ? "Chính xác!" : "Thử lại nhé!"}
             </h2>
             {!resultDialog.isCorrect && (
-              <p className="text-lg">
+              <p className="text-lg text-muted-foreground">
                 Đáp án đúng là:{" "}
-                <span className="font-bold">{resultDialog.correctAnswer}</span>
+                <span className="font-extrabold text-primary">{resultDialog.correctAnswer}</span>
               </p>
             )}
           </div>
         </div>
       )}
+
       <div className="container mx-auto max-w-4xl">
-        <div className="mb-6">
+        {/* ── Top bar ── */}
+        <div className="mb-5">
           <Button
             variant="outline"
             onClick={() => navigate("/home")}
-            className="mb-4"
+            className="mb-4 rounded-xl font-bold border-2 bg-white/80"
+            id="quiz-back-btn"
           >
-            <ArrowLeft className="mr-2" size={20} />
+            <ArrowLeft className="mr-2" size={18} />
             Quay lại
           </Button>
 
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-foreground">
-              Trắc nghiệm cảm xúc
+            <h1 className="text-2xl md:text-3xl font-extrabold text-foreground">
+              Trắc nghiệm cảm xúc 📝
             </h1>
-            <div className="text-lg font-semibold text-muted-foreground">
-              Câu {currentIdx + 1}/{quiz?.questions?.length ?? 0}
+            <div className="text-lg font-extrabold text-primary bg-primary/10 px-4 py-2 rounded-xl">
+              {currentIdx + 1}/{totalQ}
             </div>
           </div>
         </div>
 
-        <Card className="p-10 mb-6 bg-white/90 backdrop-blur border border-orange-200 shadow-hover animate-scale-in min-h-[50vh] flex flex-col">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-6 text-gray-900 leading-snug">
-              {currentQuestion.content ?? "Nhan dien cai sau"}
+        {/* ── Question Card ── */}
+        <Card
+          className="p-8 md:p-10 mb-5 bg-white/90 backdrop-blur-sm rounded-3xl border-2 border-white/60 shadow-soft animate-scale-in min-h-[45vh] flex flex-col"
+          id="quiz-question-card"
+        >
+          {/* Question text */}
+          <div className="text-center mb-6">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-foreground leading-relaxed">
+              {currentQuestion.content ?? "Nhận diện cảm xúc sau"}
             </h2>
+          </div>
 
-            {/* Display Media */}
-            {currentQuestion.mediaUrl && (
-              <div className="mb-6 flex justify-center">
-                {!mediaError ? (
-                  <>
-                    {mediaType === "video" ? (
-                      <video
-                        src={currentQuestion.mediaUrl}
-                        controls
-                        onError={() => setMediaError(true)}
-                        className="rounded-2xl w-full max-w-3xl h-auto max-h-[28vh] md:max-h-[32vh] shadow-lg"
-                      />
-                    ) : mediaType === "audio" ? (
-                      <audio
-                        src={currentQuestion.mediaUrl}
-                        controls
-                        onError={() => setMediaError(true)}
-                        className="rounded-lg w-full max-w-sm"
-                      />
-                    ) : (
-                      <img
-                        src={currentQuestion.mediaUrl}
-                        alt="Question media"
-                        onError={() => setMediaError(true)}
-                        className="rounded-2xl w-full max-w-3xl h-auto max-h-[28vh] md:max-h-[32vh] shadow-lg object-contain"
-                      />
-                    )}
-                  </>
-                ) : (
-                  <div className="p-4 bg-red-100 text-red-700 rounded-lg">
-                    ⚠️ Không thể tải media từ URL: {currentQuestion.mediaUrl}
-                  </div>
-                )}
-              </div>
-            )}
+          {/* Media display */}
+          {currentQuestion.mediaUrl && (
+            <div className="mb-6 flex justify-center">
+              {!mediaError ? (
+                <>
+                  {mediaType === "video" ? (
+                    <video
+                      src={currentQuestion.mediaUrl}
+                      controls
+                      onError={() => setMediaError(true)}
+                      className="rounded-2xl w-full max-w-2xl h-auto max-h-[28vh] shadow-soft"
+                    />
+                  ) : mediaType === "audio" ? (
+                    <audio
+                      src={currentQuestion.mediaUrl}
+                      controls
+                      onError={() => setMediaError(true)}
+                      className="rounded-lg w-full max-w-sm"
+                    />
+                  ) : (
+                    <img
+                      src={currentQuestion.mediaUrl}
+                      alt="Câu hỏi"
+                      onError={() => setMediaError(true)}
+                      className="rounded-2xl w-full max-w-2xl h-auto max-h-[28vh] shadow-soft object-contain"
+                    />
+                  )}
+                </>
+              ) : (
+                <div className="p-4 bg-destructive/10 text-destructive rounded-xl font-semibold">
+                  ⚠️ Không thể tải media
+                </div>
+              )}
+            </div>
+          )}
 
+          {/* Audio button */}
+          <div className="text-center mb-6">
             <Button
               variant="outline"
               size="sm"
               onClick={playAudio}
-              className="gap-2"
+              className="gap-2 rounded-xl font-bold border-2"
+              id="quiz-audio-btn"
             >
               <Volume2 size={18} />
-              Nghe hướng dẫn
+              🔊 Nghe hướng dẫn
             </Button>
           </div>
           
-          <div className="mt-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Answer options */}
+          <div className="mt-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {options.map(({ choice, text, emoji }) => (
                 <EmotionCard
                   key={choice}
@@ -326,21 +369,23 @@ const QuizPage = () => {
                   emoji={emoji || choice}
                   color={getEmotionColor(text) || "hsl(var(--primary))"}
                   onClick={() => handleChoice(choice)}
-                  className="cursor-pointer hover:scale-110 transition-all text-3xl font-bold"
+                  className="cursor-pointer hover:scale-105 transition-all text-2xl font-extrabold"
                 />
               ))}
             </div>
           </div>
         </Card>
 
-        <div className="w-full bg-muted rounded-full h-3">
+        {/* ── Progress bar ── */}
+        <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
           <div
-            className="gradient-success h-3 rounded-full transition-all duration-500"
-            style={{
-              width: `${((currentIdx + 1) / (quiz?.questions?.length ?? 1)) * 100}%`,
-            }}
+            className="gradient-success h-3 rounded-full transition-all duration-700 ease-out"
+            style={{ width: `${progressPercent}%` }}
           />
         </div>
+        <p className="text-center text-sm text-muted-foreground mt-2 font-semibold">
+          Câu {currentIdx + 1} / {totalQ}
+        </p>
       </div>
     </div>
   );

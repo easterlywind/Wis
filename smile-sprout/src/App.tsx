@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
+import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import QuizPage from "./pages/Quiz";
 import Levels from "./pages/Levels";
@@ -24,7 +25,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<Auth />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={<Auth />} />
 
           {/* Protected routes – yêu cầu đăng nhập */}
           <Route path="/home" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
