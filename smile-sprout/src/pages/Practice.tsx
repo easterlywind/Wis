@@ -16,6 +16,59 @@ const emotions = [
 
 const AI_API_URL = import.meta.env.VITE_AI_API_URL || "http://localhost:8000";
 
+// Weekly Progress sub-component (Phase 2)
+const WeeklyProgressCard = () => {
+  const [progress, setProgress] = useState({ percentage: 0, completedActivities: 0, totalTarget: 10 });
+
+  useEffect(() => {
+    api.get("/game/weekly-progress")
+      .then((res: any) => {
+        const data = res.data;
+        setProgress({
+          percentage: data.percentage || 0,
+          completedActivities: data.completedActivities || 0,
+          totalTarget: data.totalTarget || 10,
+        });
+      })
+      .catch(() => {}); // Silently fail
+  }, []);
+
+  const circumference = 2 * Math.PI * 56; // r=56
+  const dashoffset = circumference - (progress.percentage / 100) * circumference;
+
+  return (
+    <section className="md:col-span-4 clay-card bg-white p-6 rounded-[2rem] border-b-8 border-[#e6e1ea] flex flex-col justify-center h-80">
+      <div className="text-center">
+        <div className="relative inline-block mb-4">
+          <svg className="w-32 h-32 transform -rotate-90">
+            <circle className="text-[#e6e1ea]" cx="64" cy="64" fill="transparent" r="56" stroke="currentColor" strokeWidth="12" />
+            <circle
+              className="text-[#5e4caf]"
+              cx="64" cy="64" fill="transparent" r="56"
+              stroke="currentColor"
+              strokeDasharray={circumference.toFixed(1)}
+              strokeDashoffset={dashoffset.toFixed(1)}
+              strokeWidth="12"
+              strokeLinecap="round"
+              style={{ transition: "stroke-dashoffset 1s ease-in-out" }}
+            />
+          </svg>
+          <span className="absolute inset-0 flex items-center justify-center font-heading text-3xl font-extrabold text-[#5e4caf]">
+            {progress.percentage}%
+          </span>
+        </div>
+        <h3 className="font-heading text-xl font-extrabold text-[#1c1b21]">Tiến độ tuần</h3>
+        <p className="font-body font-semibold text-[#484552]">
+          {progress.completedActivities > 0
+            ? `Tuyệt vời! Bạn đã hoàn thành ${progress.completedActivities}/${progress.totalTarget} nhiệm vụ.`
+            : "Hãy bắt đầu hoạt động đầu tiên nhé!"
+          }
+        </p>
+      </div>
+    </section>
+  );
+};
+
 const Practice = () => {
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -264,13 +317,16 @@ const Practice = () => {
           </section>
 
           {/* Small Activity Card: Games */}
-          <section className="md:col-span-4 group cursor-pointer clay-card bg-[#ebe6ef] p-6 rounded-[2rem] border-b-8 border-[#e6e1ea] transition-transform hover:-translate-y-1 flex flex-col justify-between h-96">
+          <section 
+            onClick={() => navigate("/game/emotion-match")}
+            className="md:col-span-4 group cursor-pointer clay-card bg-[#ebe6ef] p-6 rounded-[2rem] border-b-8 border-[#e6e1ea] transition-transform hover:-translate-y-1 flex flex-col justify-between h-96"
+          >
             <div className="bg-[#f2df79] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform">
               <Gamepad2 className="text-[#1c1b21] w-10 h-10" />
             </div>
             <div>
               <h3 className="font-heading text-2xl font-extrabold text-[#5e4caf] mb-2">Trò chơi</h3>
-              <p className="font-body text-[#484552] mb-6 font-semibold">Thử thách trí tuệ với các câu đố logic và phản xạ.</p>
+              <p className="font-body text-[#484552] mb-6 font-semibold">Ghép cảm xúc với tên gọi đúng qua các vòng thử thách.</p>
               <div className="flex items-center gap-2 text-[#5e4caf] font-bold">
                 <span>Chơi ngay</span>
                 <ArrowRight className="w-5 h-5" />
@@ -279,7 +335,8 @@ const Practice = () => {
           </section>
 
           {/* Small Activity Card: Creativity */}
-          <section className="md:col-span-4 group cursor-pointer clay-card bg-[#9cf4d3] p-6 rounded-[2rem] border-b-8 border-[#006c53] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80">
+          <section className="md:col-span-4 group cursor-pointer clay-card bg-[#9cf4d3] p-6 rounded-[2rem] border-b-8 border-[#006c53] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80 relative">
+            <div className="absolute top-4 right-4 bg-[#006c53] text-white text-xs font-heading font-bold px-3 py-1 rounded-full">Sắp có</div>
             <div className="bg-[#8fcbe9] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <Palette className="text-[#1c1b21] w-10 h-10" />
             </div>
@@ -290,7 +347,8 @@ const Practice = () => {
           </section>
 
           {/* Small Activity Card: Communication */}
-          <section className="md:col-span-4 group cursor-pointer clay-card bg-[#ffe08a] p-6 rounded-[2rem] border-b-8 border-[#745b00] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80">
+          <section className="md:col-span-4 group cursor-pointer clay-card bg-[#ffe08a] p-6 rounded-[2rem] border-b-8 border-[#745b00] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80 relative">
+            <div className="absolute top-4 right-4 bg-[#745b00] text-white text-xs font-heading font-bold px-3 py-1 rounded-full">Sắp có</div>
             <div className="bg-[#ebbb7a] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
               <Mic className="text-[#1c1b21] w-10 h-10" />
             </div>
@@ -300,20 +358,8 @@ const Practice = () => {
             </div>
           </section>
 
-          {/* Wide Bottom Card: Progress */}
-          <section className="md:col-span-4 clay-card bg-white p-6 rounded-[2rem] border-b-8 border-[#e6e1ea] flex flex-col justify-center h-80">
-            <div className="text-center">
-              <div className="relative inline-block mb-4">
-                <svg className="w-32 h-32 transform -rotate-90">
-                  <circle className="text-[#e6e1ea]" cx="64" cy="64" fill="transparent" r="56" stroke="currentColor" strokeWidth="12"></circle>
-                  <circle className="text-[#5e4caf]" cx="64" cy="64" fill="transparent" r="56" stroke="currentColor" strokeDasharray="351.8" strokeDashoffset="88" strokeWidth="12" strokeLinecap="round"></circle>
-                </svg>
-                <span className="absolute inset-0 flex items-center justify-center font-heading text-3xl font-extrabold text-[#5e4caf]">75%</span>
-              </div>
-              <h3 className="font-heading text-xl font-extrabold text-[#1c1b21]">Tiến độ tuần</h3>
-              <p className="font-body font-semibold text-[#484552]">Tuyệt vời! Bạn đã hoàn thành 6 nhiệm vụ.</p>
-            </div>
-          </section>
+          {/* Wide Bottom Card: Weekly Progress */}
+          <WeeklyProgressCard />
         </div>
       </div>
     );

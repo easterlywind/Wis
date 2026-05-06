@@ -13,6 +13,7 @@ import Practice from "./pages/Practice";
 import Auth from "./pages/Auth";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import EmotionGame from "./pages/EmotionGame";
 import { QuizLevel } from "./pages/QuizLevel";
 import { SettingsProvider } from "./contexts/SettingsContext";
 import { MainLayout } from "./layouts/MainLayout";
@@ -34,6 +35,7 @@ const App = () => (
             {/* Protected routes – yêu cầu đăng nhập */}
             {/* Routes without MainLayout (Full screen) */}
             <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
+            <Route path="/game/emotion-match" element={<ProtectedRoute><EmotionGame /></ProtectedRoute>} />
             
             {/* Routes with MainLayout (App Navigation) */}
             <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>

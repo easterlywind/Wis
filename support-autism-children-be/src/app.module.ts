@@ -10,6 +10,7 @@ import { AuthMiddleware } from './middleware/auth.middleware';
 import { LevelModule } from './level/level.module';
 import { QuizModule } from './quiz/quiz.module';
 import { PracticeModule } from './practice/practice.module';
+import { GameModule } from './game/game.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -20,6 +21,7 @@ import { PracticeModule } from './practice/practice.module';
     LevelModule,
     QuizModule,
     PracticeModule,
+    GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],
