@@ -11,6 +11,7 @@ import { LevelModule } from './level/level.module';
 import { QuizModule } from './quiz/quiz.module';
 import { PracticeModule } from './practice/practice.module';
 import { GameModule } from './game/game.module';
+import { StoryModule } from './story/story.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -22,6 +23,7 @@ import { GameModule } from './game/game.module';
     QuizModule,
     PracticeModule,
     GameModule,
+    StoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

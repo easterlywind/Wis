@@ -347,14 +347,16 @@ const Practice = () => {
           </section>
 
           {/* Small Activity Card: Communication */}
-          <section className="md:col-span-4 group cursor-pointer clay-card bg-[#ffe08a] p-6 rounded-[2rem] border-b-8 border-[#745b00] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80 relative">
-            <div className="absolute top-4 right-4 bg-[#745b00] text-white text-xs font-heading font-bold px-3 py-1 rounded-full">Sắp có</div>
+          <section 
+            onClick={() => navigate("/story")}
+            className="md:col-span-4 group cursor-pointer clay-card bg-[#ffe08a] p-6 rounded-[2rem] border-b-8 border-[#745b00] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80 relative"
+          >
             <div className="bg-[#ebbb7a] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
               <Mic className="text-[#1c1b21] w-10 h-10" />
             </div>
             <div>
               <h3 className="font-heading text-2xl font-extrabold text-[#745b00] mb-2">Giao tiếp</h3>
-              <p className="font-body font-semibold text-[#4e3d00] mb-4">Học cách bày tỏ cảm xúc và kết bạn mới qua các câu chuyện kể.</p>
+              <p className="font-body font-semibold text-[#4e3d00] mb-4">Học cách nhận diện cảm xúc qua các câu chuyện kể sinh động.</p>
             </div>
           </section>
 
