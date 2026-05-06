@@ -36,6 +36,9 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'media_question'), {
     prefix: '/media_question',
   });
+  app.useStaticAssets(join(__dirname, '..', 'media_drawing'), {
+    prefix: '/media_drawing',
+  });
 
   // CORS – đọc từ env, fallback localhost:8080
   const corsOrigin = configService.get<string>('CORS_ORIGIN', 'http://localhost:8080');

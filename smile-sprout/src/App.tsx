@@ -15,6 +15,7 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import EmotionGame from "./pages/EmotionGame";
 import StoryMode from "./pages/StoryMode";
+import DrawingCanvas from "./pages/DrawingCanvas";
 import { QuizLevel } from "./pages/QuizLevel";
 import { SettingsProvider } from "./contexts/SettingsContext";
 import { MainLayout } from "./layouts/MainLayout";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
             <Route path="/game/emotion-match" element={<ProtectedRoute><EmotionGame /></ProtectedRoute>} />
             <Route path="/story" element={<ProtectedRoute><StoryMode /></ProtectedRoute>} />
+            <Route path="/draw" element={<ProtectedRoute><DrawingCanvas /></ProtectedRoute>} />
             
             {/* Routes with MainLayout (App Navigation) */}
             <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>

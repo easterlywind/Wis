@@ -51,6 +51,7 @@ model User {
   attemptQuizzes AttemptQuiz[]
   attemptLevels AttemptLevel[]
   practices      Practice[]
+  drawings       Drawing[]
 }
 
 model Emotion {
@@ -66,6 +67,7 @@ model Emotion {
   questions      Question[]
   practices      Practice[]
   stories        Story[]
+  drawings       Drawing[]
 }
 
 model Level {
@@ -172,4 +174,15 @@ model Story {
   createdAt        DateTime @default(now())
 
   emotion Emotion @relation(fields: [correctEmotionId], references: [id], onDelete: Cascade)
+}
+
+model Drawing {
+  id        String   @id @default(uuid())
+  userId    String
+  emotionId String
+  imageUrl  String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emotion Emotion @relation(fields: [emotionId], references: [id], onDelete: Cascade)
 }

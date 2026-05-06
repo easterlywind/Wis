@@ -335,8 +335,10 @@ const Practice = () => {
           </section>
 
           {/* Small Activity Card: Creativity */}
-          <section className="md:col-span-4 group cursor-pointer clay-card bg-[#9cf4d3] p-6 rounded-[2rem] border-b-8 border-[#006c53] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80 relative">
-            <div className="absolute top-4 right-4 bg-[#006c53] text-white text-xs font-heading font-bold px-3 py-1 rounded-full">Sắp có</div>
+          <section 
+            onClick={() => navigate("/draw")}
+            className="md:col-span-4 group cursor-pointer clay-card bg-[#9cf4d3] p-6 rounded-[2rem] border-b-8 border-[#006c53] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80 relative"
+          >
             <div className="bg-[#8fcbe9] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <Palette className="text-[#1c1b21] w-10 h-10" />
             </div>
