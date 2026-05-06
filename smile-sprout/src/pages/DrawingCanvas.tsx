@@ -72,6 +72,44 @@ const DrawingCanvas = () => {
     }
   }, [viewGallery]);
 
+  const getCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>, canvas: HTMLCanvasElement) => {
+    const rect = canvas.getBoundingClientRect();
+    
+    // Calculate actual displayed size due to object-fit: contain
+    const canvasRatio = canvas.width / canvas.height;
+    const rectRatio = rect.width / rect.height;
+    
+    let actualWidth, actualHeight, offsetX, offsetY;
+    if (rectRatio > canvasRatio) {
+      actualHeight = rect.height;
+      actualWidth = actualHeight * canvasRatio;
+      offsetX = (rect.width - actualWidth) / 2;
+      offsetY = 0;
+    } else {
+      actualWidth = rect.width;
+      actualHeight = actualWidth / canvasRatio;
+      offsetX = 0;
+      offsetY = (rect.height - actualHeight) / 2;
+    }
+
+    const scaleX = canvas.width / actualWidth;
+    const scaleY = canvas.height / actualHeight;
+    
+    let clientX, clientY;
+    if ("touches" in e) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
+    return {
+      x: (clientX - rect.left - offsetX) * scaleX,
+      y: (clientY - rect.top - offsetY) * scaleY
+    };
+  };
+
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -79,9 +117,7 @@ const DrawingCanvas = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const x = ("touches" in e) ? e.touches[0].clientX - rect.left : e.nativeEvent.offsetX;
-    const y = ("touches" in e) ? e.touches[0].clientY - rect.top : e.nativeEvent.offsetY;
+    const { x, y } = getCoordinates(e, canvas);
 
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -97,9 +133,7 @@ const DrawingCanvas = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const x = ("touches" in e) ? e.touches[0].clientX - rect.left : e.nativeEvent.offsetX;
-    const y = ("touches" in e) ? e.touches[0].clientY - rect.top : e.nativeEvent.offsetY;
+    const { x, y } = getCoordinates(e, canvas);
 
     ctx.lineTo(x, y);
     ctx.strokeStyle = color;
@@ -204,7 +238,7 @@ const DrawingCanvas = () => {
                 <Card key={draw.id} className="overflow-hidden clay-card bg-white border-4 border-white group">
                   <div className="aspect-square bg-[#f8f9fa] relative">
                     <img 
-                      src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/${draw.imageUrl}`} 
+                      src={`${(import.meta.env.VITE_API_URL || "http://localhost:3000/api").replace("/api", "")}/${draw.imageUrl}`} 
                       alt={draw.emotion.name}
                       className="w-full h-full object-contain"
                     />
@@ -277,7 +311,7 @@ const DrawingCanvas = () => {
             {selectedEmotion?.iconUrl && (
               <div className="bg-white rounded-2xl p-4 flex justify-center items-center h-40 border-4 border-[#e6e1ea]">
                 <img 
-                  src={`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/${selectedEmotion.iconUrl}`} 
+                  src={`${(import.meta.env.VITE_API_URL || "http://localhost:3000/api").replace("/api", "")}/${selectedEmotion.iconUrl}`} 
                   alt={selectedEmotion.name}
                   className="max-h-full object-contain drop-shadow-md opacity-50"
                 />
