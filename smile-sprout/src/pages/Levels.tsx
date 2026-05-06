@@ -5,10 +5,12 @@ import { api } from "../lib/axios";
 import { toast } from "sonner";
 import { getDataWithRetry } from "@/lib/apiRetry";
 import { Button } from "@/components/ui/button";
+import { Star, Lock } from "lucide-react";
 
 const Levels = () => {
   const navigate = useNavigate();
   const [levels, setLevels] = useState<Level[]>([]);
+  const [totalPoints, setTotalPoints] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,12 +19,20 @@ const Levels = () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await getDataWithRetry<Level[]>(
-          () => api.get<Level[]>('/levels'),
-          (d) => Array.isArray(d) && d.length > 0,
-          { maxAttempts: 6, initialDelayMs: 400 }
-        );
+        const [data, statsData] = await Promise.all([
+          getDataWithRetry<Level[]>(
+            () => api.get<Level[]>('/levels'),
+            (d) => Array.isArray(d) && d.length > 0,
+            { maxAttempts: 6, initialDelayMs: 400 }
+          ),
+          getDataWithRetry(
+            () => api.get('/users/me/stats'),
+            (d) => d && typeof d.totalPoints === 'number',
+            { maxAttempts: 3, initialDelayMs: 400 }
+          )
+        ]);
         setLevels(data);
+        setTotalPoints((statsData as any).totalPoints || 0);
       } catch (err: any) {
         console.error("Levels fetch error:", err);
         const errorMsg = err.response?.data?.message || err.message || "Lỗi tải level";
@@ -61,8 +71,8 @@ const Levels = () => {
           </div>
           <div className="flex gap-4">
             <div className="bg-[#e6e1ea] p-4 rounded-xl clay-card flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#f2df79]" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
-              <span className="font-heading text-xl font-extrabold text-[#5e4caf]">1,250</span>
+              <Star className="text-[#f2df79] fill-[#f2df79] w-7 h-7" />
+              <span className="font-heading text-xl font-extrabold text-[#5e4caf]">{totalPoints}</span>
             </div>
           </div>
         </header>
@@ -128,7 +138,7 @@ const Levels = () => {
                           onClick={() => handleStartLevel(level)}
                           className="w-56 h-56 md:w-72 md:h-72 bg-[#ddd8e1] rounded-full border-b-[12px] border-[#c9c4d4] flex flex-col items-center justify-center p-8 opacity-90 cursor-not-allowed"
                         >
-                          <span className="material-symbols-outlined text-6xl text-[#797583] mb-4">lock</span>
+                          <Lock className="text-[#797583] w-16 h-16 mb-4" />
                           <span className="font-heading text-2xl font-bold text-[#797583] text-center px-4 leading-tight">{level.name}</span>
                         </button>
                         <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#e6e1ea] px-4 py-1 rounded-lg border border-[#c9c4d4] text-[#797583] font-body font-bold text-sm whitespace-nowrap">

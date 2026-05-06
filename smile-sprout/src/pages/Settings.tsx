@@ -31,7 +31,7 @@ const Settings = () => {
             <div className="bg-[#f7f2fb] p-6 rounded-3xl shadow-inner">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#5e4caf] text-white flex items-center justify-center shadow-md">
-                  <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>volume_up</span>
+                  <Volume2 className="w-6 h-6" />
                 </div>
                 <Label htmlFor="volume" className="text-xl font-heading font-extrabold text-[#1c1b21]">
                   Âm lượng
@@ -58,7 +58,7 @@ const Settings = () => {
             <div className="bg-[#f7f2fb] p-6 rounded-3xl shadow-inner">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#006c53] text-white flex items-center justify-center shadow-md">
-                  <span className="material-symbols-outlined text-2xl">language</span>
+                  <Globe className="w-6 h-6" />
                 </div>
                 <Label className="text-xl font-heading font-extrabold text-[#1c1b21]">
                   Ngôn ngữ
@@ -98,7 +98,7 @@ const Settings = () => {
                 <div>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 rounded-2xl bg-[#ebbb7a] text-[#4e3d00] flex items-center justify-center shadow-md">
-                      <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>self_improvement</span>
+                      <Eye className="w-6 h-6" />
                     </div>
                     <Label className="text-xl font-heading font-extrabold text-[#1c1b21]">
                       Bình Tĩnh
@@ -126,7 +126,7 @@ const Settings = () => {
                 <div>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 rounded-2xl bg-[#5eb98f] text-white flex items-center justify-center shadow-md">
-                      <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>record_voice_over</span>
+                      <Mic className="w-6 h-6" />
                     </div>
                     <Label className="text-xl font-heading font-extrabold text-[#1c1b21]">
                       Tự Đọc CHT

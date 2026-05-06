@@ -84,12 +84,8 @@ async function main() {
     ],
   });
 
-  await prisma.unlockedLevel.create({
-    data: {
-      userId: '1',
-      levelId: '3',
-    },
-  });
+  // Level 1 (difficulty=1) is automatically unlocked because user.currentLevel defaults to 1
+  // Other levels unlock progressively as the user earns enough points
 
   await prisma.quiz.createMany({
     data: [

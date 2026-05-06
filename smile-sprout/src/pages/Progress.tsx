@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { api } from "@/lib/axios";
 import { toast } from "sonner";
+import { Edit2, Share, Sparkles, Medal, Award, Star, Trophy, Lock } from "lucide-react";
 
 interface OverviewStats {
   totalPoints: number;
@@ -86,10 +87,10 @@ const Progress = () => {
         </div>
         <div className="hidden md:flex gap-4">
           <button className="bg-white p-4 rounded-full clay-button hover:scale-110 transition-all border-b-4 border-[#e6e1ea]">
-            <span className="material-symbols-outlined text-[#5e4caf]" style={{ fontVariationSettings: "'FILL' 1" }}>edit</span>
+            <Edit2 className="text-[#5e4caf] w-6 h-6" />
           </button>
           <button className="bg-white p-4 rounded-full clay-button hover:scale-110 transition-all border-b-4 border-[#e6e1ea]">
-            <span className="material-symbols-outlined text-[#5e4caf]" style={{ fontVariationSettings: "'FILL' 1" }}>share</span>
+            <Share className="text-[#5e4caf] w-6 h-6" />
           </button>
         </div>
       </header>
@@ -100,7 +101,7 @@ const Progress = () => {
         {/* Main Profile Card */}
         <section className="md:col-span-8 bg-[#7765c9] text-white p-8 rounded-[2rem] clay-card border-b-[8px] border-[#5e4caf] relative overflow-hidden">
           <div className="absolute top-0 right-0 p-8 opacity-20 scale-150 rotate-12">
-            <span className="material-symbols-outlined text-[120px]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+            <Sparkles className="w-32 h-32" />
           </div>
           <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
             <div className="relative">
@@ -129,23 +130,23 @@ const Progress = () => {
         <section className="md:col-span-4 bg-white p-8 rounded-[2rem] clay-card border-b-[8px] border-[#e6e1ea]">
           <div className="flex justify-between items-center mb-6">
             <h3 className="font-heading text-2xl font-extrabold text-[#5e4caf]">Thành tựu</h3>
-            <span className="material-symbols-outlined text-[#cba734] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
+            <Medal className="text-[#cba734] w-8 h-8" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col items-center p-4 bg-[#f7f2fb] rounded-2xl shadow-inner group hover:scale-105 transition-transform">
-              <span className="material-symbols-outlined text-[#e9c34d] text-4xl mb-2" style={{ fontVariationSettings: "'FILL' 1" }}>workspace_premium</span>
+              <Award className="text-[#e9c34d] w-10 h-10 mb-2" />
               <span className="font-body text-sm font-bold text-center text-[#484552]">Chuỗi {stats.streakDays} ngày</span>
             </div>
             <div className="flex flex-col items-center p-4 bg-[#f7f2fb] rounded-2xl shadow-inner group hover:scale-105 transition-transform">
-              <span className="material-symbols-outlined text-[#e9c34d] text-4xl mb-2" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+              <Star className="text-[#e9c34d] fill-[#e9c34d] w-10 h-10 mb-2" />
               <span className="font-body text-sm font-bold text-center text-[#484552]">Chăm chỉ</span>
             </div>
             <div className="flex flex-col items-center p-4 bg-[#f7f2fb] rounded-2xl shadow-inner group hover:scale-105 transition-transform">
-              <span className="material-symbols-outlined text-[#e9c34d] text-4xl mb-2" style={{ fontVariationSettings: "'FILL' 1" }}>emoji_events</span>
+              <Trophy className="text-[#e9c34d] w-10 h-10 mb-2" />
               <span className="font-body text-sm font-bold text-center text-[#484552]">Xuất sắc {stats.excellentQuizzes}</span>
             </div>
             <div className="flex flex-col items-center p-4 bg-[#f7f2fb] rounded-2xl shadow-inner group hover:scale-105 transition-transform opacity-60 grayscale">
-              <span className="material-symbols-outlined text-[#797583] text-4xl mb-2">lock</span>
+              <Lock className="text-[#797583] w-10 h-10 mb-2" />
               <span className="font-body text-sm font-bold text-center text-[#797583]">Chưa mở</span>
             </div>
           </div>

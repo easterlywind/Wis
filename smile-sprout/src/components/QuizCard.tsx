@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Brain } from "lucide-react";
 
 interface QuizCardProps {
   id: string;
@@ -39,7 +40,7 @@ export const QuizCard = ({
       )}
 
       <div className="w-16 h-16 mx-auto bg-[#f7f2fb] rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-        <span className="material-symbols-outlined text-[#5e4caf] text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>quiz</span>
+        <Brain className="text-[#5e4caf] w-10 h-10" />
       </div>
 
       <h3 className="text-xl font-heading font-extrabold text-[#1c1b21] mb-4">{title}</h3>

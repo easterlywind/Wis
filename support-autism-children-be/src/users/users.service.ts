@@ -105,7 +105,7 @@ export class UsersService {
     return {
       totalPoints: user?.totalPoints ?? 0,
       streakDays: user?.streakDays ?? 0,
-      accuracyRate: avgAccuracy,
+      accuracyRate: user?.accuracyRate ?? 0,
       currentLevel: user?.currentLevel ?? 1,
       totalQuizzes,
       excellentQuizzes,

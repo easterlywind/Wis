@@ -239,25 +239,32 @@ export class QuizService {
     const newTotalPoints = (user?.totalPoints || 0) + correctCount;
     const currentLevel = user?.currentLevel || 1;
     let levelUp = false;
-    let newLevelId = null;
+    let newLevelId: string | null = null;
+    let finalLevel = currentLevel;
 
-    // Kiểm tra xem user có đủ điểm để lên cấp tiếp theo không
-    const nextLevel = await this.prisma.level.findFirst({
-      where: { difficulty: currentLevel + 1 },
+    // Kiểm tra tất cả các level cao hơn mà user đủ điểm để unlock
+    const higherLevels = await this.prisma.level.findMany({
+      where: { difficulty: { gt: currentLevel } },
+      orderBy: { difficulty: 'asc' },
     });
 
-    if (nextLevel && newTotalPoints >= nextLevel.requiredPoints) {
-      levelUp = true;
-      newLevelId = nextLevel.id;
+    for (const nextLevel of higherLevels) {
+      if (newTotalPoints >= nextLevel.requiredPoints) {
+        levelUp = true;
+        newLevelId = nextLevel.id;
+        finalLevel = nextLevel.difficulty;
 
-      // Unlock level nếu chưa được unlock
-      const alreadyUnlocked = await this.prisma.unlockedLevel.findFirst({
-        where: { userId, levelId: nextLevel.id },
-      });
-      if (!alreadyUnlocked) {
-        await this.prisma.unlockedLevel.create({
-          data: { userId, levelId: nextLevel.id },
+        // Unlock level nếu chưa được unlock
+        const alreadyUnlocked = await this.prisma.unlockedLevel.findFirst({
+          where: { userId, levelId: nextLevel.id },
         });
+        if (!alreadyUnlocked) {
+          await this.prisma.unlockedLevel.create({
+            data: { userId, levelId: nextLevel.id },
+          });
+        }
+      } else {
+        break; // Không đủ điểm cho level này, dừng lại
       }
     }
 
@@ -268,7 +275,7 @@ export class QuizService {
         accuracyRate: Math.round(avgAccuracy * 100) / 100,
         streakDays: newStreak,
         lastActiveDate: new Date(),
-        ...(levelUp ? { currentLevel: currentLevel + 1 } : {}),
+        ...(levelUp ? { currentLevel: finalLevel } : {}),
       },
     });
 

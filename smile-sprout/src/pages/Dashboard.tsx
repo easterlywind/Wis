@@ -1,4 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { api } from "../lib/axios";
+import { getDataWithRetry } from "@/lib/apiRetry";
+import { Trophy, Puzzle, Camera } from "lucide-react";
+
 import learningPathImg from "@/assets/learning_path.png";
 import quizImg from "@/assets/quiz.png";
 import cameraImg from "@/assets/camera.png";
@@ -6,6 +11,29 @@ import progressImg from "@/assets/progress.png";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    accuracyRate: 0,
+    currentLevel: 1,
+    streakDays: 0,
+    totalPoints: 0
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data = await getDataWithRetry(
+          () => api.get('/users/me/stats'),
+          (d) => d && typeof d.totalPoints === 'number',
+          { maxAttempts: 3, initialDelayMs: 400 }
+        );
+        setStats(data as any);
+      } catch (err) {
+        console.error("Failed to fetch stats", err);
+      }
+    };
+    fetchStats();
+  }, []);
+
 
   return (
     <div className="p-6 md:p-8 font-body h-full">
@@ -37,7 +65,10 @@ const Dashboard = () => {
                   Tiếp tục
                 </button>
                 <span className="text-white/90 font-bold bg-black/10 px-4 py-2 rounded-xl backdrop-blur-sm">
-                  Bài 4: Khám phá cảm xúc
+                  Cấp độ {stats.currentLevel}
+                </span>
+                <span className="text-white/90 font-bold bg-black/10 px-4 py-2 rounded-xl backdrop-blur-sm flex items-center gap-1">
+                  🔥 {stats.streakDays} Ngày
                 </span>
               </div>
             </div>
@@ -54,7 +85,7 @@ const Dashboard = () => {
             className="md:col-span-4 md:row-span-2 clay-card bg-gradient-to-br from-[#63ba9c] to-[#5eb98f] rounded-[2.5rem] border-b-8 border-[#004e3b] p-8 flex flex-col justify-between group cursor-pointer active:translate-y-2 active:border-b-0 transition-all"
           >
             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-white text-4xl">extension</span>
+              <Puzzle className="text-white w-10 h-10" />
             </div>
             <div>
               <h3 className="font-heading text-3xl font-extrabold text-white leading-tight">Trắc nghiệm<br/>nhanh</h3>
@@ -68,7 +99,7 @@ const Dashboard = () => {
             className="md:col-span-4 md:row-span-2 clay-card bg-gradient-to-br from-[#7765c9] to-[#8573d8] rounded-[2.5rem] border-b-8 border-[#413485] p-8 flex flex-col justify-between group cursor-pointer active:translate-y-2 active:border-b-0 transition-all"
           >
             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-white text-4xl">photo_camera</span>
+              <Camera className="text-white w-10 h-10" />
             </div>
             <div>
               <h3 className="font-heading text-3xl font-extrabold text-white leading-tight">Phòng tập<br/>Camera</h3>
@@ -80,16 +111,16 @@ const Dashboard = () => {
           <div className="md:col-span-8 md:row-span-1 clay-card bg-white rounded-[2.5rem] border-b-8 border-[#ebe6ef] p-6 flex items-center gap-8 active:translate-y-1 active:border-b-4 transition-all cursor-pointer group">
             <div className="flex-grow">
               <div className="flex justify-between items-end mb-2">
-                <h3 className="font-heading text-2xl font-extrabold text-[#5e4caf]">Tiến trình tuần này</h3>
-                <span className="font-bold text-[#5eb98f] text-lg">85%</span>
+                <h3 className="font-heading text-2xl font-extrabold text-[#5e4caf]">Tiến trình chính xác</h3>
+                <span className="font-bold text-[#5eb98f] text-lg">{stats.accuracyRate}%</span>
               </div>
               <div className="w-full h-6 bg-[#ebe6ef] rounded-full overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
-                <div className="h-full bg-[#5eb98f] w-[85%] rounded-full shadow-[inset_0_-4px_4px_rgba(0,0,0,0.2)]"></div>
+                <div className="h-full bg-[#5eb98f] rounded-full shadow-[inset_0_-4px_4px_rgba(0,0,0,0.2)]" style={{ width: `${stats.accuracyRate}%` }}></div>
               </div>
             </div>
             <div className="hidden sm:flex flex-col items-center justify-center bg-[#f2df79]/30 p-4 rounded-3xl border-2 border-[#f2df79]">
-              <span className="material-symbols-outlined text-[#745b00] text-3xl">military_tech</span>
-              <span className="text-xs font-black text-[#745b00]">Bậc Thầy</span>
+              <Trophy className="text-[#745b00] w-8 h-8 mb-1" />
+              <span className="text-xs font-black text-[#745b00]">Cấp {stats.currentLevel}</span>
             </div>
           </div>
 

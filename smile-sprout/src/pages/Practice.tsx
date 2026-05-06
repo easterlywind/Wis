@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Camera } from "lucide-react";
+import { ArrowLeft, Camera, Gamepad2, ArrowRight, Palette, Mic } from "lucide-react";
 import { toast } from "sonner";
 
 import { api } from "../lib/axios";
@@ -252,7 +252,7 @@ const Practice = () => {
           >
             <div className="absolute top-8 right-8 w-48 h-48 bg-white/20 rounded-full blur-3xl group-hover:scale-125 transition-transform"></div>
             <div className="absolute top-10 right-10 scale-150 transform group-hover:rotate-12 transition-transform">
-              <span className="material-symbols-outlined text-white text-[120px]" style={{ fontVariationSettings: "'FILL' 1" }}>camera_front</span>
+              <Camera className="text-white w-32 h-32 opacity-80" />
             </div>
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-4">
@@ -266,14 +266,14 @@ const Practice = () => {
           {/* Small Activity Card: Games */}
           <section className="md:col-span-4 group cursor-pointer clay-card bg-[#ebe6ef] p-6 rounded-[2rem] border-b-8 border-[#e6e1ea] transition-transform hover:-translate-y-1 flex flex-col justify-between h-96">
             <div className="bg-[#f2df79] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform">
-              <span className="material-symbols-outlined text-[#1c1b21] text-4xl">sports_esports</span>
+              <Gamepad2 className="text-[#1c1b21] w-10 h-10" />
             </div>
             <div>
               <h3 className="font-heading text-2xl font-extrabold text-[#5e4caf] mb-2">Trò chơi</h3>
               <p className="font-body text-[#484552] mb-6 font-semibold">Thử thách trí tuệ với các câu đố logic và phản xạ.</p>
               <div className="flex items-center gap-2 text-[#5e4caf] font-bold">
                 <span>Chơi ngay</span>
-                <span className="material-symbols-outlined">arrow_forward</span>
+                <ArrowRight className="w-5 h-5" />
               </div>
             </div>
           </section>
@@ -281,7 +281,7 @@ const Practice = () => {
           {/* Small Activity Card: Creativity */}
           <section className="md:col-span-4 group cursor-pointer clay-card bg-[#9cf4d3] p-6 rounded-[2rem] border-b-8 border-[#006c53] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80">
             <div className="bg-[#8fcbe9] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-              <span className="material-symbols-outlined text-[#1c1b21] text-4xl">palette</span>
+              <Palette className="text-[#1c1b21] w-10 h-10" />
             </div>
             <div>
               <h3 className="font-heading text-2xl font-extrabold text-[#006c53] mb-2">Sáng tạo</h3>
@@ -292,7 +292,7 @@ const Practice = () => {
           {/* Small Activity Card: Communication */}
           <section className="md:col-span-4 group cursor-pointer clay-card bg-[#ffe08a] p-6 rounded-[2rem] border-b-8 border-[#745b00] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80">
             <div className="bg-[#ebbb7a] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
-              <span className="material-symbols-outlined text-[#1c1b21] text-4xl">record_voice_over</span>
+              <Mic className="text-[#1c1b21] w-10 h-10" />
             </div>
             <div>
               <h3 className="font-heading text-2xl font-extrabold text-[#745b00] mb-2">Giao tiếp</h3>

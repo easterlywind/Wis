@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Volume2 } from "lucide-react";
+import { Volume2, X, Sparkles, PartyPopper, Smile, Frown, Angry, Meh } from "lucide-react";
 import { toast } from "sonner";
 import { Quiz } from "@/types/quiz";
 import { AnswerChoice } from "@/types/question";
@@ -291,10 +291,10 @@ const QuizPage = () => {
 
   // Custom mapping for button colors based on index or emotion
   const buttonColors = [
-    { bg: "bg-[#f2df79]", border: "border-[#d4c04c]", shadow: "shadow-[0_12px_24px_-8px_rgba(212,192,76,0.5)]", text: "text-[#4e3d00]", activeShadow: "active:shadow-[0_4px_12px_-8px_rgba(212,192,76,0.5)]", icon: "sentiment_very_satisfied" }, // Happy
-    { bg: "bg-[#90a7da]", border: "border-[#6c84b9]", shadow: "shadow-[0_12px_24px_-8px_rgba(108,132,185,0.5)]", text: "text-white", activeShadow: "active:shadow-[0_4px_12px_-8px_rgba(108,132,185,0.5)]", icon: "sentiment_very_dissatisfied" }, // Sad
-    { bg: "bg-[#e57f7f]", border: "border-[#c25b5b]", shadow: "shadow-[0_12px_24px_-8px_rgba(194,91,91,0.5)]", text: "text-white", activeShadow: "active:shadow-[0_4px_12px_-8px_rgba(194,91,91,0.5)]", icon: "sentiment_extremely_dissatisfied" }, // Angry
-    { bg: "bg-[#b48fd3]", border: "border-[#8e68ae]", shadow: "shadow-[0_12px_24px_-8px_rgba(142,104,174,0.5)]", text: "text-white", activeShadow: "active:shadow-[0_4px_12px_-8px_rgba(142,104,174,0.5)]", icon: "sentiment_worried" }, // Scared
+    { bg: "bg-[#f2df79]", border: "border-[#d4c04c]", shadow: "shadow-[0_12px_24px_-8px_rgba(212,192,76,0.5)]", text: "text-[#4e3d00]", activeShadow: "active:shadow-[0_4px_12px_-8px_rgba(212,192,76,0.5)]", icon: Smile }, // Happy
+    { bg: "bg-[#90a7da]", border: "border-[#6c84b9]", shadow: "shadow-[0_12px_24px_-8px_rgba(108,132,185,0.5)]", text: "text-white", activeShadow: "active:shadow-[0_4px_12px_-8px_rgba(108,132,185,0.5)]", icon: Frown }, // Sad
+    { bg: "bg-[#e57f7f]", border: "border-[#c25b5b]", shadow: "shadow-[0_12px_24px_-8px_rgba(194,91,91,0.5)]", text: "text-white", activeShadow: "active:shadow-[0_4px_12px_-8px_rgba(194,91,91,0.5)]", icon: Angry }, // Angry
+    { bg: "bg-[#b48fd3]", border: "border-[#8e68ae]", shadow: "shadow-[0_12px_24px_-8px_rgba(142,104,174,0.5)]", text: "text-white", activeShadow: "active:shadow-[0_4px_12px_-8px_rgba(142,104,174,0.5)]", icon: Meh }, // Scared
   ];
 
   return (
@@ -326,7 +326,7 @@ const QuizPage = () => {
           className="bg-[#ebe6ef] text-[#484552] p-4 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg"
           id="quiz-back-btn"
         >
-          <span className="material-symbols-outlined text-3xl font-extrabold">close</span>
+          <X className="w-8 h-8 stroke-[3]" />
         </button>
 
         <div className="flex-1 max-w-md mx-8">
@@ -388,10 +388,10 @@ const QuizPage = () => {
 
           {/* Decorative "Sparkle" Icons */}
           <div className="absolute -top-4 -right-4 bg-[#f2df79] p-4 rounded-full shadow-lg rotate-12">
-            <span className="material-symbols-outlined text-[#4e3d00]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+            <Sparkles className="text-[#4e3d00] w-8 h-8" />
           </div>
           <div className="absolute -bottom-4 -left-4 bg-[#9cf4d3] p-4 rounded-full shadow-lg -rotate-12">
-            <span className="material-symbols-outlined text-[#087258]" style={{ fontVariationSettings: "'FILL' 1" }}>celebration</span>
+            <PartyPopper className="text-[#087258] w-8 h-8" />
           </div>
         </div>
       </main>
@@ -407,9 +407,9 @@ const QuizPage = () => {
                 onClick={() => handleChoice(choice)}
                 className={`h-32 md:h-40 rounded-xl flex flex-col items-center justify-center gap-2 group ${btnStyle.bg} border-b-[12px] ${btnStyle.border} ${btnStyle.shadow} ${btnStyle.activeShadow} active:border-b-[4px] active:translate-y-2 transition-all duration-150`}
               >
-                <span className={`material-symbols-outlined text-4xl ${btnStyle.text} group-hover:scale-110 transition-transform`} style={{ fontVariationSettings: "'FILL' 1" }}>
-                  {btnStyle.icon}
-                </span>
+                <div className={`${btnStyle.text} group-hover:scale-110 transition-transform`}>
+                  <btnStyle.icon className="w-10 h-10" />
+                </div>
                 <span className={`font-heading text-2xl font-extrabold ${btnStyle.text}`}>
                   {text}
                 </span>
