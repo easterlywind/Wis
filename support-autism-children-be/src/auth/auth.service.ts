@@ -68,17 +68,25 @@ export class AuthService {
   }
 
   async signIn(dto: SignInDto) {
-    // Find user
+    console.log("Login attempt for:", dto.email);
+    // Find user by email or username
     const user = await this.prisma.user.findFirst({
-      where: { email: dto.email },
+      where: {
+        OR: [
+          { email: dto.email },
+          { name: dto.email }
+        ]
+      },
     });
     if (!user) {
+      console.log("User not found in DB");
       throw new UnauthorizedException('Invalid credentials');
     }
 
     // Check password
     const isPasswordValid = await bcrypt.compare(dto.password, user.password);
     if (!isPasswordValid) {
+      console.log("Password compare failed for user:", user.email);
       throw new UnauthorizedException('Invalid credentials');
     }
 

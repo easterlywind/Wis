@@ -38,10 +38,10 @@ export class SignUpDto {
 
 export class SignInDto {
   @ApiProperty({
-    example: 'user@example.com',
-    description: 'Email đăng nhập',
+    example: 'user@example.com hoặc username',
+    description: 'Email hoặc tên đăng nhập',
   })
-  @IsEmail()
+  @IsString()
   @IsNotEmpty()
   email: string;
 

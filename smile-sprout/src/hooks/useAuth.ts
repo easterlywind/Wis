@@ -17,7 +17,7 @@ export function useAuth() {
 
   /* ── LOGIN ── */
   const login = async (email: string, password: string) => {
-    const res = await loginApi(email, password);
+    const res = await loginApi(email.trim().toLowerCase(), password.trim());
 
     if (res.accessToken) {
       saveSession({
@@ -43,9 +43,9 @@ export function useAuth() {
     const { username, email, password, birthDate } = data;
 
     const res = await registerApi(
-      username,
-      email,
-      password,
+      username.trim(),
+      email.trim().toLowerCase(),
+      password.trim(),
       birthDate || undefined
     );
 
