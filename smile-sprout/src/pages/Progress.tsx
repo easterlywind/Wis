@@ -5,36 +5,73 @@ import { ProgressCard } from "@/components/ProgressCard";
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { useState, useEffect } from "react";
+import { api } from "@/lib/axios";
+import { toast } from "sonner";
+
+interface OverviewStats {
+  totalPoints: number;
+  streakDays: number;
+  accuracyRate: number;
+  currentLevel: number;
+  totalQuizzes: number;
+  excellentQuizzes: number;
+}
+
+interface EmotionStat {
+  emotion: string;
+  totalQuestions: number;
+  accuracy: number;
+}
+
+interface HistoryDay {
+  date: string;
+  day: string;
+  quizzes: number;
+  accuracy: number;
+}
+
+interface RecentActivity {
+  type: string;
+  title: string;
+  score: number;
+  date: string;
+}
 
 const Progress = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  
+  const [stats, setStats] = useState<OverviewStats | null>(null);
+  const [emotionData, setEmotionData] = useState<EmotionStat[]>([]);
+  const [historyData, setHistoryData] = useState<HistoryDay[]>([]);
+  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
 
-  // Simulate data loading
   useEffect(() => {
-    // Mô phỏng API call
-    const timer = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(timer);
+    const fetchProgressData = async () => {
+      try {
+        setLoading(true);
+        const [statsRes, emotionsRes, historyRes] = await Promise.all([
+          api.get("/users/me/stats"),
+          api.get("/users/me/stats/emotions"),
+          api.get("/users/me/stats/history"),
+        ]);
+
+        setStats(statsRes.data);
+        setEmotionData(emotionsRes.data);
+        
+        // Reverse history so it goes from oldest to newest for the chart (left to right)
+        setHistoryData(historyRes.data.dailyProgress.reverse());
+        setRecentActivities(historyRes.data.recentActivities);
+      } catch (err) {
+        console.error("Failed to load progress data", err);
+        toast.error("Không thể tải dữ liệu tiến trình. Vui lòng thử lại.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProgressData();
   }, []);
-
-  // Dữ liệu mẫu cho biểu đồ tiến trình theo thời gian
-  const progressData = [
-    { day: "T2", score: 65, accuracy: 70 },
-    { day: "T3", score: 72, accuracy: 75 },
-    { day: "T4", score: 78, accuracy: 80 },
-    { day: "T5", score: 85, accuracy: 82 },
-    { day: "T6", score: 88, accuracy: 85 },
-    { day: "T7", score: 92, accuracy: 87 },
-    { day: "CN", score: 95, accuracy: 90 },
-  ];
-
-  // Dữ liệu mẫu cho biểu đồ độ chính xác theo cảm xúc
-  const emotionAccuracy = [
-    { emotion: "Vui 😊", accuracy: 95 },
-    { emotion: "Buồn 😢", accuracy: 88 },
-    { emotion: "Giận 😠", accuracy: 82 },
-    { emotion: "Ngạc nhiên 😲", accuracy: 78 },
-  ];
 
   return (
     <div className="min-h-screen p-4 app-bg">
@@ -61,7 +98,7 @@ const Progress = () => {
           </div>
         </div>
 
-        {loading ? (
+        {loading || !stats ? (
           <div className="text-center py-12">
             <div className="text-5xl mb-4 animate-bounce-gentle">📊</div>
             <p className="text-lg font-bold text-foreground">Đang tải dữ liệu...</p>
@@ -73,29 +110,29 @@ const Progress = () => {
               <ProgressCard
                 icon={<Flame size={24} />}
                 title="Chuỗi ngày học"
-                value="7"
+                value={stats.streakDays.toString()}
                 subtitle="Ngày liên tiếp 🔥"
                 color="var(--gradient-primary)"
               />
               <ProgressCard
                 icon={<Target size={24} />}
                 title="Bài đã hoàn thành"
-                value="24"
+                value={stats.totalQuizzes.toString()}
                 subtitle="Quiz hoàn thành ✅"
                 color="var(--gradient-secondary)"
               />
               <ProgressCard
                 icon={<TrendingUp size={24} />}
                 title="Độ chính xác"
-                value="87%"
+                value={`${stats.accuracyRate}%`}
                 subtitle="Tỷ lệ đúng 📈"
                 color="var(--gradient-success)"
               />
               <ProgressCard
                 icon={<Award size={24} />}
                 title="Thành tích"
-                value="12"
-                subtitle="Huy chương 🏅"
+                value={stats.excellentQuizzes.toString()}
+                subtitle="Quiz xuất sắc 🏅"
                 color="hsl(200 50% 72%)"
               />
             </div>
@@ -104,67 +141,79 @@ const Progress = () => {
             <div className="grid md:grid-cols-2 gap-5 mb-8">
               <Card className="p-6 bg-white/90 backdrop-blur-sm shadow-soft rounded-2xl border-2 border-white/60">
                 <h3 className="text-xl font-extrabold mb-4 text-foreground">
-                  📈 Tiến trình 7 ngày
+                  📈 Tiến trình 7 ngày qua
                 </h3>
-                <ResponsiveContainer width="100%" height={220}>
-                  <LineChart data={progressData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 18%, 90%)" />
-                    <XAxis dataKey="day" stroke="hsl(230, 25%, 25%)" fontSize={13} fontWeight={600} />
-                    <YAxis stroke="hsl(230, 25%, 25%)" fontSize={12} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: "white", 
-                        border: "2px solid hsl(220, 18%, 90%)",
-                        borderRadius: "12px",
-                        fontWeight: 600,
-                      }} 
-                    />
-                    <Legend />
-                    <Line 
-                      type="monotone" 
-                      dataKey="score" 
-                      stroke="hsl(250, 45%, 65%)" 
-                      strokeWidth={3}
-                      name="Điểm số"
-                      dot={{ fill: "hsl(250, 45%, 65%)", r: 4 }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="accuracy" 
-                      stroke="hsl(160, 35%, 55%)" 
-                      strokeWidth={3}
-                      name="Độ chính xác (%)"
-                      dot={{ fill: "hsl(160, 35%, 55%)", r: 4 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                {historyData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={220}>
+                    <LineChart data={historyData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 18%, 90%)" />
+                      <XAxis dataKey="day" stroke="hsl(230, 25%, 25%)" fontSize={13} fontWeight={600} />
+                      <YAxis stroke="hsl(230, 25%, 25%)" fontSize={12} />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: "white", 
+                          border: "2px solid hsl(220, 18%, 90%)",
+                          borderRadius: "12px",
+                          fontWeight: 600,
+                        }} 
+                      />
+                      <Legend />
+                      <Line 
+                        type="monotone" 
+                        dataKey="quizzes" 
+                        stroke="hsl(250, 45%, 65%)" 
+                        strokeWidth={3}
+                        name="Số Quiz"
+                        dot={{ fill: "hsl(250, 45%, 65%)", r: 4 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="accuracy" 
+                        stroke="hsl(160, 35%, 55%)" 
+                        strokeWidth={3}
+                        name="Độ chính xác (%)"
+                        dot={{ fill: "hsl(160, 35%, 55%)", r: 4 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-[220px] text-muted-foreground font-semibold">
+                    Chưa có dữ liệu học tập
+                  </div>
+                )}
               </Card>
 
               <Card className="p-6 bg-white/90 backdrop-blur-sm shadow-soft rounded-2xl border-2 border-white/60">
                 <h3 className="text-xl font-extrabold mb-4 text-foreground">
                   🎯 Độ chính xác theo cảm xúc
                 </h3>
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={emotionAccuracy}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 18%, 90%)" />
-                    <XAxis dataKey="emotion" stroke="hsl(230, 25%, 25%)" fontSize={12} fontWeight={600} />
-                    <YAxis stroke="hsl(230, 25%, 25%)" fontSize={12} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: "white", 
-                        border: "2px solid hsl(220, 18%, 90%)",
-                        borderRadius: "12px",
-                        fontWeight: 600,
-                      }} 
-                    />
-                    <Bar 
-                      dataKey="accuracy" 
-                      fill="hsl(250, 45%, 75%)" 
-                      name="Độ chính xác (%)"
-                      radius={[10, 10, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                {emotionData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={220}>
+                    <BarChart data={emotionData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 18%, 90%)" />
+                      <XAxis dataKey="emotion" stroke="hsl(230, 25%, 25%)" fontSize={12} fontWeight={600} />
+                      <YAxis stroke="hsl(230, 25%, 25%)" fontSize={12} />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: "white", 
+                          border: "2px solid hsl(220, 18%, 90%)",
+                          borderRadius: "12px",
+                          fontWeight: 600,
+                        }} 
+                      />
+                      <Bar 
+                        dataKey="accuracy" 
+                        fill="hsl(250, 45%, 75%)" 
+                        name="Độ chính xác (%)"
+                        radius={[10, 10, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-[220px] text-muted-foreground font-semibold">
+                    Hãy làm thêm bài tập để xem phân tích nhé!
+                  </div>
+                )}
               </Card>
             </div>
 
@@ -177,10 +226,10 @@ const Progress = () => {
                 
                 <div className="space-y-4">
                   {[
-                    { level: "Cấp độ 1", progress: 100, color: "var(--gradient-success)" },
-                    { level: "Cấp độ 2", progress: 65, color: "var(--gradient-primary)" },
-                    { level: "Cấp độ 3", progress: 20, color: "var(--gradient-secondary)" },
-                    { level: "Cấp độ 4", progress: 0, color: "hsl(var(--muted))" },
+                    { level: "Cấp độ 1", progress: stats.currentLevel >= 1 ? 100 : 0, color: "var(--gradient-success)" },
+                    { level: "Cấp độ 2", progress: stats.currentLevel > 2 ? 100 : (stats.currentLevel === 2 ? 50 : 0), color: "var(--gradient-primary)" },
+                    { level: "Cấp độ 3", progress: stats.currentLevel > 3 ? 100 : (stats.currentLevel === 3 ? 50 : 0), color: "var(--gradient-secondary)" },
+                    { level: "Cấp độ 4", progress: stats.currentLevel > 4 ? 100 : (stats.currentLevel === 4 ? 50 : 0), color: "hsl(var(--muted))" },
                   ].map((item) => (
                     <div key={item.level}>
                       <div className="flex justify-between mb-2">
@@ -203,27 +252,38 @@ const Progress = () => {
 
               <div className="p-6 rounded-2xl bg-white/90 backdrop-blur-sm shadow-soft border-2 border-white/60">
                 <h3 className="text-xl font-extrabold mb-5 text-foreground">
-                  🏆 Thành tích gần đây
+                  🏆 Hoạt động gần đây
                 </h3>
                 
                 <div className="space-y-3">
-                  {[
-                    { icon: "🎯", title: "Hoàn thành 20 quiz", date: "Hôm nay" },
-                    { icon: "🔥", title: "Chuỗi 7 ngày", date: "Hôm nay" },
-                    { icon: "⭐", title: "Đạt 90% độ chính xác", date: "Hôm qua" },
-                    { icon: "🚀", title: "Mở khóa Cấp độ 2", date: "2 ngày trước" },
-                  ].map((achievement, index) => (
-                    <div 
-                      key={index}
-                      className="flex items-center gap-3 p-3 bg-background/50 rounded-xl"
-                    >
-                      <div className="text-2xl">{achievement.icon}</div>
-                      <div className="flex-1">
-                        <p className="font-bold text-foreground text-sm">{achievement.title}</p>
-                        <p className="text-xs text-muted-foreground font-semibold">{achievement.date}</p>
-                      </div>
+                  {recentActivities.length > 0 ? (
+                    recentActivities.map((activity, index) => {
+                      const dateObj = new Date(activity.date);
+                      const isToday = dateObj.toDateString() === new Date().toDateString();
+                      const dateStr = isToday ? "Hôm nay" : dateObj.toLocaleDateString('vi-VN');
+                      
+                      return (
+                        <div 
+                          key={index}
+                          className="flex items-center gap-3 p-3 bg-background/50 rounded-xl"
+                        >
+                          <div className="text-2xl">
+                            {activity.score >= 80 ? "⭐" : "🎯"}
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-bold text-foreground text-sm">{activity.title}</p>
+                            <p className="text-xs text-muted-foreground font-semibold">
+                              {dateStr} • Điểm: {activity.score}
+                            </p>
+                          </div>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <div className="text-center py-4 text-muted-foreground font-semibold">
+                      Chưa có hoạt động nào gần đây
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>

@@ -302,3 +302,53 @@
     box-shadow: var(--shadow-md);
   }
 }
+
+/* ===================================================================
+   CALM MODE — Chế độ Bình Tĩnh cho trẻ tự kỷ
+   Khi body[data-calm="true"]: tắt animation, giảm shadow, phẳng gradient
+   =================================================================== */
+body[data-calm="true"] {
+  /* Tắt toàn bộ animation */
+  .animate-bounce-gentle,
+  .animate-float,
+  .animate-scale-in,
+  .animate-fade-in-up,
+  .animate-pulse-soft {
+    animation: none !important;
+  }
+
+  /* Giảm hiệu ứng hover */
+  .card-friendly:hover,
+  .hover\:-translate-y-1:hover,
+  .hover\:-translate-y-2:hover {
+    transform: none !important;
+  }
+
+  /* Giảm shadow */
+  .shadow-glow {
+    box-shadow: var(--shadow-xs) !important;
+  }
+
+  .shadow-hover {
+    box-shadow: var(--shadow-sm) !important;
+  }
+
+  /* Phẳng hóa gradient → màu đơn nhẹ */
+  .gradient-primary {
+    background: hsl(250 45% 72%) !important;
+  }
+
+  .gradient-secondary {
+    background: hsl(160 35% 62%) !important;
+  }
+
+  .gradient-success {
+    background: hsl(155 38% 58%) !important;
+  }
+
+  /* Transition mượt hơn, không giật */
+  * {
+    transition-duration: 0.1s !important;
+  }
+}
+

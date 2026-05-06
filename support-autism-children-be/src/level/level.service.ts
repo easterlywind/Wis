@@ -22,16 +22,26 @@ export class LevelService {
 
   async findAllLevelsByUserId(
     userId: string,
-  ): Promise<{ id: string; name: string; unlocked: boolean }[]> {
+  ): Promise<{ id: string; name: string; unlocked: boolean; difficulty: number }[]> {
     // Fetch all levels
     const allLevels = await this.prisma.level.findMany({
       select: {
         id: true,
         name: true,
+        difficulty: true,
       },
+      orderBy: { difficulty: 'asc' },
     });
 
-    // Fetch all unlocked levels for this user
+    // Fetch user to get currentLevel
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { currentLevel: true },
+    });
+
+    const userLevel = user?.currentLevel || 1;
+
+    // Fetch all unlocked levels for this user (just in case they have specific ones)
     const unlockedLevels = await this.prisma.unlockedLevel.findMany({
       where: { userId },
       select: { levelId: true },
@@ -39,11 +49,12 @@ export class LevelService {
 
     const unlockedSet = new Set(unlockedLevels.map((l) => l.levelId));
 
-    // Map levels with unlocked status
+    // Map levels with unlocked status based on userLevel or explicitly unlocked
     return allLevels.map((level) => ({
       id: level.id,
       name: level.name,
-      unlocked: unlockedSet.has(level.id),
+      difficulty: level.difficulty,
+      unlocked: level.difficulty <= userLevel || unlockedSet.has(level.id),
     }));
   }
 

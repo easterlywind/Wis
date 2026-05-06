@@ -11,6 +11,7 @@ import type { Request } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
 import { QuestionService } from '../question/question.service';
 import { CreateQuizDto } from './quiz.dto';
+import { SubmitQuizDto } from './submit-quiz.dto';
 import { Question } from '../question/question.entity';
 
 @Injectable()
@@ -155,5 +156,102 @@ export class QuizService {
 
     const quiz = await this.findOne(randomQuizId);
     return quiz;
+  }
+
+  async submitQuiz(userId: string, quizId: string, dto: SubmitQuizDto) {
+    // 1. Lấy quiz + questions để chấm điểm
+    const quiz = await this.prisma.quiz.findUnique({
+      where: { id: quizId },
+      include: { questions: true },
+    });
+    if (!quiz) throw new NotFoundException('Quiz không tồn tại');
+
+    // 2. Chấm điểm
+    const questionMap = new Map(quiz.questions.map((q) => [q.id, q]));
+    let correctCount = 0;
+    const totalQuestions = dto.answers.length;
+
+    for (const answer of dto.answers) {
+      const question = questionMap.get(answer.questionId);
+      if (question && question.correctAnswer === answer.selectedAnswer) {
+        correctCount++;
+      }
+    }
+
+    const score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+
+    // 3. Lưu hoặc cập nhật AttemptQuiz
+    const existingAttempt = await this.prisma.attemptQuiz.findFirst({
+      where: { userId, quizId },
+    });
+
+    if (existingAttempt) {
+      await this.prisma.attemptQuiz.update({
+        where: { id: existingAttempt.id },
+        data: {
+          attemptsCount: { increment: 1 },
+          maxScore: Math.max(existingAttempt.maxScore, score),
+          endTime: new Date(),
+        },
+      });
+    } else {
+      await this.prisma.attemptQuiz.create({
+        data: {
+          userId,
+          quizId,
+          maxScore: score,
+          attemptsCount: 1,
+          endTime: new Date(),
+        },
+      });
+    }
+
+    // 4. Cập nhật thống kê user
+    const allAttempts = await this.prisma.attemptQuiz.findMany({
+      where: { userId },
+    });
+    const totalAttempts = allAttempts.length;
+    const avgAccuracy =
+      totalAttempts > 0
+        ? allAttempts.reduce((sum, a) => sum + a.maxScore, 0) / totalAttempts
+        : 0;
+
+    // Cập nhật streak
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const lastActive = user?.lastActiveDate ? new Date(user.lastActiveDate) : null;
+    let newStreak = user?.streakDays ?? 0;
+
+    if (lastActive) {
+      lastActive.setHours(0, 0, 0, 0);
+      const diffDays = Math.floor((today.getTime() - lastActive.getTime()) / (1000 * 60 * 60 * 24));
+      if (diffDays === 1) {
+        newStreak += 1; // Ngày liên tiếp
+      } else if (diffDays > 1) {
+        newStreak = 1; // Mất streak
+      }
+      // diffDays === 0 → cùng ngày, giữ nguyên streak
+    } else {
+      newStreak = 1;
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        totalPoints: { increment: correctCount },
+        accuracyRate: Math.round(avgAccuracy * 100) / 100,
+        streakDays: newStreak,
+        lastActiveDate: new Date(),
+      },
+    });
+
+    return {
+      quizId,
+      score,
+      correctCount,
+      totalQuestions,
+      isNewBest: existingAttempt ? score > existingAttempt.maxScore : true,
+    };
   }
 }

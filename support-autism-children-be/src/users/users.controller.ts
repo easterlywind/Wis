@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, ParseUUIDPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -44,5 +44,29 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Xóa thành công' })
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);
+  }
+
+  @Get('me/stats')
+  @ApiOperation({ summary: 'Lấy thống kê tổng quan của người dùng hiện tại' })
+  @ApiResponse({ status: 200, description: 'Thống kê người dùng' })
+  getMyStats(@Req() req) {
+    const userId = req.user?.userId || req.user?.sub;
+    return this.usersService.getUserStats(userId);
+  }
+
+  @Get('me/stats/emotions')
+  @ApiOperation({ summary: 'Thống kê độ chính xác theo từng cảm xúc' })
+  @ApiResponse({ status: 200, description: 'Thống kê theo cảm xúc' })
+  getMyEmotionStats(@Req() req) {
+    const userId = req.user?.userId || req.user?.sub;
+    return this.usersService.getEmotionStats(userId);
+  }
+
+  @Get('me/stats/history')
+  @ApiOperation({ summary: 'Lịch sử hoạt động theo ngày' })
+  @ApiResponse({ status: 200, description: 'Lịch sử hoạt động' })
+  getMyHistory(@Req() req) {
+    const userId = req.user?.userId || req.user?.sub;
+    return this.usersService.getActivityHistory(userId);
   }
 }

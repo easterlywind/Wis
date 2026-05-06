@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -11,6 +11,8 @@ import { getEmotionEmoji, getEmotionColor } from "@/types/emotion";
 import { api } from "../lib/axios";
 import { getDataWithRetry } from "@/lib/apiRetry";
 import { detectMediaType, type MediaType } from "@/lib/utils";
+import { useSpeech } from "@/hooks/useSpeech";
+import { useSound } from "@/hooks/useSound";
 
 interface QuizLocationState {
   quizId?: string;
@@ -34,6 +36,13 @@ const QuizPage = () => {
     correctAnswer?: AnswerChoice;
   }>({ isOpen: false });
   const [error, setError] = useState<string | null>(null);
+
+  // TTS & Sound
+  const { speak, autoSpeak } = useSpeech();
+  const { playCorrect, playWrong, playComplete } = useSound();
+
+  // Track user answers for submission
+  const userAnswersRef = useRef<{ questionId: string; selectedAnswer: AnswerChoice }[]>([]);
 
   useEffect(() => {
     setLoading(true);
@@ -65,16 +74,21 @@ const QuizPage = () => {
     })();
   }, [quizId]);
 
-  // Detect media type when question changes
+  // Detect media type and auto-speak when question changes
   useEffect(() => {
     const currentQuestion = quiz?.questions[currentIdx];
+    if (!currentQuestion) return;
+
+    // Auto-read question if setting is enabled
+    autoSpeak(currentQuestion.content);
+
     setMediaError(false);
-    if (currentQuestion?.mediaUrl) {
+    if (currentQuestion.mediaUrl) {
       detectMediaType(currentQuestion.mediaUrl).then((type) => {
         setMediaType(type);
       });
     }
-  }, [currentIdx, quiz]);
+  }, [currentIdx, quiz, autoSpeak]);
 
   if (loading) {
     return (
@@ -136,16 +150,39 @@ const QuizPage = () => {
 
     if (isCorrect) {
       setScore((s) => s + 1);
+      playCorrect();
+    } else {
+      playWrong();
     }
+
+    // Track answer
+    userAnswersRef.current.push({
+      questionId: currentQuestion.id,
+      selectedAnswer: choice,
+    });
 
     setTimeout(() => {
       setResultDialog({ isOpen: false });
       if (currentIdx === quiz!.questions.length - 1) {
         setShowResult(true);
+        playComplete();
+        // Submit results to backend
+        submitQuizResults();
       } else {
         setCurrentIdx((i) => i + 1);
       }
     }, 1800);
+  };
+
+  const submitQuizResults = async () => {
+    if (!quiz) return;
+    try {
+      await api.post(`/quiz/${quiz.id}/submit`, {
+        answers: userAnswersRef.current,
+      });
+    } catch (err) {
+      console.error('Failed to submit quiz results:', err);
+    }
   };
 
   const options = [

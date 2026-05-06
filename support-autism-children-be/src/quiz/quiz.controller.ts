@@ -5,6 +5,7 @@ import {
   Body,
   Param,
   Query,
+  Req,
   NotFoundException,
   BadRequestException,
   ParseUUIDPipe,
@@ -21,6 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { QuizService } from './quiz.service';
 import { CreateQuizDto } from './quiz.dto';
+import { SubmitQuizDto } from './submit-quiz.dto';
 import { Quiz } from './quiz.entity';
 
 @ApiTags('quiz')
@@ -88,5 +90,18 @@ export class QuizController {
   })
   async getRandomQuizByLevel(@Param('levelId') levelId: string) {
     return this.quizService.getRandomQuizByLevel(levelId);
+  }
+
+  @Post(':id/submit')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Nộp kết quả quiz' })
+  @ApiResponse({ status: 200, description: 'Kết quả đã được lưu' })
+  async submitQuiz(
+    @Param('id') quizId: string,
+    @Body() submitDto: SubmitQuizDto,
+    @Req() req,
+  ) {
+    const userId = req.user?.userId || req.user?.sub;
+    return this.quizService.submitQuiz(userId, quizId, submitDto);
   }
 }

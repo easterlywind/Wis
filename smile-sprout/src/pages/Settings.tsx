@@ -1,16 +1,15 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Volume2, Globe } from "lucide-react";
+import { ArrowLeft, Volume2, Globe, Eye, Mic } from "lucide-react";
 import { toast } from "sonner";
+import { useSettings } from "@/contexts/SettingsContext";
 
 const Settings = () => {
   const navigate = useNavigate();
-  const [volume, setVolume] = useState([80]);
-  const [language, setLanguage] = useState("vi");
+  const { settings, updateSettings } = useSettings();
 
   const handleSave = () => {
     toast.success("Đã lưu cài đặt! ✅");
@@ -54,15 +53,15 @@ const Settings = () => {
               <div className="space-y-4">
                 <Slider
                   id="volume"
-                  value={volume}
-                  onValueChange={setVolume}
+                  value={[settings.volume]}
+                  onValueChange={(v) => updateSettings({ volume: v[0] })}
                   max={100}
                   step={10}
                   className="w-full"
                 />
                 <div className="flex justify-between text-muted-foreground text-base font-semibold">
                   <span>🔈 Nhỏ</span>
-                  <span className="font-extrabold text-primary text-xl">{volume[0]}%</span>
+                  <span className="font-extrabold text-primary text-xl">{settings.volume}%</span>
                   <span>🔊 Lớn</span>
                 </div>
               </div>
@@ -80,11 +79,11 @@ const Settings = () => {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <Button
-                  variant={language === "vi" ? "default" : "outline"}
+                  variant={settings.language === "vi" ? "default" : "outline"}
                   size="lg"
-                  onClick={() => setLanguage("vi")}
+                  onClick={() => updateSettings({ language: "vi" })}
                   className={`text-lg h-14 rounded-2xl font-bold ${
-                    language === "vi" 
+                    settings.language === "vi" 
                       ? "gradient-primary text-white shadow-glow" 
                       : "border-2"
                   }`}
@@ -93,11 +92,11 @@ const Settings = () => {
                   🇻🇳 Tiếng Việt
                 </Button>
                 <Button
-                  variant={language === "en" ? "default" : "outline"}
+                  variant={settings.language === "en" ? "default" : "outline"}
                   size="lg"
-                  onClick={() => setLanguage("en")}
+                  onClick={() => updateSettings({ language: "en" })}
                   className={`text-lg h-14 rounded-2xl font-bold ${
-                    language === "en" 
+                    settings.language === "en" 
                       ? "gradient-secondary text-white shadow-glow" 
                       : "border-2"
                   }`}
@@ -106,6 +105,62 @@ const Settings = () => {
                   🇬🇧 English
                 </Button>
               </div>
+            </div>
+
+            {/* Calm Mode Setting */}
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(200,50%,72%)] to-[hsl(220,45%,75%)] flex items-center justify-center">
+                  <Eye size={20} className="text-white" />
+                </div>
+                <Label className="text-xl font-extrabold text-foreground">
+                  Chế độ Bình Tĩnh 🧘
+                </Label>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3 font-semibold">
+                Tắt hiệu ứng chuyển động, giảm màu sắc — giúp bé tập trung hơn
+              </p>
+              <Button
+                variant={settings.reducedMotion ? "default" : "outline"}
+                size="lg"
+                onClick={() => updateSettings({ reducedMotion: !settings.reducedMotion })}
+                className={`w-full text-lg h-14 rounded-2xl font-bold ${
+                  settings.reducedMotion 
+                    ? "bg-gradient-to-r from-[hsl(200,50%,72%)] to-[hsl(220,45%,75%)] text-white shadow-glow" 
+                    : "border-2"
+                }`}
+                id="settings-calm-mode-btn"
+              >
+                {settings.reducedMotion ? "🧘 Đang bật — Bình tĩnh" : "Bật chế độ Bình Tĩnh"}
+              </Button>
+            </div>
+
+            {/* Auto Read Aloud Setting */}
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl gradient-success flex items-center justify-center">
+                  <Mic size={20} className="text-white" />
+                </div>
+                <Label className="text-xl font-extrabold text-foreground">
+                  Tự động đọc câu hỏi 🗣️
+                </Label>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3 font-semibold">
+                Hệ thống sẽ tự đọc câu hỏi bằng giọng nói khi chuyển sang câu mới
+              </p>
+              <Button
+                variant={settings.autoReadAloud ? "default" : "outline"}
+                size="lg"
+                onClick={() => updateSettings({ autoReadAloud: !settings.autoReadAloud })}
+                className={`w-full text-lg h-14 rounded-2xl font-bold ${
+                  settings.autoReadAloud 
+                    ? "gradient-success text-white shadow-glow" 
+                    : "border-2"
+                }`}
+                id="settings-auto-read-btn"
+              >
+                {settings.autoReadAloud ? "🗣️ Đang bật — Tự động đọc" : "Bật tự động đọc câu hỏi"}
+              </Button>
             </div>
 
             {/* Save Button */}
@@ -124,7 +179,7 @@ const Settings = () => {
         <Card className="p-5 rounded-2xl bg-white/70 backdrop-blur-sm border border-white/60">
           <div className="text-center">
             <p className="text-base text-muted-foreground font-semibold">
-              💡 <strong>Mẹo:</strong> Điều chỉnh âm lượng phù hợp để nghe rõ hướng dẫn nhé!
+              💡 <strong>Mẹo:</strong> Bật "Chế độ Bình Tĩnh" nếu bé nhạy cảm với hiệu ứng chuyển động!
             </p>
           </div>
         </Card>
