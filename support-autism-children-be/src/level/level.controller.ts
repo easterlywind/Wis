@@ -34,7 +34,7 @@ export class LevelController {
     @Get(':id')
     @ApiOperation({ summary: 'Lấy tất cả quiz trong level' })
     @ApiResponse({ status: 200, description: 'Danh sách quiz của level' })
-    async findOne(@Param('id', ParseUUIDPipe) id: string, @Req() req) {
+    async findOne(@Param('id') id: string, @Req() req) {
         const userId = req.user.userId;
         return this.levelService.getAllQuizByLevelId(userId, id);
     }

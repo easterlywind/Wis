@@ -27,7 +27,7 @@ export function useAuth() {
       });
 
       setIsAuthenticated(true);
-      navigate("/home");
+      navigate("/levels");
     }
 
     return res;
@@ -57,7 +57,7 @@ export function useAuth() {
       });
 
       setIsAuthenticated(true);
-      navigate("/home");
+      navigate("/levels");
     } else {
       navigate("/");
     }

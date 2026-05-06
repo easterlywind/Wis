@@ -1,336 +1,305 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
-import {
-  BookOpen,
-  Brain,
-  Camera,
-  Heart,
-  Shield,
-  Star,
-  Trophy,
-  Users,
-  ArrowRight,
-  Sparkles,
-  CheckCircle2,
-} from "lucide-react";
+
+import { Link } from "react-router-dom";
 import mascot from "@/assets/mascot.png";
 
 const LandingPage = () => {
-  const navigate = useNavigate();
-
   return (
-    <div className="min-h-screen gradient-landing">
-      {/* ── HEADER / NAV ── */}
-      <header
-        id="landing-header"
-        className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-border/40"
-      >
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between max-w-6xl">
-          <div className="flex items-center gap-3">
-            <img src={mascot} alt="Smile Sprout mascot" className="w-10 h-10" />
-            <span className="text-xl font-extrabold text-foreground tracking-tight">
-              Smile Sprout 🌱
-            </span>
-          </div>
+    <div className="bg-background text-on-surface font-body min-h-screen overflow-x-hidden app-bg">
+      <style>{`
+        .clay-card {
+            box-shadow: 
+                0 10px 20px -5px rgba(0, 0, 0, 0.1),
+                inset 0 4px 6px -2px rgba(255, 255, 255, 0.8),
+                inset 0 -4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .clay-button-primary {
+            box-shadow: 0 8px 0 0 #493598;
+        }
+        .clay-button-primary:active {
+            box-shadow: 0 0px 0 0 #493598;
+            transform: translateY(8px);
+        }
+        .clay-button-secondary {
+            box-shadow: 0 8px 0 0 #c9c4d4;
+        }
+        .clay-button-secondary:active {
+            box-shadow: 0 0px 0 0 #c9c4d4;
+            transform: translateY(8px);
+        }
+        .font-display-lg { font-family: 'Fredoka', sans-serif; font-size: 3rem; line-height: 1.1; letter-spacing: -0.025em; font-weight: 800; }
+        .text-display-lg { font-size: 3rem; line-height: 1.1; letter-spacing: -0.025em; font-weight: 800; }
+        .font-headline-lg { font-family: 'Fredoka', sans-serif; font-size: 2.25rem; line-height: 1.2; letter-spacing: -0.025em; font-weight: 800; }
+        .text-headline-lg { font-size: 2.25rem; line-height: 1.2; letter-spacing: -0.025em; font-weight: 800; }
+        .font-headline-md { font-family: 'Fredoka', sans-serif; font-size: 1.875rem; line-height: 1.2; font-weight: 700; }
+        .text-headline-md { font-size: 1.875rem; line-height: 1.2; font-weight: 700; }
+        .font-body-lg { font-family: 'Nunito', sans-serif; font-size: 1.125rem; line-height: 1.5; font-weight: 700; }
+        .text-body-lg { font-size: 1.125rem; line-height: 1.5; font-weight: 700; }
+        .font-body-md { font-family: 'Nunito', sans-serif; font-size: 1rem; line-height: 1.5; font-weight: 600; }
+        .text-body-md { font-size: 1rem; line-height: 1.5; font-weight: 600; }
+      `}</style>
+      
 
-          <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-muted-foreground">
-            <a href="#features" className="hover:text-primary transition-colors">
-              Tính năng
-            </a>
-            <a href="#method" className="hover:text-primary transition-colors">
-              Phương pháp
-            </a>
-            <a href="#benefits" className="hover:text-primary transition-colors">
-              Lợi ích
-            </a>
-          </nav>
+{/*  Navigation  */}
+<nav className="fixed top-0 left-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md border-b-8 border-surface-container-highest shadow-[0_4px_0_0_rgba(0,0,0,0.1)] px-bento-padding py-4 flex justify-between items-center">
+<div className="flex items-center gap-2">
+<span className="font-display-lg text-display-lg text-primary">Smile Sprout</span>
+</div>
+<div className="hidden md:flex items-center gap-8">
+<Link className="text-primary font-bold transition-all hover:scale-105" to="/">Chơi</Link>
+<Link className="text-on-surface-variant transition-all hover:scale-105" to="/">Khu Vườn</Link>
+<Link className="text-on-surface-variant transition-all hover:scale-105" to="/">Bạn Bè</Link>
+<Link className="text-on-surface-variant transition-all hover:scale-105" to="/">Giải Thưởng</Link>
+</div>
+<div className="flex items-center gap-4">
+<Link to="/auth" className="px-6 py-2 rounded-lg font-headline-md text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95">
+                Đăng Nhập
+            </Link>
+<Link to="/auth" className="bg-primary text-on-primary px-8 py-3 rounded-lg font-headline-md clay-button-primary transition-all active:translate-y-1 block text-center">
+                Bắt Đầu Ngay
+            </Link>
+</div>
+</nav>
+{/*  Main Content  */}
+<main className="pt-32 pb-24 px-container-padding max-w-[1440px] mx-auto space-y-24">
+{/*  Hero Section  */}
+<div className="grid grid-cols-1 md:grid-cols-12 gap-card-gap">
+<div className="md:col-span-8 bg-primary-container text-on-primary-container rounded-xl p-bento-padding border-b-8 border-[#493598] clay-card relative overflow-hidden group">
+<div className="relative z-10 max-w-lg">
+<span className="bg-secondary-container text-on-secondary-container px-4 py-1 rounded-full text-body-md mb-6 inline-block">Chào mừng Nhà Khám Phá!</span>
+<h1 className="font-display-lg text-display-lg mb-6 leading-tight">Học Về Cảm Xúc Qua Trò Chơi</h1>
+<p className="font-body-lg text-body-lg opacity-90 mb-8">Tham gia cùng hàng ngàn trẻ em trong khu vườn kỳ diệu, nơi mỗi cảm xúc là một người bạn mới. An toàn, vui nhộn và được chuyên gia phê duyệt.</p>
+<Link to="/auth" className="bg-on-primary-container text-primary px-12 py-6 rounded-xl font-headline-lg shadow-[0_8px_0_0_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-none transform scale-110 origin-left inline-block text-center">
+                        Khám Phá Ngay
+                    </Link>
+</div>
+<div className="absolute bottom-0 right-0 w-1/2 h-full flex items-end justify-end translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+<img alt="Friendly sprout character" className="w-full h-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCSbTs8Usytz3Zgh5WrZxvtBpykWNo3FonQG_i9uVeCgNPDk1ela5k6C1kt3dfy5JiXZKonH0sjiKZD2nlFbhHj9YRE1_R-8iOWr_BFvLk4UsjHFpLk6Em1Qn1_T7cciHZc-15Au_WgqpkRkaXtXuAc--hztoVlXifdmVh5IXp0qVSqm6t9m3RZ6aOTAOiQPp2rnqmtm3CHy7mVGrtVGLv_BGIszFr18O0xDLyyAUoP9LEixV5a4QH0ka9OVp6ufZR0P2hQFFuRvA"/>
+</div>
+</div>
+<div className="md:col-span-4 space-y-card-gap">
+<div className="bg-tertiary-fixed text-on-tertiary-fixed rounded-xl p-8 border-b-8 border-tertiary-container clay-card group">
+<div className="w-16 h-16 bg-tertiary-container rounded-lg flex items-center justify-center mb-6">
+<span className="material-symbols-outlined text-4xl text-on-tertiary-container" data-icon="extension">extension</span>
+</div>
+<h2 className="font-headline-lg text-headline-lg mb-2">Trò Chơi Tương Tác</h2>
+<p className="font-body-md text-body-md opacity-80">Các câu đố nhỏ vui nhộn giúp dạy kỹ năng điều chỉnh cảm xúc.</p>
+</div>
+<div className="bg-secondary-container text-on-secondary-container rounded-xl p-8 border-b-8 border-secondary clay-card group">
+<div className="w-16 h-16 bg-secondary/20 rounded-lg flex items-center justify-center mb-6">
+<span className="material-symbols-outlined text-4xl text-secondary" data-icon="verified_user">verified_user</span>
+</div>
+<h2 className="font-headline-lg text-headline-lg mb-2">An Toàn Cho Bé</h2>
+<p className="font-body-md text-body-md">Không quảng cáo, không mạng xã hội. Một không gian an toàn để phát triển.</p>
+</div>
+</div>
+</div>
+{/*  How it Works Section  */}
+<section>
+<div className="text-center mb-12">
+<h2 className="font-display-lg text-display-lg text-primary mb-4">Cách Hoạt Động</h2>
+<p className="font-body-lg text-body-lg text-on-surface-variant">Hành trình 3 bước đơn giản để bé hiểu về chính mình.</p>
+</div>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-card-gap">
+<div className="bg-surface-container-low p-10 rounded-xl border-b-8 border-surface-container-highest clay-card text-center relative overflow-hidden group">
+<div className="absolute -top-4 -left-4 w-16 h-16 bg-primary text-on-primary rounded-full flex items-center justify-center font-display-lg text-2xl shadow-lg">1</div>
+<div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+<span className="material-symbols-outlined text-5xl text-primary" data-icon="face">face</span>
+</div>
+<h3 className="font-headline-md mb-4">Chọn Cảm Xúc</h3>
+<p className="text-on-surface-variant">Bé bắt đầu bằng cách chọn tâm trạng hiện tại của mình thông qua các nhân vật mầm cây đáng yêu.</p>
+</div>
+<div className="bg-surface-container-low p-10 rounded-xl border-b-8 border-surface-container-highest clay-card text-center relative overflow-hidden group">
+<div className="absolute -top-4 -left-4 w-16 h-16 bg-secondary text-on-primary rounded-full flex items-center justify-center font-display-lg text-2xl shadow-lg">2</div>
+<div className="w-24 h-24 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+<span className="material-symbols-outlined text-5xl text-secondary" data-icon="auto_stories">auto_stories</span>
+</div>
+<h3 className="font-headline-md mb-4">Chơi &amp; Học</h3>
+<p className="text-on-surface-variant">Tham gia vào các câu chuyện tương tác và trò chơi được thiết kế để giải quyết cảm xúc đó.</p>
+</div>
+<div className="bg-surface-container-low p-10 rounded-xl border-b-8 border-surface-container-highest clay-card text-center relative overflow-hidden group">
+<div className="absolute -top-4 -left-4 w-16 h-16 bg-tertiary text-on-primary rounded-full flex items-center justify-center font-display-lg text-2xl shadow-lg">3</div>
+<div className="w-24 h-24 bg-tertiary/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+<span className="material-symbols-outlined text-5xl text-tertiary" data-icon="energy_savings_leaf">energy_savings_leaf</span>
+</div>
+<h3 className="font-headline-md mb-4">Gieo Mầm Kỹ Năng</h3>
+<p className="text-on-surface-variant">Mỗi hoạt động giúp bé xây dựng sự tự tin và khả năng thấu cảm trong thế giới thực.</p>
+</div>
+</div>
+</section>
+{/*  Moodboard Section  */}
+<section>
+<div className="text-center mb-12">
+<h2 className="font-display-lg text-display-lg text-primary mb-4">Hôm nay bé cảm thấy thế nào?</h2>
+<p className="font-body-lg text-body-lg text-on-surface-variant">Chạm vào một mầm cây để bắt đầu câu chuyện về cảm xúc đó.</p>
+</div>
+<div className="flex flex-wrap justify-center gap-8">
+<button className="flex flex-col items-center gap-3 group transition-transform hover:-translate-y-4">
+<div className="w-32 h-32 rounded-full bg-emotion-happy border-b-8 border-[#d4c15b] flex items-center justify-center clay-card group-active:translate-y-2 group-active:border-b-0">
+<span className="material-symbols-outlined text-6xl text-[#574400]" data-icon="sentiment_very_satisfied">sentiment_very_satisfied</span>
+</div>
+<span className="font-headline-md text-on-tertiary-container">Vui Vẻ</span>
+</button>
+<button className="flex flex-col items-center gap-3 group transition-transform hover:-translate-y-4">
+<div className="w-32 h-32 rounded-full bg-emotion-sad border-b-8 border-[#7588b4] flex items-center justify-center clay-card group-active:translate-y-2 group-active:border-b-0">
+<span className="material-symbols-outlined text-6xl text-white" data-icon="sentiment_very_dissatisfied">sentiment_very_dissatisfied</span>
+</div>
+<span className="font-headline-md text-on-surface-variant">Buồn Bã</span>
+</button>
+<button className="flex flex-col items-center gap-3 group transition-transform hover:-translate-y-4">
+<div className="w-32 h-32 rounded-full bg-emotion-angry border-b-8 border-[#c26262] flex items-center justify-center clay-card group-active:translate-y-2 group-active:border-b-0">
+<span className="material-symbols-outlined text-6xl text-white" data-icon="mood_bad">mood_bad</span>
+</div>
+<span className="font-headline-md text-on-surface-variant">Tức Giận</span>
+</button>
+<button className="flex flex-col items-center gap-3 group transition-transform hover:-translate-y-4">
+<div className="w-32 h-32 rounded-full bg-emotion-excited border-b-8 border-[#c79c65] flex items-center justify-center clay-card group-active:translate-y-2 group-active:border-b-0">
+<span className="material-symbols-outlined text-6xl text-[#574400]" data-icon="celebration">celebration</span>
+</div>
+<span className="font-headline-md text-on-surface-variant">Hào Hứng</span>
+</button>
+<button className="flex flex-col items-center gap-3 group transition-transform hover:-translate-y-4">
+<div className="w-32 h-32 rounded-full bg-emotion-surprised border-b-8 border-[#a47dad] flex items-center justify-center clay-card group-active:translate-y-2 group-active:border-b-0">
+<span className="material-symbols-outlined text-6xl text-white" data-icon="brightness_7">brightness_7</span>
+</div>
+<span className="font-headline-md text-on-surface-variant">Ngạc Nhiên</span>
+</button>
+</div>
+</section>
+{/*  Features Grid Section  */}
+<section>
+<div className="text-center mb-12">
+<h2 className="font-display-lg text-display-lg text-primary mb-4">Tính Năng Nổi Bật</h2>
+</div>
+<div className="grid grid-cols-1 md:grid-cols-4 gap-card-gap">
+<div className="bg-white p-6 rounded-xl border-b-4 border-surface-container-highest clay-card flex items-center gap-4">
+<span className="material-symbols-outlined text-3xl text-secondary" data-icon="block">block</span>
+<span className="font-headline-md">Không Quảng Cáo</span>
+</div>
+<div className="bg-white p-6 rounded-xl border-b-4 border-surface-container-highest clay-card flex items-center gap-4">
+<span className="material-symbols-outlined text-3xl text-primary" data-icon="psychology">psychology</span>
+<span className="font-headline-md">Chuyên Gia Tư Vấn</span>
+</div>
+<div className="bg-white p-6 rounded-xl border-b-4 border-surface-container-highest clay-card flex items-center gap-4">
+<span className="material-symbols-outlined text-3xl text-tertiary" data-icon="offline_bolt">offline_bolt</span>
+<span className="font-headline-md">Hỗ Trợ Ngoại Tuyến</span>
+</div>
+<div className="bg-white p-6 rounded-xl border-b-4 border-surface-container-highest clay-card flex items-center gap-4">
+<span className="material-symbols-outlined text-3xl text-emotion-angry" data-icon="family_history">family_history</span>
+<span className="font-headline-md">Báo Cáo Phụ Huynh</span>
+</div>
+</div>
+</section>
+{/*  Testimonials Section  */}
+<section>
+<div className="text-center mb-12">
+<h2 className="font-display-lg text-display-lg text-primary mb-4">Cảm Nhận Từ Phụ Huynh</h2>
+</div>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-card-gap">
+<div className="bg-surface-bright p-8 rounded-xl border-b-8 border-surface-container-highest clay-card">
+<div className="flex items-center gap-4 mb-6">
+<img alt="Parent avatar" className="w-16 h-16 rounded-full border-4 border-primary/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLsE5twau7Yx0zP0IdACc23tvvjBB9BoRU-2FnXJ7sYuhH2FzQxm2yNsqaUvwtgAAOrYZ_3wxiCd3L1-VcNeHAzPs-NhjrsSR9oABY34pIJHzOsA_8qD-0Fiped_O3wsCd7E8yMwOlYEMsNa5RKUeF33Dw27bzcL_eB7qPMSLQ33g0M8i85T4htTfBpNeY_8Savh01fGjkqycHfHnkUrIQ-i2piBxAPppYTJWpRUrQtgH6DNciObXW4dEany-4twa7snRNQTGoTpo"/>
+<div>
+<h4 className="font-headline-md">Mẹ Lan Anh</h4>
+<div className="flex text-emotion-happy"><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span></div>
+</div>
+</div>
+<p className="italic text-on-surface-variant font-body-md">"Bé nhà mình đã biết cách gọi tên cảm xúc của mình thay vì quấy khóc. Một ứng dụng thực sự ý nghĩa!"</p>
+</div>
+<div className="bg-surface-bright p-8 rounded-xl border-b-8 border-surface-container-highest clay-card">
+<div className="flex items-center gap-4 mb-6">
+<img alt="Parent avatar" className="w-16 h-16 rounded-full border-4 border-secondary/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAybKBmHPGyqJiRghTygDLFXd_1ePpKzeq6GykCpoLksfAyUgJU-vD2AxBAIoz9cthHmqICBWdHRutD3iFk1s7KbSZRqLSPac423G2gGK4qNjkiHMY6-f-2tY9NYTwbRaauRsOTRXYehDigR48lCV2J8RsDcs4ashe-tUX1xSzHuVj0pKaBrK9DUrLDJdMkXTZcYh1zdpgU_93HpP-8TBnPa6sH6Gh1iCSCCu3whahSEuOHGgx8k-bKSe6IrqcczBAJWdbDDmoI-f4"/>
+<div>
+<h4 className="font-headline-md">Bố Minh Quang</h4>
+<div className="flex text-emotion-happy"><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span></div>
+</div>
+</div>
+<p className="italic text-on-surface-variant font-body-md">"Thiết kế quá đẹp và thân thiện. Con tôi rất thích các trò chơi giải đố về cảm xúc ở đây."</p>
+</div>
+<div className="bg-surface-bright p-8 rounded-xl border-b-8 border-surface-container-highest clay-card">
+<div className="flex items-center gap-4 mb-6">
+<div className="w-16 h-16 rounded-full bg-emotion-surprised flex items-center justify-center text-white font-display-lg border-4 border-white shadow-md">T</div>
+<div>
+<h4 className="font-headline-md">Chị Thanh Tâm</h4>
+<div className="flex text-emotion-happy"><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span><span className="material-symbols-outlined text-sm">star</span></div>
+</div>
+</div>
+<p className="italic text-on-surface-variant font-body-md">"Mình đánh giá cao việc không có quảng cáo. Cảm ơn đội ngũ phát triển vì môi trường an toàn này."</p>
+</div>
+</div>
+</section>
+{/*  CTA Section  */}
+<section className="bg-primary text-on-primary rounded-xl p-16 text-center border-b-[12px] border-[#493598] clay-card relative overflow-hidden">
+<div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#fff 2px, transparent 2px)', backgroundSize: '32px 32px' }}></div>
+<div className="relative z-10">
+<h2 className="font-display-lg text-display-lg mb-8 max-w-2xl mx-auto">Bắt đầu gieo mầm trí tuệ cảm xúc cho bé ngay hôm nay!</h2>
+<div className="flex flex-col md:flex-row gap-8 justify-center items-center">
+<Link to="/auth" className="bg-white text-primary px-16 py-8 rounded-xl font-headline-lg shadow-[0_12px_0_0_#e6e1ea] hover:-translate-y-2 transition-all active:translate-y-2 active:shadow-none min-w-[320px] text-2xl inline-block text-center">
+                        Dùng Thử Miễn Phí
+                    </Link>
+<Link to="/auth" className="bg-secondary-container text-on-secondary-container px-16 py-8 rounded-xl font-headline-lg shadow-[0_12px_0_0_#00513e] hover:-translate-y-2 transition-all active:translate-y-2 active:shadow-none min-w-[320px] text-2xl inline-block text-center">
+                        Hướng Dẫn Phụ Huynh
+                    </Link>
+</div>
+<p className="mt-12 font-body-lg opacity-80">Gia nhập cộng đồng 50,000+ mầm nhỏ đang học tập mỗi ngày.</p>
+</div>
+</section>
+</main>
+{/*  Mobile Bottom Nav  */}
+<div className="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-24 bg-surface border-t-8 border-surface-container-highest rounded-t-xl shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+<div className="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-lg px-6 py-2 shadow-[inset_0_4px_4px_rgba(0,0,0,0.2)] translate-y-1">
+<span className="material-symbols-outlined" data-icon="extension">extension</span>
+<span className="text-body-lg font-body-lg">Chơi</span>
+</div>
+<div className="flex flex-col items-center justify-center text-on-surface-variant px-6 py-2">
+<span className="material-symbols-outlined" data-icon="psychiatry">psychiatry</span>
+<span className="text-body-lg font-body-lg">Vườn</span>
+</div>
+<div className="flex flex-col items-center justify-center text-on-surface-variant px-6 py-2">
+<span className="material-symbols-outlined" data-icon="group">group</span>
+<span className="text-body-lg font-body-lg">Bạn</span>
+</div>
+<div className="flex flex-col items-center justify-center text-on-surface-variant px-6 py-2">
+<span className="material-symbols-outlined" data-icon="military_tech">military_tech</span>
+<span className="text-body-lg font-body-lg">Giải</span>
+</div>
+</div>
+{/*  Footer  */}
+<footer className="bg-surface-dim pt-24 pb-32 md:pb-12 border-t-8 border-surface-container-highest">
+<div className="max-w-[1440px] mx-auto px-container-padding grid grid-cols-1 md:grid-cols-4 gap-12">
+<div>
+<span className="font-display-lg text-headline-lg text-primary block mb-6">Smile Sprout</span>
+<p className="text-on-surface-variant font-body-md">Xây dựng tương lai thấu cảm hơn, bắt đầu từ từng mầm nhỏ.</p>
+</div>
+<div>
+<h4 className="font-headline-md mb-6">Khám Phá</h4>
+<ul className="space-y-4">
+<li><Link className="text-on-surface-variant hover:text-primary transition-colors" to="/">Trò Chơi</Link></li>
+<li><Link className="text-on-surface-variant hover:text-primary transition-colors" to="/">Lộ Trình Học</Link></li>
+<li><Link className="text-on-surface-variant hover:text-primary transition-colors" to="/">Cẩm Nang Phụ Huynh</Link></li>
+</ul>
+</div>
+<div>
+<h4 className="font-headline-md mb-6">Về Chúng Tôi</h4>
+<ul className="space-y-4">
+<li><Link className="text-on-surface-variant hover:text-primary transition-colors" to="/">Sứ Mệnh</Link></li>
+<li><Link className="text-on-surface-variant hover:text-primary transition-colors" to="/">Chính Sách Bảo Mật</Link></li>
+<li><Link className="text-on-surface-variant hover:text-primary transition-colors" to="/">Trung Tâm An Toàn</Link></li>
+</ul>
+</div>
+<div>
+<h4 className="font-headline-md mb-6">Kết Nối</h4>
+<div className="flex gap-4">
+<div className="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center hover:bg-primary hover:text-white transition-all cursor-pointer">
+<span className="material-symbols-outlined" data-icon="share">share</span>
+</div>
+<div className="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center hover:bg-primary hover:text-white transition-all cursor-pointer">
+<span className="material-symbols-outlined" data-icon="mail">mail</span>
+</div>
+</div>
+</div>
+</div>
+</footer>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => navigate("/auth")}
-              className="rounded-xl font-bold border-2 border-primary/25 hover:border-primary/50 hover:bg-primary/5"
-              id="landing-login-btn"
-            >
-              Đăng nhập
-            </Button>
-            <Button
-              onClick={() => navigate("/auth")}
-              className="rounded-xl font-bold gradient-primary text-white shadow-glow"
-              id="landing-register-btn"
-            >
-              Bắt đầu ngay
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* ── HERO SECTION ── */}
-      <section id="hero" className="py-16 md:py-24 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Left: Text */}
-            <div className="animate-fade-in-up">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/8 text-primary font-bold text-sm mb-6">
-                <Sparkles size={16} />
-                Ứng dụng hỗ trợ trẻ tự kỷ
-              </div>
-
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-6">
-                Khám phá
-                <br />
-                <span className="bg-gradient-to-r from-[hsl(250,50%,65%)] to-[hsl(200,55%,62%)] bg-clip-text text-transparent">
-                  thế giới cảm xúc
-                </span>
-                <br />
-                cùng bé! 🌟
-              </h1>
-
-              <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-lg">
-                Giúp trẻ học nhận biết và biểu đạt cảm xúc một cách vui vẻ,
-                tự nhiên qua các hoạt động tương tác sinh động.
-              </p>
-
-              <div className="flex flex-wrap gap-4">
-                <Button
-                  size="lg"
-                  onClick={() => navigate("/auth")}
-                  className="rounded-2xl font-extrabold gradient-primary text-white text-lg px-8 py-6 h-auto shadow-glow hover:shadow-lg transition-all"
-                  id="hero-start-btn"
-                >
-                  <Heart className="mr-2" size={22} />
-                  Bắt đầu miễn phí
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={() => {
-                    document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="rounded-2xl font-bold border-2 text-lg px-8 py-6 h-auto hover:bg-primary/5"
-                  id="hero-learn-more-btn"
-                >
-                  Tìm hiểu thêm
-                  <ArrowRight className="ml-2" size={20} />
-                </Button>
-              </div>
-
-              {/* Trust badges */}
-              <div className="mt-8 flex items-center gap-6 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={18} className="text-success" />
-                  Miễn phí 100%
-                </div>
-                <div className="flex items-center gap-2">
-                  <Shield size={18} className="text-accent" />
-                  An toàn cho trẻ
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Mascot */}
-            <div className="flex justify-center animate-scale-in">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/15 to-accent/15 rounded-full blur-3xl scale-125" />
-                <img
-                  src={mascot}
-                  alt="Mascot vui vẻ"
-                  className="relative w-56 h-56 md:w-72 md:h-72 object-contain animate-float drop-shadow-lg"
-                />
-                {/* Floating emojis */}
-                <div className="absolute -top-4 -right-4 text-4xl animate-bounce-gentle" style={{ animationDelay: "0s" }}>😊</div>
-                <div className="absolute -bottom-2 -left-6 text-3xl animate-bounce-gentle" style={{ animationDelay: "0.7s" }}>🎉</div>
-                <div className="absolute top-1/2 -right-8 text-3xl animate-bounce-gentle" style={{ animationDelay: "1.4s" }}>⭐</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FEATURES SECTION ── */}
-      <section id="features" className="py-16 md:py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">
-              Học cảm xúc thật dễ dàng! 🎨
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Các hoạt động được thiết kế đặc biệt cho trẻ tự kỷ, dựa trên nghiên cứu khoa học
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                emoji: "📝",
-                title: "Trắc nghiệm vui",
-                desc: "Nhận biết cảm xúc qua hình ảnh, video và âm thanh. Các câu hỏi sinh động, dễ hiểu.",
-                gradient: "from-[hsl(250,45%,78%)] to-[hsl(280,35%,80%)]",
-              },
-              {
-                emoji: "🎭",
-                title: "Luyện biểu cảm",
-                desc: "Thực hành biểu đạt cảm xúc với camera. AI nhận diện và phản hồi tức thì.",
-                gradient: "from-[hsl(160,35%,68%)] to-[hsl(180,35%,72%)]",
-              },
-              {
-                emoji: "🏆",
-                title: "Tiến bộ rõ ràng",
-                desc: "Theo dõi tiến trình, nhận thưởng khi hoàn thành. Động viên và khích lệ từng bước.",
-                gradient: "from-[hsl(200,50%,72%)] to-[hsl(220,45%,75%)]",
-              },
-            ].map((feature, i) => (
-              <Card
-                key={i}
-                className="p-8 rounded-3xl bg-white/80 backdrop-blur-sm border-2 border-white/70 shadow-soft hover:shadow-hover transition-all duration-300 hover:-translate-y-1 group"
-                id={`feature-card-${i}`}
-              >
-                <div
-                  className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 shadow-xs group-hover:scale-105 transition-transform`}
-                >
-                  <span className="text-3xl">{feature.emoji}</span>
-                </div>
-                <h3 className="text-xl font-extrabold text-foreground mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {feature.desc}
-                </p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── METHOD SECTION ── */}
-      <section id="method" className="py-16 md:py-20 px-4 bg-white/30">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">
-              Phương pháp khoa học 🔬
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Dựa trên nghiên cứu về giáo dục đặc biệt và tâm lý trẻ em
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {[
-              {
-                icon: <Brain size={24} className="text-primary" />,
-                title: "Học qua hình ảnh trực quan",
-                desc: "Trẻ tự kỷ thường học tốt qua thị giác. Ứng dụng sử dụng hình ảnh, video rõ ràng để giúp trẻ nhận biết cảm xúc.",
-              },
-              {
-                icon: <Star size={24} className="text-accent" />,
-                title: "Phản hồi tích cực liên tục",
-                desc: "Mỗi bước tiến đều được ghi nhận và khen thưởng, tạo động lực cho trẻ tiếp tục học tập.",
-              },
-              {
-                icon: <Users size={24} className="text-secondary" />,
-                title: "Tương tác an toàn",
-                desc: "Giao diện đơn giản, không quảng cáo, không nội dung gây sao nhãng. An toàn 100% cho trẻ.",
-              },
-              {
-                icon: <Heart size={24} className="text-destructive" />,
-                title: "Cá nhân hóa trải nghiệm",
-                desc: "Các cấp độ từ dễ đến khó, cho phép trẻ học theo nhịp riêng mà không bị áp lực.",
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex gap-4 p-5 rounded-2xl bg-white/60 border border-white/80 shadow-xs hover:shadow-soft transition-all"
-                id={`method-item-${i}`}
-              >
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-background flex items-center justify-center">
-                  {item.icon}
-                </div>
-                <div>
-                  <h3 className="text-lg font-extrabold text-foreground mb-1.5">
-                    {item.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed text-sm">
-                    {item.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── BENEFITS SECTION ── */}
-      <section id="benefits" className="py-16 md:py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">
-              Tại sao chọn Smile Sprout? 🌱
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { emoji: "🎯", label: "Nhiều cấp độ", sub: "Từ dễ đến nâng cao" },
-              { emoji: "📊", label: "Theo dõi tiến trình", sub: "Biểu đồ chi tiết" },
-              { emoji: "🎮", label: "Trò chơi vui", sub: "Học mà chơi" },
-              { emoji: "🛡️", label: "An toàn", sub: "Không quảng cáo" },
-            ].map((b, i) => (
-              <Card
-                key={i}
-                className="p-5 rounded-2xl text-center bg-white/80 border-2 border-white/70 shadow-xs hover:shadow-soft transition-all hover:-translate-y-1"
-                id={`benefit-card-${i}`}
-              >
-                <div className="text-3xl mb-2">{b.emoji}</div>
-                <h4 className="font-extrabold text-foreground text-sm mb-1">{b.label}</h4>
-                <p className="text-xs text-muted-foreground">{b.sub}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA SECTION ── */}
-      <section id="cta" className="py-16 md:py-20 px-4">
-        <div className="container mx-auto max-w-3xl">
-          <Card className="p-10 md:p-14 rounded-3xl text-center gradient-primary shadow-glow border-0">
-            <div className="text-5xl mb-5 animate-bounce-gentle">🌟</div>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
-              Sẵn sàng khám phá cảm xúc?
-            </h2>
-            <p className="text-lg text-white/80 mb-8 max-w-lg mx-auto">
-              Bắt đầu hành trình học tập thú vị cùng bé ngay hôm nay! Hoàn toàn miễn phí.
-            </p>
-            <Button
-              size="lg"
-              onClick={() => navigate("/auth")}
-              className="rounded-2xl font-extrabold bg-white text-primary hover:bg-white/90 text-lg px-10 py-6 h-auto shadow-lg"
-              id="cta-start-btn"
-            >
-              <Sparkles className="mr-2" size={22} />
-              Đăng ký miễn phí
-            </Button>
-          </Card>
-        </div>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer className="py-8 px-4 bg-white/25 border-t border-border/30">
-        <div className="container mx-auto max-w-6xl">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <img src={mascot} alt="Mascot" className="w-8 h-8" />
-              <span className="font-bold text-foreground">Smile Sprout</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              © 2026 Smile Sprout. Ứng dụng hỗ trợ trẻ tự kỷ học cảm xúc.
-            </p>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span>Phiên bản 1.0</span>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

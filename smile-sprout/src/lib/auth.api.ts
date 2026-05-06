@@ -1,4 +1,5 @@
 import { api } from "./axios";
+import axios from "axios";
 
 export const loginApi = async (email: string, password: string) => {
     const res = await api.post("/auth/login", { email, password });
@@ -15,6 +16,6 @@ export const logoutApi = () => {
 };
 
 export const refreshApi = (refreshToken: string) =>
-  api.post("/auth/refresh", {
+  axios.post((import.meta.env.VITE_API_URL || "http://localhost:3000/api") + "/auth/refresh", {
     refreshToken,
   }).then((r) => r.data);

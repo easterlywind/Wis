@@ -24,7 +24,7 @@ export const QuizCard = ({
     <Card
       onClick={!locked ? onClick : undefined}
       className={cn(
-        "relative cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-hover p-5 text-center rounded-2xl bg-white/90 border-2 border-white/60",
+        "relative cursor-pointer transition-all duration-300 hover:scale-105 active:translate-y-1 p-6 text-center rounded-[2rem] bg-white border-b-[8px] border-[#e6e1ea] clay-card",
         locked && "opacity-50 cursor-not-allowed",
         className
       )}
@@ -33,17 +33,27 @@ export const QuizCard = ({
       aria-label={`Quiz: ${title}`}
     >
       {locked && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/80 rounded-2xl">
-          <span className="text-4xl">🔒</span>
+        <div className="absolute inset-0 flex items-center justify-center bg-[#fdf8ff]/80 rounded-[2rem]">
+          <span className="text-5xl drop-shadow-sm">🔒</span>
         </div>
       )}
 
-      <h3 className="text-base font-extrabold text-foreground mb-2">{title}</h3>
+      <div className="w-16 h-16 mx-auto bg-[#f7f2fb] rounded-2xl flex items-center justify-center mb-4 shadow-inner">
+        <span className="material-symbols-outlined text-[#5e4caf] text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>quiz</span>
+      </div>
+
+      <h3 className="text-xl font-heading font-extrabold text-[#1c1b21] mb-4">{title}</h3>
 
       {/* Stats */}
-      <div className="text-sm text-muted-foreground font-semibold space-y-1">
-        <p>⭐ Điểm: {maxScore}</p>
-        <p>📝 Lượt thử: {attemptCount}</p>
+      <div className="text-sm font-body font-bold text-[#64748b] bg-[#f7f2fb] p-3 rounded-xl shadow-inner inline-flex flex-col gap-1 w-full">
+        <p className="flex justify-between items-center">
+          <span className="text-[#f2df79]">⭐</span> 
+          <span className="text-[#5e4caf]">{maxScore} đ</span>
+        </p>
+        <p className="flex justify-between items-center">
+          <span className="text-[#9cf4d3]">📝</span> 
+          <span className="text-[#087258]">{attemptCount} lượt</span>
+        </p>
       </div>
     </Card>
   );

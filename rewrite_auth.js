@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Smile, Star, Badge, User, Calendar, Lock, Rocket, Puzzle, Brain, Users } from "lucide-react";
+const fs = require('fs');
 
+const content = `import { useState } from "react";
 import { toast } from "sonner";
 import mascot from "@/assets/mascot.png";
 import { useAuth } from "../hooks/useAuth";
@@ -61,7 +61,7 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-background relative overflow-hidden" style={{ background: 'radial-gradient(circle at 20% 20%, #e6deff 0%, transparent 40%), radial-gradient(circle at 80% 80%, #9cf4d3 0%, transparent 40%), #f4f6f9' }}>
-      <style>{`
+      <style>{\`
         .clay-card-auth {
             box-shadow: 
                 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
@@ -105,7 +105,7 @@ const Auth = () => {
         .text-body-lg { font-size: 1.125rem; line-height: 1.5; font-weight: 700; }
         .font-body-md { font-family: 'Nunito', sans-serif; font-size: 1rem; line-height: 1.5; font-weight: 600; }
         .text-body-md { font-size: 1rem; line-height: 1.5; font-weight: 600; }
-      `}</style>
+      \`}</style>
 
       {/* Top App Bar */}
       <header className="fixed top-0 left-0 w-full z-50 flex justify-center items-center px-bento-padding py-6">
@@ -118,9 +118,9 @@ const Auth = () => {
           
           {/* Decorative Mascot/Icon Area */}
           <div className="w-32 h-32 bg-secondary-container rounded-full flex items-center justify-center relative shadow-inner">
-            <Smile className="text-secondary w-16 h-16" strokeWidth={1.5} />
+            <span className="material-symbols-outlined text-secondary text-[64px] font-variation-settings" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>face</span>
             <div className="absolute -top-2 -right-2 bg-emotion-happy w-10 h-10 rounded-full flex items-center justify-center shadow-md">
-              <Star className="text-on-tertiary-container w-6 h-6" fill="currentColor" />
+              <span className="material-symbols-outlined text-on-tertiary-container text-2xl font-variation-settings" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>star</span>
             </div>
           </div>
 
@@ -148,7 +148,7 @@ const Auth = () => {
                 <div className="space-y-2">
                   <label className="font-body-lg text-body-lg text-on-surface ml-2">Tên gọi của bạn?</label>
                   <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-outline w-6 h-6" />
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline font-variation-settings" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>badge</span>
                     <input 
                       type="text" 
                       value={username}
@@ -167,7 +167,7 @@ const Auth = () => {
                   {isLogin ? "Bạn là ai thế nhỉ?" : "Email của bạn là gì?"}
                 </label>
                 <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-outline w-6 h-6" />
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline font-variation-settings" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>person</span>
                   <input 
                     type="text" 
                     value={email}
@@ -183,7 +183,7 @@ const Auth = () => {
                 <div className="space-y-2">
                   <label className="font-body-lg text-body-lg text-on-surface ml-2">Ngày sinh của bạn?</label>
                   <div className="relative">
-                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-outline w-6 h-6" />
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline font-variation-settings" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>calendar_today</span>
                     <input 
                       type="date" 
                       value={birthDate}
@@ -201,7 +201,7 @@ const Auth = () => {
                   {isLogin && <a className="font-body-md text-body-md text-primary hover:underline transition-all" href="#">Quên mật mã mất rồi?</a>}
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-outline w-6 h-6" />
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline font-variation-settings" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>lock</span>
                   <input 
                     type="password" 
                     value={password}
@@ -217,7 +217,7 @@ const Auth = () => {
                 <div className="space-y-2">
                   <label className="font-body-lg text-body-lg text-on-surface ml-2">Nhập lại mã số bí mật nhé</label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-outline w-6 h-6" />
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline font-variation-settings" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>lock</span>
                     <input 
                       type="password" 
                       value={confirmPassword}
@@ -235,7 +235,7 @@ const Auth = () => {
             {/* Submit Button */}
             <div className="pt-4">
               <button disabled={isLoading} className="clay-button-auth w-full h-20 bg-primary text-on-primary rounded-lg font-headline-md text-headline-md flex items-center justify-center gap-3 disabled:opacity-70" type="submit">
-                <Rocket className="w-10 h-10" />
+                <span className="material-symbols-outlined text-4xl font-variation-settings" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>rocket_launch</span>
                 {isLoading ? "Đang bay..." : (isLogin ? "Cùng chơi thôi!" : "Bắt đầu hành trình!")}
               </button>
             </div>
@@ -266,15 +266,15 @@ const Auth = () => {
         {/* Fun Illustration/Visual Element */}
         <div className="mt-12 grid grid-cols-3 gap-card-gap px-4">
           <div className="clay-card-auth bg-emotion-happy/30 p-4 rounded-lg flex flex-col items-center text-center gap-2 border-b-4 border-emotion-happy">
-            <Puzzle className="text-on-tertiary-fixed w-8 h-8" />
+            <span className="material-symbols-outlined text-on-tertiary-fixed text-3xl font-variation-settings" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>extension</span>
             <span className="font-body-md text-body-md text-on-tertiary-fixed">Trò chơi vui</span>
           </div>
           <div className="clay-card-auth bg-emotion-excited/30 p-4 rounded-lg flex flex-col items-center text-center gap-2 border-b-4 border-emotion-excited">
-            <Brain className="text-on-tertiary-fixed w-8 h-8" />
+            <span className="material-symbols-outlined text-on-tertiary-fixed text-3xl font-variation-settings" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>psychiatry</span>
             <span className="font-body-md text-body-md text-on-tertiary-fixed">Lớn khôn hơn</span>
           </div>
           <div className="clay-card-auth bg-accent/30 p-4 rounded-lg flex flex-col items-center text-center gap-2 border-b-4 border-accent">
-            <Users className="text-on-primary-fixed w-8 h-8" />
+            <span className="material-symbols-outlined text-on-primary-fixed text-3xl font-variation-settings" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}>group</span>
             <span className="font-body-md text-body-md text-on-primary-fixed">Cùng chiến thắng</span>
           </div>
         </div>
@@ -295,3 +295,7 @@ const Auth = () => {
 };
 
 export default Auth;
+`
+
+fs.writeFileSync('./smile-sprout/src/pages/Auth.tsx', content);
+console.log("Auth.tsx rewritten successfully!");

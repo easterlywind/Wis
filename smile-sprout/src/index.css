@@ -1,18 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ===================================================================
-   SMILE SPROUT — Design System v2
+   SMILE SPROUT — Design System v3 (UI UX Pro Max)
    
-   Bảng màu mới: Lavender + Mint + Sky Blue
-   → Tông màu cực kỳ nhẹ nhàng, an toàn cho trẻ tự kỷ
-   → Giảm kích thích thị giác tối đa
+   - Playful Typography: Fredoka + Nunito
+   - Soft 3D Claymorphism for interactable elements
+   - High Contrast for accessibility
    =================================================================== */
 
 @layer base {
+  body {
+    @apply font-body antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-semibold tracking-tight;
+  }
+
   :root {
     /* ── Core palette (lavender + mint) ── */
     --background: 210 30% 97%;
@@ -291,15 +299,42 @@
   .btn-friendly:hover { transform: scale(1.02); }
   .btn-friendly:active { transform: scale(0.98); }
 
-  /* ── Card style ── */
+  /* ── Claymorphism UI ── */
+  .clay-btn {
+    @apply relative overflow-hidden font-bold transition-all duration-200 rounded-2xl active:scale-[0.98];
+    box-shadow: 0px 4px 0px hsla(230, 30%, 20%, 0.15), inset 0px -2px 6px rgba(0,0,0,0.1), inset 0px 2px 6px rgba(255,255,255,0.4);
+    border: 2px solid rgba(255,255,255,0.2);
+  }
+
+  .clay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 0px hsla(230, 30%, 20%, 0.15), inset 0px -2px 6px rgba(0,0,0,0.1), inset 0px 2px 6px rgba(255,255,255,0.5);
+  }
+
+  .clay-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0px 0px 0px hsla(230, 30%, 20%, 0.15), inset 0px 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .clay-card {
+    box-shadow: inset 0 4px 4px rgba(255, 255, 255, 0.4), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .clay-button {
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  }
+
+  /* ── Card style (updated for clay feel) ── */
   .card-friendly {
-    @apply rounded-3xl border-2 transition-all duration-300;
-    border-color: hsla(220, 18%, 90%, 0.8);
+    @apply rounded-3xl border-4 transition-all duration-300;
+    border-color: #ffffff;
+    box-shadow: 4px 4px 0px hsla(220, 20%, 90%, 1);
   }
 
   .card-friendly:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 4px 6px 0px hsla(220, 20%, 88%, 1);
   }
 }
 

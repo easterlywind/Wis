@@ -18,6 +18,7 @@ const Practice = () => {
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  const [showCamera, setShowCamera] = useState(false);
   const [selectedEmotion, setSelectedEmotion] = useState(emotions[0]);
   const [cameraActive, setCameraActive] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -54,20 +55,17 @@ const Practice = () => {
 
   useEffect(() => {
     return () => stopCamera();
-  }, []);
+  }, [showCamera]); // Stop camera if we unmount or leave camera view
 
   useEffect(() => {
-    if (videoRef.current && stream) {
+    if (videoRef.current && stream && showCamera) {
       videoRef.current.srcObject = stream;
     }
-  }, [stream]);
+  }, [stream, showCamera]);
 
   // ============ 2. GỬI 1 FRAME LÊN API ============
-  /**
-   * Trả về true nếu frame hiện tại đạt đúng emotion mục tiêu với conf >= 80
-   */
   const detectOneFrame = async (): Promise<boolean> => {
-    if (!videoRef.current) return false;
+    if (!videoRef.current || !showCamera) return false;
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -105,32 +103,22 @@ const Practice = () => {
 
       const targetId = autoMode ? emotions[emotionIndex].id : selectedEmotion.id;
 
-      // Có cùng nhãn cảm xúc không?
       const isSameLabel = detected === targetId;
 
-      // 🔢 Confidence hiển thị trên UI:
-      // - Nếu đúng nhãn → dùng confidence thật
-      // - Nếu sai nhãn → random 0–50%
       const displayConfidence = isSameLabel
         ? confidence
-        : Math.floor(Math.random() * 51); // 0..50
+        : Math.floor(Math.random() * 51);
 
-      // Cập nhật thanh độ khớp
       if (autoMode) {
-        // auto-mode: luôn show displayConfidence
         setMatchPercentage(displayConfidence);
       } else {
-        // normal mode: chỉ update khi chưa match để khỏi nhảy lung tung sau khi xong
         if (!hasMatched) {
           setMatchPercentage(displayConfidence);
         }
       }
 
-      // Điều kiện "qua bài"
       const ok = isSameLabel && confidence >= 80;
-
       return ok;
-
     } catch (err) {
       console.error("Detection error:", err);
       setMatchPercentage(0);
@@ -138,15 +126,13 @@ const Practice = () => {
     }
   };
 
-  // ============ 3. VÒNG LẶP 1.5s (THAY CHO setInterval) ============
+  // ============ 3. VÒNG LẶP ============
   useEffect(() => {
-    // Không bật loop nếu chưa bật camera
-    if (!cameraActive) return;
+    if (!cameraActive || !showCamera) return;
 
     let cancelled = false;
 
     const loop = async () => {
-      // nếu ở normal mode mà đã match thì không detect nữa
       if (!autoMode && hasMatched) return;
 
       while (!cancelled && cameraActive) {
@@ -155,26 +141,19 @@ const Practice = () => {
         if (autoMode) {
           if (ok) {
             toast.success(`Hoàn thành: ${emotions[emotionIndex].name}! 🎉`);
-
-            // 👇 GIỮ THANH ĐỘ KHỚP LẠI ~1.2s CHO NGƯỜI DÙNG XEM
             await new Promise((resolve) => setTimeout(resolve, 1200));
 
             const next = emotionIndex + 1;
             if (next < emotions.length) {
-              // chuyển sang cảm xúc tiếp theo
               setEmotionIndex(next);
-              setMatchPercentage(0);   // reset thanh về 0 cho emotion mới
+              setMatchPercentage(0);
             } else {
-              // hoàn thành toàn bộ
               toast.success("🎉 Bạn đã hoàn thành tất cả cảm xúc!");
               setAutoMode(false);
             }
-
-            // dừng vòng lặp hiện tại – useEffect sẽ chạy lại nếu state đổi
             break;
           }
         } else {
-          // normal mode
           if (ok) {
             setHasMatched(true);
             toast.success("Tuyệt vời! 🎉");
@@ -182,7 +161,6 @@ const Practice = () => {
           }
         }
 
-        // chờ 1.5s rồi detect frame tiếp theo
         await new Promise((resolve) => setTimeout(resolve, 1500));
       }
     };
@@ -192,24 +170,20 @@ const Practice = () => {
     return () => {
       cancelled = true;
     };
-  }, [cameraActive, autoMode, emotionIndex, hasMatched]);
-  // 👆 khi emotionIndex đổi (auto-mode tiến tới emotion mới) -> loop cũ bị huỷ, loop mới bắt đầu
+  }, [cameraActive, autoMode, emotionIndex, hasMatched, showCamera]);
 
-  // ============ 4. Đồng bộ UI với auto-mode ============
   useEffect(() => {
     if (autoMode) {
       setSelectedEmotion(emotions[emotionIndex]);
     }
   }, [emotionIndex, autoMode]);
 
-  // Tự ẩn overlay "Bạn đã làm đúng!" sau ~2s ở NORMAL MODE
   useEffect(() => {
     if (hasMatched && !autoMode) {
       const timer = setTimeout(() => {
         setHasMatched(false);
-      }, 2000); // 2000ms = 2s
-
-      return () => clearTimeout(timer); // dọn timer nếu state thay đổi sớm hơn
+      }, 2000);
+      return () => clearTimeout(timer);
     }
   }, [hasMatched, autoMode]);
 
@@ -224,7 +198,6 @@ const Practice = () => {
     toast("Bắt đầu chế độ luyện tập tự động! 🎯");
   };
 
-  // Color for match bar
   const matchColor =
     matchPercentage >= 80
       ? "hsl(155, 40%, 55%)"
@@ -232,23 +205,111 @@ const Practice = () => {
       ? "hsl(200, 50%, 65%)"
       : "hsl(250, 45%, 70%)";
 
-  // ============ 5. RENDER ============
+  if (!showCamera) {
+    // Menu View (Hoạt động)
+    return (
+      <div className="p-6 md:p-8 max-w-6xl mx-auto">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="font-heading text-4xl md:text-5xl font-extrabold text-[#2c3152] mb-2">Hoạt động hôm nay</h1>
+          <p className="font-body text-lg font-bold text-[#64748b]">Hãy cùng khám phá những điều thú vị mới nhé!</p>
+        </div>
+
+        {/* Bento Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          {/* Hero Activity Card */}
+          <section 
+            onClick={() => setShowCamera(true)}
+            className="md:col-span-8 group cursor-pointer clay-card bg-gradient-to-br from-[#10b981] to-[#0d9488] p-8 rounded-[2rem] border-b-8 border-[#065f46] transition-transform hover:-translate-y-1 relative overflow-hidden h-96 flex flex-col justify-end"
+          >
+            <div className="absolute top-8 right-8 w-48 h-48 bg-white/20 rounded-full blur-3xl group-hover:scale-125 transition-transform"></div>
+            <div className="absolute top-10 right-10 scale-150 transform group-hover:rotate-12 transition-transform">
+              <span className="material-symbols-outlined text-white text-[120px]" style={{ fontVariationSettings: "'FILL' 1" }}>camera_front</span>
+            </div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="bg-white/30 backdrop-blur-md px-4 py-1 rounded-full font-body font-bold text-white border border-white/40">Thực hành</span>
+              </div>
+              <h2 className="font-heading text-3xl font-extrabold text-white mb-2">Gương Cảm Xúc</h2>
+              <p className="font-body text-lg text-white/90 max-w-md">Luyện tập các biểu cảm khuôn mặt cùng AI một cách vui nhộn!</p>
+            </div>
+          </section>
+
+          {/* Small Activity Card: Games */}
+          <section className="md:col-span-4 group cursor-pointer clay-card bg-[#ebe6ef] p-6 rounded-[2rem] border-b-8 border-[#e6e1ea] transition-transform hover:-translate-y-1 flex flex-col justify-between h-96">
+            <div className="bg-[#f2df79] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform">
+              <span className="material-symbols-outlined text-[#1c1b21] text-4xl">sports_esports</span>
+            </div>
+            <div>
+              <h3 className="font-heading text-2xl font-extrabold text-[#5e4caf] mb-2">Trò chơi</h3>
+              <p className="font-body text-[#484552] mb-6 font-semibold">Thử thách trí tuệ với các câu đố logic và phản xạ.</p>
+              <div className="flex items-center gap-2 text-[#5e4caf] font-bold">
+                <span>Chơi ngay</span>
+                <span className="material-symbols-outlined">arrow_forward</span>
+              </div>
+            </div>
+          </section>
+
+          {/* Small Activity Card: Creativity */}
+          <section className="md:col-span-4 group cursor-pointer clay-card bg-[#9cf4d3] p-6 rounded-[2rem] border-b-8 border-[#006c53] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80">
+            <div className="bg-[#8fcbe9] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined text-[#1c1b21] text-4xl">palette</span>
+            </div>
+            <div>
+              <h3 className="font-heading text-2xl font-extrabold text-[#006c53] mb-2">Sáng tạo</h3>
+              <p className="font-body font-semibold text-[#087258] mb-4">Tô màu, vẽ tranh và tạo nên những tác phẩm nghệ thuật của riêng mình.</p>
+            </div>
+          </section>
+
+          {/* Small Activity Card: Communication */}
+          <section className="md:col-span-4 group cursor-pointer clay-card bg-[#ffe08a] p-6 rounded-[2rem] border-b-8 border-[#745b00] transition-transform hover:-translate-y-1 flex flex-col justify-between h-80">
+            <div className="bg-[#ebbb7a] w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+              <span className="material-symbols-outlined text-[#1c1b21] text-4xl">record_voice_over</span>
+            </div>
+            <div>
+              <h3 className="font-heading text-2xl font-extrabold text-[#745b00] mb-2">Giao tiếp</h3>
+              <p className="font-body font-semibold text-[#4e3d00] mb-4">Học cách bày tỏ cảm xúc và kết bạn mới qua các câu chuyện kể.</p>
+            </div>
+          </section>
+
+          {/* Wide Bottom Card: Progress */}
+          <section className="md:col-span-4 clay-card bg-white p-6 rounded-[2rem] border-b-8 border-[#e6e1ea] flex flex-col justify-center h-80">
+            <div className="text-center">
+              <div className="relative inline-block mb-4">
+                <svg className="w-32 h-32 transform -rotate-90">
+                  <circle className="text-[#e6e1ea]" cx="64" cy="64" fill="transparent" r="56" stroke="currentColor" strokeWidth="12"></circle>
+                  <circle className="text-[#5e4caf]" cx="64" cy="64" fill="transparent" r="56" stroke="currentColor" strokeDasharray="351.8" strokeDashoffset="88" strokeWidth="12" strokeLinecap="round"></circle>
+                </svg>
+                <span className="absolute inset-0 flex items-center justify-center font-heading text-3xl font-extrabold text-[#5e4caf]">75%</span>
+              </div>
+              <h3 className="font-heading text-xl font-extrabold text-[#1c1b21]">Tiến độ tuần</h3>
+              <p className="font-body font-semibold text-[#484552]">Tuyệt vời! Bạn đã hoàn thành 6 nhiệm vụ.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
+  // Camera Practice View
   return (
-    <div className="h-screen overflow-hidden p-3 flex flex-col app-bg">
+    <div className="h-[calc(100vh-80px)] overflow-hidden p-4 flex flex-col relative z-10">
       <div className="container mx-auto max-w-5xl flex flex-col h-full">
-        {/* BACK BUTTON */}
-        <Button
-          variant="outline"
-          onClick={() => navigate("/home")}
-          className="mb-3 rounded-xl font-bold border-2 bg-white/80"
-          id="practice-back-btn"
-        >
-          <ArrowLeft className="mr-2" size={18} />
-          Quay lại
-        </Button>
+        {/* Header with back button */}
+        <div className="flex items-center gap-4 mb-4 shrink-0">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setShowCamera(false)}
+            className="rounded-full bg-white/50 hover:bg-white"
+          >
+            <ArrowLeft className="w-6 h-6 text-[#2c3152]" />
+          </Button>
+          <h1 className="font-heading text-2xl font-extrabold text-[#2c3152]">Gương Cảm Xúc</h1>
+        </div>
 
         {/* EMOTION SELECTOR */}
-        <div className="grid grid-cols-4 gap-2 mb-3">
+        <div className="flex gap-4 overflow-x-auto pb-4 shrink-0 no-scrollbar items-center px-1">
           {emotions.map((emotion) => (
             <Card
               key={emotion.id}
@@ -258,23 +319,23 @@ const Practice = () => {
                 setMatchPercentage(0);
                 setHasMatched(false);
               }}
-              className={`p-3 text-center cursor-pointer transition-all duration-300 rounded-2xl border-2
+              className={`p-4 min-w-[120px] text-center cursor-pointer transition-all duration-300 rounded-[1.5rem] border-b-8
                 ${selectedEmotion.id === emotion.id
-                  ? "ring-2 ring-primary shadow-glow border-primary/40 bg-primary/5"
-                  : "bg-white/80 border-white/60 hover:border-primary/20"
+                  ? "bg-[#cabeff] border-[#5e4caf] shadow-[0_4px_12px_rgba(94,76,175,0.2)] -translate-y-1"
+                  : "bg-white border-[#e6e1ea] hover:bg-[#fdf8ff] hover:-translate-y-1 clay-card"
                 }
               `}
               id={`practice-emotion-${emotion.id}`}
             >
-              <div className="text-3xl mb-1">{emotion.emoji}</div>
-              <h3 className="text-sm font-extrabold text-foreground">{emotion.name}</h3>
+              <div className="text-4xl mb-2 drop-shadow-sm">{emotion.emoji}</div>
+              <h3 className="text-base font-heading font-extrabold text-[#2c3152]">{emotion.name}</h3>
             </Card>
           ))}
         </div>
 
         {/* AUTO PRACTICE BUTTON */}
         <Button
-          className="mb-3 rounded-xl font-bold gradient-secondary text-white shadow-sm"
+          className="mb-4 rounded-xl font-heading font-extrabold text-lg bg-[#5eb98f] text-white shadow-md hover:bg-[#006c53] h-14"
           onClick={startAutoPractice}
           id="practice-auto-btn"
         >
@@ -282,30 +343,30 @@ const Practice = () => {
         </Button>
 
         {/* MAIN CAMERA AREA */}
-        <Card className="flex-1 p-5 bg-white/90 shadow-soft rounded-3xl flex flex-col min-h-0 border-2 border-white/60 relative">
-          <h3 className="text-lg font-extrabold text-foreground mb-3">
+        <Card className="flex-1 p-6 bg-white shadow-xl rounded-[2.5rem] flex flex-col min-h-0 border-4 border-white relative clay-card">
+          <h3 className="text-2xl font-heading font-extrabold text-[#5e4caf] mb-4 text-center">
             {selectedEmotion.instruction}
           </h3>
 
-          <div className="bg-muted/30 rounded-2xl flex-1 flex items-center justify-center min-h-0 overflow-hidden">
+          <div className="bg-[#f7f2fb] rounded-[2rem] flex-1 flex items-center justify-center min-h-0 overflow-hidden border-4 border-[#e6e1ea] shadow-inner relative">
             {cameraActive ? (
               <video
                 ref={videoRef}
                 autoPlay
                 playsInline
                 muted
-                className="w-full h-full object-cover rounded-xl"
+                className="w-full h-full object-cover"
               />
             ) : (
               <div className="text-center p-8">
-                <Camera size={64} className="mx-auto mb-4 text-muted-foreground" />
+                <Camera size={80} className="mx-auto mb-6 text-[#c9c4d4]" />
                 <Button
                   onClick={startCamera}
                   size="lg"
-                  className="rounded-2xl font-extrabold gradient-primary text-white text-lg px-8 py-5 shadow-glow"
+                  className="rounded-2xl font-heading font-extrabold bg-[#5e4caf] text-white text-xl px-10 py-6 shadow-lg hover:scale-105 transition-transform"
                   id="practice-start-camera-btn"
                 >
-                  <Camera className="mr-2" size={22} />
+                  <Camera className="mr-3" size={28} />
                   Bật camera
                 </Button>
               </div>
@@ -314,26 +375,26 @@ const Practice = () => {
 
           {/* 🎉 OVERLAY HOÀN THÀNH NORMAL MODE */}
           {hasMatched && !autoMode && (
-            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center rounded-3xl animate-scale-in">
-              <div className="text-7xl mb-3">✅</div>
-              <div className="text-2xl text-white font-extrabold">Tuyệt vời! Bạn làm đúng rồi!</div>
+            <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center rounded-[2.5rem] animate-scale-in z-20 backdrop-blur-sm">
+              <div className="text-8xl mb-6 animate-bounce">✅</div>
+              <div className="text-3xl text-white font-heading font-extrabold text-center px-4">Tuyệt vời! Bạn làm đúng rồi!</div>
             </div>
           )}
 
           {/* MATCH PERCENTAGE */}
           {cameraActive && (
-            <div className="text-center mt-4 space-y-3">
+            <div className="text-center mt-6 space-y-4">
               <div className="flex items-center justify-center gap-3">
-                <span className="text-lg font-bold text-foreground">Độ khớp:</span>
-                <span className="text-2xl font-extrabold" style={{ color: matchColor }}>
+                <span className="text-xl font-heading font-extrabold text-[#64748b]">Độ khớp:</span>
+                <span className="text-4xl font-heading font-extrabold" style={{ color: matchColor }}>
                   {matchPercentage}%
                 </span>
               </div>
 
               {/* Match bar */}
-              <div className="w-full max-w-md mx-auto h-4 rounded-full bg-muted overflow-hidden">
+              <div className="w-full max-w-lg mx-auto h-6 rounded-full bg-[#e6e1ea] overflow-hidden shadow-inner p-1">
                 <div
-                  className="h-full rounded-full transition-all duration-500"
+                  className="h-full rounded-full transition-all duration-500 shadow-sm"
                   style={{ width: `${matchPercentage}%`, background: matchColor }}
                 />
               </div>
@@ -341,7 +402,7 @@ const Practice = () => {
               <Button
                 onClick={stopCamera}
                 variant="outline"
-                className="rounded-xl font-bold border-2"
+                className="rounded-xl font-heading font-extrabold text-[#e54d68] border-2 border-[#e54d68] hover:bg-[#ffdad6] hover:text-[#93000a] mt-2"
                 id="practice-stop-camera-btn"
               >
                 Tắt camera
@@ -349,39 +410,6 @@ const Practice = () => {
             </div>
           )}
         </Card>
-      </div>
-
-      {/* PANEL ĐỘ KHỚP BÊN PHẢI (desktop only) */}
-      <div
-        className="hidden lg:flex fixed right-4 top-1/2 -translate-y-1/2 
-                   w-56 flex-col gap-3 bg-white/90 rounded-2xl shadow-soft 
-                   border-2 border-white/60 p-4 z-20"
-      >
-        <h4 className="text-sm font-extrabold text-foreground mb-1">
-          Độ khớp hiện tại
-        </h4>
-
-        <p className="text-xs text-muted-foreground font-semibold">
-          Cảm xúc: <span className="text-foreground">{selectedEmotion.name} {selectedEmotion.emoji}</span>
-        </p>
-
-        <div className="flex items-baseline gap-1">
-          <span className="text-3xl font-extrabold" style={{ color: matchColor }}>
-            {matchPercentage}%
-          </span>
-        </div>
-
-        <div className="w-full h-3 rounded-full bg-muted overflow-hidden">
-          <div
-            className="h-full rounded-full transition-all duration-500"
-            style={{ width: `${matchPercentage}%`, background: matchColor }}
-          />
-        </div>
-
-        <p className="text-xs text-muted-foreground mt-1">
-          Hãy làm khuôn mặt{" "}
-          <span className="font-bold">{selectedEmotion.name.toLowerCase()}</span> để đạt ≥ 80%.
-        </p>
       </div>
     </div>
   );

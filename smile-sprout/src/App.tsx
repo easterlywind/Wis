@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
@@ -15,6 +15,7 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import { QuizLevel } from "./pages/QuizLevel";
 import { SettingsProvider } from "./contexts/SettingsContext";
+import { MainLayout } from "./layouts/MainLayout";
 
 const queryClient = new QueryClient();
 
@@ -31,13 +32,18 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
 
             {/* Protected routes – yêu cầu đăng nhập */}
-            <Route path="/home" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            {/* Routes without MainLayout (Full screen) */}
             <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
-            <Route path="/levels" element={<ProtectedRoute><Levels /></ProtectedRoute>} />
-            <Route path="/levels/:id" element={<ProtectedRoute><QuizLevel /></ProtectedRoute>} />
-            <Route path="/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
-            <Route path="/practice" element={<ProtectedRoute><Practice /></ProtectedRoute>} />
-            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            
+            {/* Routes with MainLayout (App Navigation) */}
+            <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+              <Route path="/home" element={<Dashboard />} />
+              <Route path="/levels" element={<Levels />} />
+              <Route path="/levels/:id" element={<QuizLevel />} />
+              <Route path="/progress" element={<Progress />} />
+              <Route path="/practice" element={<Practice />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />

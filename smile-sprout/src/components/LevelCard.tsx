@@ -15,53 +15,50 @@ interface LevelCardProps {
 }
 
 export const LevelCard = ({
-  id,
   name,
   description,
   unlocked,
+  difficulty,
   progress = 0,
   onStart,
 }: LevelCardProps) => {  
   return (
     <Card className={cn(
-      "p-6 rounded-2xl bg-white/90 border-2 transition-all duration-300",
-      unlocked && "hover:shadow-hover hover:-translate-y-1 border-white/60",
-      !unlocked && "opacity-50 border-muted"
-    )}>
-      <div className="flex items-start gap-4">
+      "p-6 clay-card group transition-all duration-300",
+      unlocked ? "cursor-pointer" : "opacity-60 saturate-50 hover:transform-none shadow-[4px_4px_0px_hsla(220,20%,90%,1)] border-white/50"
+    )} onClick={unlocked ? onStart : undefined}>
+      <div className="flex items-center gap-5">
         <div className={cn(
-          "flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-extrabold",
-          unlocked ? "gradient-primary text-white shadow-sm" : "bg-muted text-muted-foreground"
+          "flex-shrink-0 w-16 h-16 rounded-[1.25rem] flex items-center justify-center text-2xl font-extrabold shadow-inner",
+          unlocked ? "gradient-primary text-white" : "bg-slate-200 text-slate-400"
         )}>
-          {unlocked ? id : <Lock size={20} />}
+          {unlocked ? difficulty : <Lock size={28} className="drop-shadow-sm" />}
         </div>
         
         <div className="flex-1">
-          <h3 className="text-lg font-extrabold mb-1 text-foreground">{name}</h3>
-          <p className="text-sm text-muted-foreground mb-3 font-semibold">{description}</p>
+          <h3 className={cn("text-2xl font-bold mb-1", unlocked ? "text-slate-800" : "text-slate-500")}>
+            {name}
+          </h3>
+          <p className="text-base text-slate-500 font-medium mb-3">{description || (unlocked ? "Hoàn thành các thử thách" : "Hoàn thành cấp độ trước")}</p>
           
           {unlocked && (
-            <>
-              <div className="w-full bg-muted rounded-full h-2.5 mb-3">
+            <div className="mt-2 flex gap-4 items-center">
+              <div className="flex-1 bg-slate-100 rounded-full h-3 border border-slate-200 shadow-inner overflow-hidden">
                 <div 
-                  className="gradient-success h-2.5 rounded-full transition-all duration-700"
+                  className="gradient-success h-full rounded-full transition-all duration-700 shadow-sm"
                   style={{ width: `${progress}%` }}
                 />
               </div>
               
               <Button
-                onClick={onStart}
-                className="w-full rounded-xl font-bold gradient-primary text-white shadow-sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onStart?.();
+                }}
+                className="clay-btn text-base px-6 py-5 bg-white text-primary"
               >
-                {progress > 0 ? "Tiếp tục →" : "Bắt đầu →"}
+                {progress > 0 ? "Tiếp tục" : "Bắt đầu"}
               </Button>
-            </>
-          )}
-          
-          {!unlocked && (
-            <div className="flex items-center gap-2 text-muted-foreground text-sm font-semibold">
-              <Lock size={14} />
-              <span>Hoàn thành cấp độ trước</span>
             </div>
           )}
         </div>

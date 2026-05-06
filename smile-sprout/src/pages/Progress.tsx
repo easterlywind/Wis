@@ -1,9 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Flame, Target, TrendingUp, Award } from "lucide-react";
-import { ProgressCard } from "@/components/ProgressCard";
-import { Card } from "@/components/ui/card";
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { useState, useEffect } from "react";
 import { api } from "@/lib/axios";
 import { toast } from "sonner";
@@ -59,7 +55,7 @@ const Progress = () => {
         setStats(statsRes.data);
         setEmotionData(emotionsRes.data);
         
-        // Reverse history so it goes from oldest to newest for the chart (left to right)
+        // Reverse history so it goes from oldest to newest
         setHistoryData(historyRes.data.dailyProgress.reverse());
         setRecentActivities(historyRes.data.recentActivities);
       } catch (err) {
@@ -73,240 +69,152 @@ const Progress = () => {
     fetchProgressData();
   }, []);
 
+  if (loading || !stats) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-5xl animate-bounce-gentle">📊</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen p-4 app-bg">
-      <div className="container mx-auto max-w-6xl">
-        <div className="mb-8">
-          <Button 
-            variant="outline" 
-            onClick={() => navigate("/home")}
-            className="mb-6 rounded-xl font-bold border-2 bg-white/80"
-            id="progress-back-btn"
-          >
-            <ArrowLeft className="mr-2" size={18} />
-            Quay lại
-          </Button>
-          
-          <div className="text-center mb-8">
-            <div className="text-5xl mb-3">🎯</div>
-            <h1 className="text-3xl md:text-4xl font-extrabold mb-3 text-foreground">
-              Tiến trình của bạn
-            </h1>
-            <p className="text-lg text-muted-foreground font-semibold">
-              Hãy xem bạn đã tiến bộ như thế nào!
-            </p>
-          </div>
+    <div className="p-6 md:p-8 max-w-7xl mx-auto">
+      <header className="mb-8 flex justify-between items-end">
+        <div>
+          <h1 className="font-heading text-4xl md:text-5xl font-extrabold text-[#5e4caf] mb-2">Hồ sơ</h1>
+          <p className="font-body text-lg font-bold text-[#484552]">Chào mừng quay trở lại, nhà thám hiểm tài ba!</p>
         </div>
+        <div className="hidden md:flex gap-4">
+          <button className="bg-white p-4 rounded-full clay-button hover:scale-110 transition-all border-b-4 border-[#e6e1ea]">
+            <span className="material-symbols-outlined text-[#5e4caf]" style={{ fontVariationSettings: "'FILL' 1" }}>edit</span>
+          </button>
+          <button className="bg-white p-4 rounded-full clay-button hover:scale-110 transition-all border-b-4 border-[#e6e1ea]">
+            <span className="material-symbols-outlined text-[#5e4caf]" style={{ fontVariationSettings: "'FILL' 1" }}>share</span>
+          </button>
+        </div>
+      </header>
 
-        {loading || !stats ? (
-          <div className="text-center py-12">
-            <div className="text-5xl mb-4 animate-bounce-gentle">📊</div>
-            <p className="text-lg font-bold text-foreground">Đang tải dữ liệu...</p>
+      {/* Bento Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        
+        {/* Main Profile Card */}
+        <section className="md:col-span-8 bg-[#7765c9] text-white p-8 rounded-[2rem] clay-card border-b-[8px] border-[#5e4caf] relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-8 opacity-20 scale-150 rotate-12">
+            <span className="material-symbols-outlined text-[120px]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
           </div>
-        ) : (
-          <>
-            {/* Stats cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-scale-in">
-              <ProgressCard
-                icon={<Flame size={24} />}
-                title="Chuỗi ngày học"
-                value={stats.streakDays.toString()}
-                subtitle="Ngày liên tiếp 🔥"
-                color="var(--gradient-primary)"
+          <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+            <div className="relative">
+              <img 
+                alt="Explorer Profile Avatar" 
+                className="w-40 h-40 rounded-3xl border-8 border-white shadow-xl object-cover bg-white" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkOvDukL1OAItad6jZvsdF99rpx1wid52IqPykcxFiTCyPZcwVo71fu_JrZWOmC2F8LJ7mU4uikKT3Ed8H-VrE7sGREu_9BbDNAtY4k5NUsfVJ6i2fgXpL9Jii_oK9V1TvWsS5amc6zSSfRgixmCv98mM73pKRvNOQMVzbC5Hsiq0UBEDpIsdjon-eK9JfeLClvUmCzT7zB6-FYjs6yv2496JYc-2CkcjCA5Bmo_in9VKZQ0g-bcvtC-ADmkxV3DVNeoYJHZCrALo"
               />
-              <ProgressCard
-                icon={<Target size={24} />}
-                title="Bài đã hoàn thành"
-                value={stats.totalQuizzes.toString()}
-                subtitle="Quiz hoàn thành ✅"
-                color="var(--gradient-secondary)"
-              />
-              <ProgressCard
-                icon={<TrendingUp size={24} />}
-                title="Độ chính xác"
-                value={`${stats.accuracyRate}%`}
-                subtitle="Tỷ lệ đúng 📈"
-                color="var(--gradient-success)"
-              />
-              <ProgressCard
-                icon={<Award size={24} />}
-                title="Thành tích"
-                value={stats.excellentQuizzes.toString()}
-                subtitle="Quiz xuất sắc 🏅"
-                color="hsl(200 50% 72%)"
-              />
-            </div>
-
-            {/* Charts */}
-            <div className="grid md:grid-cols-2 gap-5 mb-8">
-              <Card className="p-6 bg-white/90 backdrop-blur-sm shadow-soft rounded-2xl border-2 border-white/60">
-                <h3 className="text-xl font-extrabold mb-4 text-foreground">
-                  📈 Tiến trình 7 ngày qua
-                </h3>
-                {historyData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={220}>
-                    <LineChart data={historyData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 18%, 90%)" />
-                      <XAxis dataKey="day" stroke="hsl(230, 25%, 25%)" fontSize={13} fontWeight={600} />
-                      <YAxis stroke="hsl(230, 25%, 25%)" fontSize={12} />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: "white", 
-                          border: "2px solid hsl(220, 18%, 90%)",
-                          borderRadius: "12px",
-                          fontWeight: 600,
-                        }} 
-                      />
-                      <Legend />
-                      <Line 
-                        type="monotone" 
-                        dataKey="quizzes" 
-                        stroke="hsl(250, 45%, 65%)" 
-                        strokeWidth={3}
-                        name="Số Quiz"
-                        dot={{ fill: "hsl(250, 45%, 65%)", r: 4 }}
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="accuracy" 
-                        stroke="hsl(160, 35%, 55%)" 
-                        strokeWidth={3}
-                        name="Độ chính xác (%)"
-                        dot={{ fill: "hsl(160, 35%, 55%)", r: 4 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="flex items-center justify-center h-[220px] text-muted-foreground font-semibold">
-                    Chưa có dữ liệu học tập
-                  </div>
-                )}
-              </Card>
-
-              <Card className="p-6 bg-white/90 backdrop-blur-sm shadow-soft rounded-2xl border-2 border-white/60">
-                <h3 className="text-xl font-extrabold mb-4 text-foreground">
-                  🎯 Độ chính xác theo cảm xúc
-                </h3>
-                {emotionData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={220}>
-                    <BarChart data={emotionData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 18%, 90%)" />
-                      <XAxis dataKey="emotion" stroke="hsl(230, 25%, 25%)" fontSize={12} fontWeight={600} />
-                      <YAxis stroke="hsl(230, 25%, 25%)" fontSize={12} />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: "white", 
-                          border: "2px solid hsl(220, 18%, 90%)",
-                          borderRadius: "12px",
-                          fontWeight: 600,
-                        }} 
-                      />
-                      <Bar 
-                        dataKey="accuracy" 
-                        fill="hsl(250, 45%, 75%)" 
-                        name="Độ chính xác (%)"
-                        radius={[10, 10, 0, 0]}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="flex items-center justify-center h-[220px] text-muted-foreground font-semibold">
-                    Hãy làm thêm bài tập để xem phân tích nhé!
-                  </div>
-                )}
-              </Card>
-            </div>
-
-            {/* Level progress & achievements */}
-            <div className="grid md:grid-cols-2 gap-5 mb-8">
-              <div className="p-6 rounded-2xl bg-white/90 backdrop-blur-sm shadow-soft border-2 border-white/60">
-                <h3 className="text-xl font-extrabold mb-5 text-foreground">
-                  📊 Tiến độ theo cấp độ
-                </h3>
-                
-                <div className="space-y-4">
-                  {[
-                    { level: "Cấp độ 1", progress: stats.currentLevel >= 1 ? 100 : 0, color: "var(--gradient-success)" },
-                    { level: "Cấp độ 2", progress: stats.currentLevel > 2 ? 100 : (stats.currentLevel === 2 ? 50 : 0), color: "var(--gradient-primary)" },
-                    { level: "Cấp độ 3", progress: stats.currentLevel > 3 ? 100 : (stats.currentLevel === 3 ? 50 : 0), color: "var(--gradient-secondary)" },
-                    { level: "Cấp độ 4", progress: stats.currentLevel > 4 ? 100 : (stats.currentLevel === 4 ? 50 : 0), color: "hsl(var(--muted))" },
-                  ].map((item) => (
-                    <div key={item.level}>
-                      <div className="flex justify-between mb-2">
-                        <span className="font-bold text-foreground text-sm">{item.level}</span>
-                        <span className="text-muted-foreground font-bold text-sm">{item.progress}%</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-3">
-                        <div 
-                          className="h-3 rounded-full transition-all duration-700"
-                          style={{ 
-                            width: `${item.progress}%`,
-                            background: item.color 
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-white/90 backdrop-blur-sm shadow-soft border-2 border-white/60">
-                <h3 className="text-xl font-extrabold mb-5 text-foreground">
-                  🏆 Hoạt động gần đây
-                </h3>
-                
-                <div className="space-y-3">
-                  {recentActivities.length > 0 ? (
-                    recentActivities.map((activity, index) => {
-                      const dateObj = new Date(activity.date);
-                      const isToday = dateObj.toDateString() === new Date().toDateString();
-                      const dateStr = isToday ? "Hôm nay" : dateObj.toLocaleDateString('vi-VN');
-                      
-                      return (
-                        <div 
-                          key={index}
-                          className="flex items-center gap-3 p-3 bg-background/50 rounded-xl"
-                        >
-                          <div className="text-2xl">
-                            {activity.score >= 80 ? "⭐" : "🎯"}
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-bold text-foreground text-sm">{activity.title}</p>
-                            <p className="text-xs text-muted-foreground font-semibold">
-                              {dateStr} • Điểm: {activity.score}
-                            </p>
-                          </div>
-                        </div>
-                      )
-                    })
-                  ) : (
-                    <div className="text-center py-4 text-muted-foreground font-semibold">
-                      Chưa có hoạt động nào gần đây
-                    </div>
-                  )}
-                </div>
+              <div className="absolute -bottom-4 -right-4 bg-[#ffe08a] text-[#745b00] font-heading font-extrabold text-xl px-4 py-2 rounded-xl border-b-4 border-[#e9c34d] rotate-6 shadow-md">
+                LV {stats.currentLevel}
               </div>
             </div>
-
-            {/* CTA */}
-            <div className="text-center p-8 rounded-2xl gradient-primary shadow-glow">
-              <h3 className="text-2xl font-extrabold mb-3 text-white">
-                Tiếp tục phát huy nhé! 💪
-              </h3>
-              <p className="text-lg text-white/80 mb-5 font-semibold">
-                Bạn đang làm rất tốt! Hãy tiếp tục học mỗi ngày!
-              </p>
-              <Button 
-                size="lg"
-                onClick={() => navigate("/quiz")}
-                className="rounded-2xl font-extrabold bg-white text-primary hover:bg-white/90 shadow-lg px-8 py-5 h-auto"
-                id="progress-continue-btn"
-              >
-                Tiếp tục học →
-              </Button>
+            <div className="text-center md:text-left">
+              <h2 className="font-heading text-4xl font-extrabold mb-2">Minh Quân</h2>
+              <p className="font-heading text-lg font-bold bg-white/20 inline-block px-4 py-1 rounded-full mb-4">Nhà thám hiểm tài ba</p>
+              <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                <span className="bg-[#f2df79] text-[#4e3d00] px-4 py-1 rounded-full font-body font-bold shadow-inner">Vui vẻ</span>
+                <span className="bg-[#ebbb7a] text-[#4e3d00] px-4 py-1 rounded-full font-body font-bold shadow-inner">Năng động</span>
+                <span className="bg-[#9cf4d3] text-[#00513e] px-4 py-1 rounded-full font-body font-bold shadow-inner">Tò mò</span>
+              </div>
             </div>
-          </>
-        )}
+          </div>
+        </section>
+
+        {/* Achievement Card */}
+        <section className="md:col-span-4 bg-white p-8 rounded-[2rem] clay-card border-b-[8px] border-[#e6e1ea]">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-heading text-2xl font-extrabold text-[#5e4caf]">Thành tựu</h3>
+            <span className="material-symbols-outlined text-[#cba734] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col items-center p-4 bg-[#f7f2fb] rounded-2xl shadow-inner group hover:scale-105 transition-transform">
+              <span className="material-symbols-outlined text-[#e9c34d] text-4xl mb-2" style={{ fontVariationSettings: "'FILL' 1" }}>workspace_premium</span>
+              <span className="font-body text-sm font-bold text-center text-[#484552]">Chuỗi {stats.streakDays} ngày</span>
+            </div>
+            <div className="flex flex-col items-center p-4 bg-[#f7f2fb] rounded-2xl shadow-inner group hover:scale-105 transition-transform">
+              <span className="material-symbols-outlined text-[#e9c34d] text-4xl mb-2" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+              <span className="font-body text-sm font-bold text-center text-[#484552]">Chăm chỉ</span>
+            </div>
+            <div className="flex flex-col items-center p-4 bg-[#f7f2fb] rounded-2xl shadow-inner group hover:scale-105 transition-transform">
+              <span className="material-symbols-outlined text-[#e9c34d] text-4xl mb-2" style={{ fontVariationSettings: "'FILL' 1" }}>emoji_events</span>
+              <span className="font-body text-sm font-bold text-center text-[#484552]">Xuất sắc {stats.excellentQuizzes}</span>
+            </div>
+            <div className="flex flex-col items-center p-4 bg-[#f7f2fb] rounded-2xl shadow-inner group hover:scale-105 transition-transform opacity-60 grayscale">
+              <span className="material-symbols-outlined text-[#797583] text-4xl mb-2">lock</span>
+              <span className="font-body text-sm font-bold text-center text-[#797583]">Chưa mở</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Weekly Stats Card */}
+        <section className="md:col-span-5 bg-[#9cf4d3] text-[#087258] p-8 rounded-[2rem] clay-card border-b-[8px] border-[#006c53]">
+          <h3 className="font-heading text-2xl font-extrabold mb-6 text-[#006c53]">Thống kê học tập</h3>
+          <div className="space-y-6">
+            <div>
+              <div className="flex justify-between mb-2">
+                <span className="font-body font-bold text-lg text-[#087258]">Điểm kinh nghiệm</span>
+                <span className="font-heading font-extrabold text-xl text-[#006c53]">{stats.totalPoints} XP</span>
+              </div>
+              <div className="w-full h-6 bg-white/40 rounded-full overflow-hidden shadow-inner">
+                <div 
+                  className="h-full bg-[#006c53] rounded-full transition-all duration-1000"
+                  style={{ width: `${Math.min((stats.totalPoints % 1000) / 10, 100)}%` }}
+                ></div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white/30 p-4 rounded-2xl shadow-inner text-center">
+                <p className="text-3xl font-heading font-extrabold text-[#006c53]">{stats.totalQuizzes}</p>
+                <p className="font-body font-bold text-sm mt-1">Bài học xong</p>
+              </div>
+              <div className="bg-white/30 p-4 rounded-2xl shadow-inner text-center">
+                <p className="text-3xl font-heading font-extrabold text-[#006c53]">{stats.accuracyRate}%</p>
+                <p className="font-body font-bold text-sm mt-1">Độ chính xác</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Recent Activities Card */}
+        <section className="md:col-span-7 bg-white p-8 rounded-[2rem] clay-card border-b-[8px] border-[#e6e1ea]">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-heading text-2xl font-extrabold text-[#5e4caf]">Hoạt động gần đây</h3>
+            <span className="font-body font-bold text-lg text-[#797583]">{recentActivities.length} mục</span>
+          </div>
+          <div className="flex flex-col gap-3">
+            {recentActivities.slice(0, 3).map((activity, index) => {
+              const dateObj = new Date(activity.date);
+              const isToday = dateObj.toDateString() === new Date().toDateString();
+              const dateStr = isToday ? "Hôm nay" : dateObj.toLocaleDateString('vi-VN');
+              
+              return (
+                <div key={index} className="flex items-center gap-4 p-4 bg-[#f7f2fb] rounded-2xl">
+                  <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-sm">
+                    <span className="text-2xl">{activity.score >= 80 ? "⭐" : "🎯"}</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-heading font-extrabold text-[#1c1b21]">{activity.title}</p>
+                    <p className="font-body font-semibold text-sm text-[#484552]">{dateStr}</p>
+                  </div>
+                  <div className="font-heading font-extrabold text-[#5e4caf] bg-[#e6deff] px-3 py-1 rounded-lg">
+                    {activity.score} đ
+                  </div>
+                </div>
+              );
+            })}
+            
+            {recentActivities.length === 0 && (
+              <div className="text-center py-8">
+                <p className="font-body font-bold text-[#797583]">Chưa có hoạt động nào gần đây</p>
+              </div>
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );
