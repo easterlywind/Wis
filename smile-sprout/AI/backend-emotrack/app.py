@@ -7,13 +7,13 @@ from datetime import datetime, timedelta
 import sqlite3
 import cv2
 import numpy as np
-import boto3
 from typing import List, Dict, Optional
 import json
 import base64
 import logging
 from contextlib import contextmanager
 import os
+import random
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -31,8 +31,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize AWS Rekognition client
-client = boto3.client("rekognition")
+# Check if AWS credentials are configured for real Rekognition, otherwise use mock mode
+AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
+MOCK_MODE = not (AWS_ACCESS_KEY and AWS_SECRET_KEY)
+
+if MOCK_MODE:
+    logger.warning("AWS credentials not set. Running in MOCK mode - returning simulated emotion data.")
+    logger.warning("Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY to enable real AWS Rekognition.")
+else:
+    import boto3
+    client = boto3.client("rekognition", region_name=AWS_REGION)
+
+# Mock emotion data for local development without AWS
+MOCK_EMOTIONS = ["HAPPY", "SAD", "ANGRY", "SURPRISED", "FEAR", "DISGUSTED", "CALM"]
 
 # Database configuration
 DB_PATH = os.environ.get("DB_PATH", "/app/data/emotions.db")
@@ -94,24 +107,44 @@ async def detect_emotion(file: UploadFile = File(...)):
         contents = await file.read()
         nparr = np.frombuffer(contents, np.uint8)
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        
+
+        if frame is None:
+            raise HTTPException(status_code=400, detail="Invalid image data")
+
+        if MOCK_MODE:
+            # Return simulated emotion data when AWS is not configured
+            top_emotion = random.choice(MOCK_EMOTIONS)
+            confidence = round(random.uniform(70, 99), 2)
+            all_emotions = [
+                {"Type": e, "Confidence": round(random.uniform(1, 50), 2) if e != top_emotion else confidence}
+                for e in MOCK_EMOTIONS
+            ]
+            return {
+                "emotion": top_emotion,
+                "confidence": confidence,
+                "all_emotions": all_emotions,
+                "mock": True,
+            }
+
         # Call AWS Rekognition
         response = client.detect_faces(
-            Image={"Bytes": contents}, 
+            Image={"Bytes": contents},
             Attributes=["EMOTIONS"]
         )
-        
+
         if not response["FaceDetails"]:
             return {"emotion": "NO FACE", "confidence": 0}
-        
+
         emotions = response["FaceDetails"][0]["Emotions"]
         top_emotion = emotions[0]
-        
+
         return {
             "emotion": top_emotion["Type"],
             "confidence": top_emotion["Confidence"],
             "all_emotions": emotions
         }
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error detecting emotion: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,4 +1,4 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,7 +8,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { QuestionModule } from './question/question.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { LevelModule } from './level/level.module';
-import { QuizModule } from './quiz/quiz.module'; 
+import { QuizModule } from './quiz/quiz.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -22,13 +22,16 @@ import { QuizModule } from './quiz/quiz.module';
   controllers: [AppController],
   providers: [AppService],
 })
-// export class AppModule {}
 
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
     .apply(AuthMiddleware)
-    .exclude("auth/(.*)")
+    .exclude(
+      { path: 'auth/login', method: RequestMethod.POST },
+      { path: 'auth/register', method: RequestMethod.POST },
+      { path: 'auth/refresh', method: RequestMethod.POST },
+    )
     .forRoutes('*path');
   }
 }

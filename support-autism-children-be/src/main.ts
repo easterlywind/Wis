@@ -7,6 +7,13 @@ import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 
 async function bootstrap() {
+  // Validate required environment variables before starting
+  const requiredEnvVars = ['DATABASE_URL', 'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET'];
+  const missing = requiredEnvVars.filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    throw new Error(`Missing required environment variables: ${missing.join(', ')}. Check .env file.`);
+  }
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
 
