@@ -236,13 +236,39 @@ export class QuizService {
       newStreak = 1;
     }
 
+    const newTotalPoints = (user?.totalPoints || 0) + correctCount;
+    const currentLevel = user?.currentLevel || 1;
+    let levelUp = false;
+    let newLevelId = null;
+
+    // Kiểm tra xem user có đủ điểm để lên cấp tiếp theo không
+    const nextLevel = await this.prisma.level.findFirst({
+      where: { difficulty: currentLevel + 1 },
+    });
+
+    if (nextLevel && newTotalPoints >= nextLevel.requiredPoints) {
+      levelUp = true;
+      newLevelId = nextLevel.id;
+
+      // Unlock level nếu chưa được unlock
+      const alreadyUnlocked = await this.prisma.unlockedLevel.findFirst({
+        where: { userId, levelId: nextLevel.id },
+      });
+      if (!alreadyUnlocked) {
+        await this.prisma.unlockedLevel.create({
+          data: { userId, levelId: nextLevel.id },
+        });
+      }
+    }
+
     await this.prisma.user.update({
       where: { id: userId },
       data: {
-        totalPoints: { increment: correctCount },
+        totalPoints: newTotalPoints,
         accuracyRate: Math.round(avgAccuracy * 100) / 100,
         streakDays: newStreak,
         lastActiveDate: new Date(),
+        ...(levelUp ? { currentLevel: currentLevel + 1 } : {}),
       },
     });
 
@@ -252,6 +278,8 @@ export class QuizService {
       correctCount,
       totalQuestions,
       isNewBest: existingAttempt ? score > existingAttempt.maxScore : true,
+      levelUp,
+      newLevelId,
     };
   }
 }

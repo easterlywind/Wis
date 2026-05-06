@@ -9,6 +9,7 @@ import { QuestionModule } from './question/question.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { LevelModule } from './level/level.module';
 import { QuizModule } from './quiz/quiz.module';
+import { PracticeModule } from './practice/practice.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -18,6 +19,7 @@ import { QuizModule } from './quiz/quiz.module';
     QuestionModule,
     LevelModule,
     QuizModule,
+    PracticeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Camera } from "lucide-react";
 import { toast } from "sonner";
 
+import { api } from "../lib/axios";
+
 const emotions = [
-  { id: "happy", emoji: "😊", name: "Vui vẻ", instruction: "Cười tươi lên nhé! 😊" },
-  { id: "sad", emoji: "😢", name: "Buồn", instruction: "Hơi buồn chút nào... 😢" },
-  { id: "angry", emoji: "😠", name: "Giận", instruction: "Nhíu mày lại nào! 😠" },
-  { id: "surprised", emoji: "😲", name: "Ngạc nhiên", instruction: "Mắt mở to nhé! 😲" },
+  { id: "happy", dbId: "1", emoji: "😊", name: "Vui vẻ", instruction: "Cười tươi lên nhé! 😊" },
+  { id: "sad", dbId: "2", emoji: "😢", name: "Buồn", instruction: "Hơi buồn chút nào... 😢" },
+  { id: "angry", dbId: "3", emoji: "😠", name: "Giận", instruction: "Nhíu mày lại nào! 😠" },
+  { id: "surprised", dbId: "4", emoji: "😲", name: "Ngạc nhiên", instruction: "Mắt mở to nhé! 😲" },
 ];
 
 const AI_API_URL = import.meta.env.VITE_AI_API_URL || "http://localhost:8000";
@@ -141,6 +143,19 @@ const Practice = () => {
         if (autoMode) {
           if (ok) {
             toast.success(`Hoàn thành: ${emotions[emotionIndex].name}! 🎉`);
+            
+            // Lưu kết quả thực hành vào backend
+            try {
+              await api.post('/practices/submit', {
+                emotionId: emotions[emotionIndex].dbId,
+                attemptsCount: 3, 
+                correctCount: 1,
+                durationMinutes: 1
+              });
+            } catch (error) {
+              console.error("Lỗi khi lưu kết quả thực hành:", error);
+            }
+
             await new Promise((resolve) => setTimeout(resolve, 1200));
 
             const next = emotionIndex + 1;
@@ -157,6 +172,19 @@ const Practice = () => {
           if (ok) {
             setHasMatched(true);
             toast.success("Tuyệt vời! 🎉");
+            
+            // Lưu kết quả thực hành vào backend
+            try {
+              await api.post('/practices/submit', {
+                emotionId: selectedEmotion.dbId,
+                attemptsCount: 3, 
+                correctCount: 1,
+                durationMinutes: 1
+              });
+            } catch (error) {
+              console.error("Lỗi khi lưu kết quả thực hành:", error);
+            }
+
             break;
           }
         }
