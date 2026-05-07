@@ -1,3 +1,29 @@
-.agent
+# Node dependencies
+node_modules/
+npm-debug.log*
 
+# Environment variables
+.env
+.env.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Media & Uploads (runtime generated)
+media_drawing/
+media_audio/
+
+# Agent tools
+.agent
 /plans

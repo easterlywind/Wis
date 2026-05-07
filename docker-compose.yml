@@ -39,6 +39,8 @@ services:
       CORS_ORIGIN: "http://localhost:8080"
     ports:
       - "3000:3000"
+    volumes:
+      - backend_media_drawing:/app/media_drawing
 
   # ── React Frontend ──
   frontend:
@@ -79,3 +81,4 @@ services:
 
 volumes:
   postgres_data:
+  backend_media_drawing:
