@@ -38,8 +38,7 @@ Mọi thao tác khởi chạy và cấu hình đều được tự động hóa 
 ### Bước 1: Tải mã nguồn về máy
 Mở Terminal (trên Ubuntu) hoặc Command Prompt / PowerShell (trên Windows) và gõ:
 ```bash
-git clone <url-repository-cua-ban>
-cd KHMT
+git clone https://github.com/easterlywind/Wis.git
 ```
 
 ### Bước 2: Khởi chạy hệ thống bằng Docker
