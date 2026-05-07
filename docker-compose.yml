@@ -47,6 +47,9 @@ services:
     build:
       context: ./smile-sprout
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:3000/api
+        - VITE_AI_API_URL=http://localhost:8000
     container_name: smile-sprout-frontend
     restart: unless-stopped
     depends_on:

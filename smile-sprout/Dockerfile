@@ -5,6 +5,12 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+
+ARG VITE_API_URL
+ARG VITE_AI_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_AI_API_URL=$VITE_AI_API_URL
+
 RUN npm run build
 
 # ── Production stage (serve with a lightweight server) ──
