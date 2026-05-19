@@ -9,6 +9,7 @@ import {
   Req,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -18,6 +19,13 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
+
+interface AuthenticatedRequest extends Request {
+  user?: {
+    userId?: string;
+    sub?: string;
+  };
+}
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -67,24 +75,24 @@ export class UsersController {
   @Get('me/stats')
   @ApiOperation({ summary: 'Lấy thống kê tổng quan của người dùng hiện tại' })
   @ApiResponse({ status: 200, description: 'Thống kê người dùng' })
-  getMyStats(@Req() req) {
+  getMyStats(@Req() req: AuthenticatedRequest) {
     const userId = req.user?.userId || req.user?.sub;
-    return this.usersService.getUserStats(userId);
+    return this.usersService.getUserStats(userId as string);
   }
 
   @Get('me/stats/emotions')
   @ApiOperation({ summary: 'Thống kê độ chính xác theo từng cảm xúc' })
   @ApiResponse({ status: 200, description: 'Thống kê theo cảm xúc' })
-  getMyEmotionStats(@Req() req) {
+  getMyEmotionStats(@Req() req: AuthenticatedRequest) {
     const userId = req.user?.userId || req.user?.sub;
-    return this.usersService.getEmotionStats(userId);
+    return this.usersService.getEmotionStats(userId as string);
   }
 
   @Get('me/stats/history')
   @ApiOperation({ summary: 'Lịch sử hoạt động theo ngày' })
   @ApiResponse({ status: 200, description: 'Lịch sử hoạt động' })
-  getMyHistory(@Req() req) {
+  getMyHistory(@Req() req: AuthenticatedRequest) {
     const userId = req.user?.userId || req.user?.sub;
-    return this.usersService.getActivityHistory(userId);
+    return this.usersService.getActivityHistory(userId as string);
   }
 }

@@ -32,9 +32,9 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/autismsupport"
-      JWT_SECRET: "smile-sprout-dev-secret-key-2026"
-      JWT_ACCESS_SECRET: "smile-sprout-access-secret-2026"
-      JWT_REFRESH_SECRET: "smile-sprout-refresh-secret-2026"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       PORT: "3000"
       CORS_ORIGIN: "http://localhost:8080"
     ports:
