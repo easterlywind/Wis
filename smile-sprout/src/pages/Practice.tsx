@@ -109,8 +109,20 @@ const Practice = () => {
   };
 
   useEffect(() => {
-    return () => stopCamera();
-  }, [showCamera]); // Stop camera if we unmount or leave camera view
+    if (!showCamera) {
+      stopCamera();
+    }
+  }, [showCamera]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    return () => {
+      // Đảm bảo tắt hoàn toàn stream khi unmount để chống memory leak
+      if (videoRef.current && videoRef.current.srcObject) {
+        const currentStream = videoRef.current.srcObject as MediaStream;
+        currentStream.getTracks().forEach((t) => t.stop());
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (videoRef.current && stream && showCamera) {
