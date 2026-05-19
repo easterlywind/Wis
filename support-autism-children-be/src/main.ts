@@ -8,10 +8,16 @@ import { join } from 'path';
 
 async function bootstrap() {
   // Validate required environment variables before starting
-  const requiredEnvVars = ['DATABASE_URL', 'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET'];
+  const requiredEnvVars = [
+    'DATABASE_URL',
+    'JWT_ACCESS_SECRET',
+    'JWT_REFRESH_SECRET',
+  ];
   const missing = requiredEnvVars.filter((key) => !process.env[key]);
   if (missing.length > 0) {
-    throw new Error(`Missing required environment variables: ${missing.join(', ')}. Check .env file.`);
+    throw new Error(
+      `Missing required environment variables: ${missing.join(', ')}. Check .env file.`,
+    );
   }
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -41,7 +47,10 @@ async function bootstrap() {
   });
 
   // CORS – đọc từ env, fallback localhost:8080
-  const corsOrigin = configService.get<string>('CORS_ORIGIN', 'http://localhost:8080');
+  const corsOrigin = configService.get<string>(
+    'CORS_ORIGIN',
+    'http://localhost:8080',
+  );
   app.enableCors({
     origin: corsOrigin,
     credentials: true,
@@ -50,7 +59,9 @@ async function bootstrap() {
   // Swagger API documentation
   const config = new DocumentBuilder()
     .setTitle('Smile Sprout API')
-    .setDescription('API for Smile Sprout - Ứng dụng hỗ trợ trẻ tự kỷ nhận biết cảm xúc')
+    .setDescription(
+      'API for Smile Sprout - Ứng dụng hỗ trợ trẻ tự kỷ nhận biết cảm xúc',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .build();

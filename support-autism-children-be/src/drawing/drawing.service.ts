@@ -13,7 +13,9 @@ export class DrawingService {
    */
   async saveDrawing(userId: string, emotionId: string, base64Image: string) {
     // 1. Verify emotion exists
-    const emotion = await this.prisma.emotion.findUnique({ where: { id: emotionId } });
+    const emotion = await this.prisma.emotion.findUnique({
+      where: { id: emotionId },
+    });
     if (!emotion) {
       throw new BadRequestException('Emotion not found');
     }
@@ -31,7 +33,7 @@ export class DrawingService {
 
     // 3. Setup directory and filename
     const uploadDir = path.join(process.cwd(), 'media_drawing');
-    
+
     // Ensure directory exists
     try {
       await fs.access(uploadDir);
@@ -76,9 +78,9 @@ export class DrawingService {
     const allEmotions = await this.prisma.emotion.findMany({
       select: { id: true, name: true, iconUrl: true },
     });
-    
+
     if (allEmotions.length === 0) return [];
-    
+
     return allEmotions.sort(() => Math.random() - 0.5).slice(0, count);
   }
 }

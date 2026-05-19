@@ -3,43 +3,43 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { QuestionType, AnswerChoice } from '@prisma/client';
 
 export class Question {
-    @ApiProperty()
-    id: string;
+  @ApiProperty()
+  id: string;
 
-    @ApiProperty()
-    quizId: string;
+  @ApiProperty()
+  quizId: string;
 
-    @ApiProperty()
-    emotionId: string;
+  @ApiProperty()
+  emotionId: string;
 
-    @ApiProperty({ enum: QuestionType })
-    questionType: QuestionType;
+  @ApiProperty({ enum: QuestionType })
+  questionType: QuestionType;
 
-    @ApiPropertyOptional()
-    mediaUrl?: string;
+  @ApiPropertyOptional()
+  mediaUrl?: string;
 
-    @ApiProperty()
-    optionA: string;
+  @ApiProperty()
+  optionA: string;
 
-    @ApiProperty()
-    optionB: string;
+  @ApiProperty()
+  optionB: string;
 
-    @ApiPropertyOptional()
-    optionC?: string;
+  @ApiPropertyOptional()
+  optionC?: string;
 
-    @ApiPropertyOptional()
-    optionD?: string;
+  @ApiPropertyOptional()
+  optionD?: string;
 
-    @ApiProperty({ enum: AnswerChoice })
-    correctAnswer: AnswerChoice;
+  @ApiProperty({ enum: AnswerChoice })
+  correctAnswer: AnswerChoice;
 
-    @ApiPropertyOptional()
-    hintText?: string;
+  @ApiPropertyOptional()
+  hintText?: string;
 
-    @ApiPropertyOptional()
-    hintMediaUrl?: string;
+  @ApiPropertyOptional()
+  hintMediaUrl?: string;
 
-    constructor(data: Partial<Question>) {
-        Object.assign(this, data);
-    }
+  constructor(data: Partial<Question>) {
+    Object.assign(this, data);
+  }
 }

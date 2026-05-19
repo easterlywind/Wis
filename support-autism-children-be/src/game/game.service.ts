@@ -38,9 +38,7 @@ export class GameService {
         .slice(0, 3);
 
       // Build 4 options in random order
-      const options = [correct, ...distractors].sort(
-        () => Math.random() - 0.5,
-      );
+      const options = [correct, ...distractors].sort(() => Math.random() - 0.5);
 
       rounds.push({
         roundIndex: i,
@@ -62,7 +60,11 @@ export class GameService {
    */
   async submitGameResult(
     userId: string,
-    data: { correctCount: number; totalRounds: number; timeSpentSeconds: number },
+    data: {
+      correctCount: number;
+      totalRounds: number;
+      timeSpentSeconds: number;
+    },
   ) {
     const { correctCount, totalRounds, timeSpentSeconds } = data;
 
@@ -72,7 +74,12 @@ export class GameService {
     // Update user totalPoints
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { totalPoints: true, currentLevel: true, streakDays: true, lastActiveDate: true },
+      select: {
+        totalPoints: true,
+        currentLevel: true,
+        streakDays: true,
+        lastActiveDate: true,
+      },
     });
 
     const newTotalPoints = (user?.totalPoints || 0) + pointsEarned;

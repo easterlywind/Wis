@@ -22,7 +22,9 @@ export class LevelService {
 
   async findAllLevelsByUserId(
     userId: string,
-  ): Promise<{ id: string; name: string; unlocked: boolean; difficulty: number }[]> {
+  ): Promise<
+    { id: string; name: string; unlocked: boolean; difficulty: number }[]
+  > {
     // Fetch all levels
     const allLevels = await this.prisma.level.findMany({
       select: {

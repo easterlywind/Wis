@@ -9,7 +9,7 @@ export class SignUpDto {
   @IsString()
   @IsNotEmpty()
   username: string;
-  
+
   @ApiProperty({
     example: 'user@example.com',
     description: 'Địa chỉ email của người dùng (duy nhất)',

@@ -19,8 +19,12 @@ export class DrawingController {
     @Body() body: { emotionId: string; base64Image: string },
   ) {
     const userId = req.user?.sub || req.user?.id;
-    const drawing = await this.drawingService.saveDrawing(userId, body.emotionId, body.base64Image);
-    
+    const drawing = await this.drawingService.saveDrawing(
+      userId,
+      body.emotionId,
+      body.base64Image,
+    );
+
     // Also submit game result to add points for creativity activity (1 point per drawing)
     await this.gameService.submitGameResult(userId, {
       correctCount: 1,

@@ -23,7 +23,12 @@ export class StoryController {
   @ApiOperation({ summary: 'Submit story practice results' })
   async submitStoryResult(
     @Req() req,
-    @Body() body: { correctCount: number; totalRounds: number; timeSpentSeconds: number },
+    @Body()
+    body: {
+      correctCount: number;
+      totalRounds: number;
+      timeSpentSeconds: number;
+    },
   ) {
     const userId = req.user?.sub || req.user?.id;
     // We reuse game service to calculate points and update weekly progress/level up

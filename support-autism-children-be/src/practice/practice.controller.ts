@@ -1,7 +1,12 @@
 import { Controller, Post, Body, Req } from '@nestjs/common';
 import { PracticeService } from './practice.service';
 import { SubmitPracticeDto } from './practice.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
 @ApiTags('practices')
 @ApiBearerAuth()

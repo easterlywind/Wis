@@ -19,7 +19,12 @@ export class GameController {
   @ApiOperation({ summary: 'Submit game results' })
   async submitGameResult(
     @Req() req,
-    @Body() body: { correctCount: number; totalRounds: number; timeSpentSeconds: number },
+    @Body()
+    body: {
+      correctCount: number;
+      totalRounds: number;
+      timeSpentSeconds: number;
+    },
   ) {
     const userId = req.user?.sub || req.user?.id;
     return this.gameService.submitGameResult(userId, body);

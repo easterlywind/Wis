@@ -2,10 +2,25 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Home, BookOpen, Activity, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import mascot from "@/assets/mascot.png";
+import { useState, useEffect } from "react";
+import { api } from "@/lib/axios";
+import { getStoredUser } from "@/lib/auth-session";
 
 export const MainLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const user = getStoredUser();
+  const [level, setLevel] = useState<number>(1);
+
+  useEffect(() => {
+    if (user) {
+      api.get("/users/me/stats").then(res => {
+        if (res.data && res.data.currentLevel) {
+          setLevel(res.data.currentLevel);
+        }
+      }).catch(err => console.error("Failed to fetch user level", err));
+    }
+  }, [user]);
 
   const navItems = [
     { path: "/home", icon: Home, label: "Trang chủ" },
@@ -32,9 +47,9 @@ export const MainLayout = () => {
           </div>
           <div>
             <h2 className="text-xl font-heading font-extrabold text-[#5b4f9f] leading-tight">
-              Hello,<br/>Explorer!
+              Hello,<br/>{user?.name ? user.name.split(' ').pop() : 'Explorer'}!
             </h2>
-            <p className="text-xs text-slate-500 font-bold mt-0.5">Cấp độ 5</p>
+            <p className="text-xs text-slate-500 font-bold mt-0.5">Cấp độ {level}</p>
           </div>
         </div>
 

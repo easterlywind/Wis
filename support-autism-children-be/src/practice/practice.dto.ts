@@ -14,7 +14,10 @@ export class SubmitPracticeDto {
   @IsInt()
   correctCount: number;
 
-  @ApiProperty({ description: 'Thời lượng thực hành (tính bằng phút)', required: false })
+  @ApiProperty({
+    description: 'Thời lượng thực hành (tính bằng phút)',
+    required: false,
+  })
   @IsInt()
   @IsOptional()
   durationMinutes?: number;

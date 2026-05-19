@@ -4,9 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 export class UsersService {
-  constructor(
-      private prisma: PrismaService
-    ) {}
+  constructor(private prisma: PrismaService) {}
   create(createUserDto: CreateUserDto) {
     return this.prisma.user.create({ data: createUserDto });
   }
@@ -31,7 +29,7 @@ export class UsersService {
 
   findOne(id_user: string) {
     return this.prisma.user.findUnique({
-      where: { id : id_user },
+      where: { id: id_user },
       select: {
         id: true,
         email: true,
@@ -46,28 +44,28 @@ export class UsersService {
         lastActiveDate: true,
         unlockedLevels: true,
         attemptQuizzes: true,
-        practices: true
+        practices: true,
       },
     });
   }
 
   update(id_user: string, updateUserDto: UpdateUserDto) {
     return this.prisma.user.update({
-    where: { id: id_user },
-    data: updateUserDto, 
-    select: {
-      name: true,
-      birthDate: true,
-      avatarUrl: true,
-    },
-  });
+      where: { id: id_user },
+      data: updateUserDto,
+      select: {
+        name: true,
+        birthDate: true,
+        avatarUrl: true,
+      },
+    });
   }
 
   remove(id_user: string) {
-     return this.prisma.user.delete({
-    where: { id: (id_user) },
-    select: { id: true, email: true, name: true },
-  });
+    return this.prisma.user.delete({
+      where: { id: id_user },
+      select: { id: true, email: true, name: true },
+    });
   }
 
   /**
@@ -96,7 +94,9 @@ export class UsersService {
 
     const avgAccuracy =
       attempts.length > 0
-        ? Math.round(attempts.reduce((s, a) => s + a.maxScore, 0) / attempts.length)
+        ? Math.round(
+            attempts.reduce((s, a) => s + a.maxScore, 0) / attempts.length,
+          )
         : 0;
 
     // Đếm quiz đạt ≥ 80% (tính là "hoàn thành tốt")
@@ -135,14 +135,21 @@ export class UsersService {
     });
 
     // Aggregate theo emotion
-    const emotionMap = new Map<string, { name: string; total: number; correct: number }>();
+    const emotionMap = new Map<
+      string,
+      { name: string; total: number; correct: number }
+    >();
 
     for (const attempt of attempts) {
       if (!attempt.quiz) continue;
       for (const question of attempt.quiz.questions) {
         const emotionName = question.emotion.name;
         if (!emotionMap.has(emotionName)) {
-          emotionMap.set(emotionName, { name: emotionName, total: 0, correct: 0 });
+          emotionMap.set(emotionName, {
+            name: emotionName,
+            total: 0,
+            correct: 0,
+          });
         }
         const stat = emotionMap.get(emotionName)!;
         stat.total += 1;
@@ -188,7 +195,12 @@ export class UsersService {
     }
 
     // Tạo 7 ngày gần nhất
-    const result: { date: string; day: string; quizzes: number; accuracy: number }[] = [];
+    const result: {
+      date: string;
+      day: string;
+      quizzes: number;
+      accuracy: number;
+    }[] = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);

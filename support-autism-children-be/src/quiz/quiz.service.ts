@@ -21,7 +21,7 @@ export class QuizService {
     private readonly questionService: QuestionService,
     private readonly configService: ConfigService,
     @Optional() @Inject(REQUEST) private request?: Request,
-  ) { }
+  ) {}
 
   private getBaseUrl(): string {
     if (this.request) {
@@ -178,7 +178,10 @@ export class QuizService {
       }
     }
 
-    const score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+    const score =
+      totalQuestions > 0
+        ? Math.round((correctCount / totalQuestions) * 100)
+        : 0;
 
     // 3. Lưu hoặc cập nhật AttemptQuiz
     const existingAttempt = await this.prisma.attemptQuiz.findFirst({
@@ -220,12 +223,16 @@ export class QuizService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const lastActive = user?.lastActiveDate ? new Date(user.lastActiveDate) : null;
+    const lastActive = user?.lastActiveDate
+      ? new Date(user.lastActiveDate)
+      : null;
     let newStreak = user?.streakDays ?? 0;
 
     if (lastActive) {
       lastActive.setHours(0, 0, 0, 0);
-      const diffDays = Math.floor((today.getTime() - lastActive.getTime()) / (1000 * 60 * 60 * 24));
+      const diffDays = Math.floor(
+        (today.getTime() - lastActive.getTime()) / (1000 * 60 * 60 * 24),
+      );
       if (diffDays === 1) {
         newStreak += 1; // Ngày liên tiếp
       } else if (diffDays > 1) {

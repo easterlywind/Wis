@@ -19,20 +19,20 @@ export class StoryService {
 
     // Shuffle and pick
     const shuffled = stories.sort(() => Math.random() - 0.5).slice(0, count);
-    
+
     // For each story, we also need to generate 3 wrong distractors for the question
     const allEmotions = await this.prisma.emotion.findMany({
       select: { id: true, name: true, iconUrl: true },
     });
 
     const rounds = shuffled.map((story, i) => {
-      const correct = allEmotions.find(e => e.id === story.correctEmotionId);
-      
+      const correct = allEmotions.find((e) => e.id === story.correctEmotionId);
+
       const distractors = allEmotions
-        .filter(e => e.id !== story.correctEmotionId)
+        .filter((e) => e.id !== story.correctEmotionId)
         .sort(() => Math.random() - 0.5)
         .slice(0, 3);
-        
+
       const options = [correct, ...distractors].sort(() => Math.random() - 0.5);
 
       return {
@@ -44,10 +44,10 @@ export class StoryService {
         explanation: story.explanation,
         correctEmotionId: story.correctEmotionId,
         correctEmotionName: correct?.name || '',
-        options: options.map(o => ({
+        options: options.map((o) => ({
           id: o?.id || '',
           name: o?.name || '',
-        }))
+        })),
       };
     });
 

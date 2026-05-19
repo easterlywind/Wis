@@ -53,7 +53,10 @@ export class AuthService {
       },
     });
 
-    const { accessToken, refreshToken } = await this.getTokens(user.id, user.email);
+    const { accessToken, refreshToken } = await this.getTokens(
+      user.id,
+      user.email,
+    );
 
     return {
       accessToken,
@@ -68,30 +71,30 @@ export class AuthService {
   }
 
   async signIn(dto: SignInDto) {
-    console.log("Login attempt for:", dto.email);
+    console.log('Login attempt for:', dto.email);
     // Find user by email or username
     const user = await this.prisma.user.findFirst({
       where: {
-        OR: [
-          { email: dto.email },
-          { name: dto.email }
-        ]
+        OR: [{ email: dto.email }, { name: dto.email }],
       },
     });
     if (!user) {
-      console.log("User not found in DB");
+      console.log('User not found in DB');
       throw new UnauthorizedException('Invalid credentials');
     }
 
     // Check password
     const isPasswordValid = await bcrypt.compare(dto.password, user.password);
     if (!isPasswordValid) {
-      console.log("Password compare failed for user:", user.email);
+      console.log('Password compare failed for user:', user.email);
       throw new UnauthorizedException('Invalid credentials');
     }
 
     // Generate token
-    const { accessToken, refreshToken } = await this.getTokens(user.id, user.email);
+    const { accessToken, refreshToken } = await this.getTokens(
+      user.id,
+      user.email,
+    );
 
     return {
       accessToken,
@@ -118,10 +121,8 @@ export class AuthService {
         throw new UnauthorizedException('User not found');
       }
 
-      const { accessToken, refreshToken: newRefreshToken } = await this.getTokens(
-        user.id,
-        user.email,
-      );
+      const { accessToken, refreshToken: newRefreshToken } =
+        await this.getTokens(user.id, user.email);
 
       return {
         accessToken,

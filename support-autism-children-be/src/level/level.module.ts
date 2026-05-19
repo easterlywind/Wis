@@ -4,7 +4,7 @@ import { LevelController } from './level.controller';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Module({
-    controllers: [LevelController],
-    providers: [PrismaService, LevelService]
+  controllers: [LevelController],
+  providers: [PrismaService, LevelService],
 })
-export class LevelModule { }
+export class LevelModule {}

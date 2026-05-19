@@ -34,8 +34,11 @@ interface RecentActivity {
   date: string;
 }
 
+import { getStoredUser } from "@/lib/auth-session";
+
 const Progress = () => {
   const navigate = useNavigate();
+  const user = getStoredUser();
   const [loading, setLoading] = useState(true);
   
   const [stats, setStats] = useState<OverviewStats | null>(null);
@@ -115,7 +118,7 @@ const Progress = () => {
               </div>
             </div>
             <div className="text-center md:text-left">
-              <h2 className="font-heading text-4xl font-extrabold mb-2">Minh Quân</h2>
+              <h2 className="font-heading text-4xl font-extrabold mb-2">{user?.name || "Nhà thám hiểm"}</h2>
               <p className="font-heading text-lg font-bold bg-white/20 inline-block px-4 py-1 rounded-full mb-4">Nhà thám hiểm tài ba</p>
               <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                 <span className="bg-[#f2df79] text-[#4e3d00] px-4 py-1 rounded-full font-body font-bold shadow-inner">Vui vẻ</span>

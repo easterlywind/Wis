@@ -29,21 +29,29 @@ export class PracticeService {
 
     // Lấy lại accuracyRate bằng cách gộp trung bình của Quiz (theo Score max) và Practice (theo tỉ lệ correct/attempts)
     // Để đơn giản, cứ tính lại accuracyRate dựa trên tất cả practices và quizzes
-    const allPractices = await this.prisma.practice.findMany({ where: { userId } });
+    const allPractices = await this.prisma.practice.findMany({
+      where: { userId },
+    });
     let totalPracticeCorrect = 0;
     let totalPracticeAttempts = 0;
     allPractices.forEach((p) => {
       totalPracticeCorrect += p.correctCount;
       totalPracticeAttempts += p.attemptsCount;
     });
-    const practiceAccuracy = totalPracticeAttempts > 0 ? totalPracticeCorrect / totalPracticeAttempts : 0;
+    const practiceAccuracy =
+      totalPracticeAttempts > 0
+        ? totalPracticeCorrect / totalPracticeAttempts
+        : 0;
 
-    const allQuizzes = await this.prisma.attemptQuiz.findMany({ where: { userId } });
+    const allQuizzes = await this.prisma.attemptQuiz.findMany({
+      where: { userId },
+    });
     let totalQuizScore = 0;
     allQuizzes.forEach((q) => {
       totalQuizScore += q.maxScore;
     });
-    const quizAccuracy = allQuizzes.length > 0 ? totalQuizScore / allQuizzes.length : 0;
+    const quizAccuracy =
+      allQuizzes.length > 0 ? totalQuizScore / allQuizzes.length : 0;
 
     // Lấy trung bình cộng của 2 loại hoạt động
     let overallAccuracy = 0;
