@@ -227,18 +227,31 @@ const QuizPage = () => {
   };
 
   const playAudio = () => {
-    if (!currentQuestion?.mediaUrl) {
-      toast.error("Không có âm thanh để phát");
+    if (!currentQuestion) return;
+
+    // Phân biệt nếu mediaUrl là một file âm thanh thực sự (ít khi xảy ra vì DB đa số là ảnh/video)
+    if (currentQuestion.mediaUrl && (currentQuestion.mediaUrl.endsWith(".mp3") || currentQuestion.mediaUrl.endsWith(".wav"))) {
+      const audio = new Audio(getFullMediaUrl(currentQuestion.mediaUrl));
+      audio.play().catch((err) => {
+        console.error("Audio error, falling back to TTS:", err);
+        fallbackToTTS();
+      });
       return;
     }
 
-    const audio = new Audio(getFullMediaUrl(currentQuestion.mediaUrl));
-    audio.play().catch((err) => {
-      console.error(err);
-      toast.error("Không thể phát âm thanh");
-    });
+    fallbackToTTS();
+  };
 
-    toast.info("🔊 Đang phát hướng dẫn...");
+  const fallbackToTTS = () => {
+    import("@/lib/tts").then(({ speakText }) => {
+      let textToRead = currentQuestion?.content || "";
+      if (textToRead) {
+        speakText(textToRead);
+        toast.info("🔊 Đang đọc câu hỏi...");
+      } else {
+        toast.error("Không có nội dung để đọc");
+      }
+    });
   };
 
   if (showResult) {
