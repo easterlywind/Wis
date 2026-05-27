@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { api } from "@/lib/axios";
 import { toast } from "sonner";
-import { Edit2, Share, Sparkles, Medal, Award, Star, Trophy, Lock } from "lucide-react";
+import { Sparkles, Medal, Award, Star, Trophy, Lock } from "lucide-react";
 
 interface OverviewStats {
   totalPoints: number;
@@ -87,14 +87,6 @@ const Progress = () => {
         <div>
           <h1 className="font-heading text-4xl md:text-5xl font-extrabold text-[#5e4caf] mb-2">Hồ sơ</h1>
           <p className="font-body text-lg font-bold text-[#484552]">Chào mừng quay trở lại, nhà thám hiểm tài ba!</p>
-        </div>
-        <div className="hidden md:flex gap-4">
-          <button className="bg-white p-4 rounded-full clay-button hover:scale-110 transition-all border-b-4 border-[#e6e1ea]">
-            <Edit2 className="text-[#5e4caf] w-6 h-6" />
-          </button>
-          <button className="bg-white p-4 rounded-full clay-button hover:scale-110 transition-all border-b-4 border-[#e6e1ea]">
-            <Share className="text-[#5e4caf] w-6 h-6" />
-          </button>
         </div>
       </header>
 

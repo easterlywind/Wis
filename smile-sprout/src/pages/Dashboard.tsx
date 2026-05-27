@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { api } from "../lib/axios";
 import { getDataWithRetry } from "@/lib/apiRetry";
-import { Trophy, Puzzle, Camera } from "lucide-react";
+import { Trophy, Puzzle, Activity } from "lucide-react";
 
 import learningPathImg from "@/assets/learning_path.png";
 import quizImg from "@/assets/quiz.png";
@@ -93,17 +93,17 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* 3. Phòng tập Camera */}
+          {/* 3. Góc Hoạt động */}
           <div 
             onClick={() => navigate("/practice")}
             className="md:col-span-4 md:row-span-2 clay-card bg-gradient-to-br from-[#7765c9] to-[#8573d8] rounded-[2.5rem] border-b-8 border-[#413485] p-8 flex flex-col justify-between group cursor-pointer active:translate-y-2 active:border-b-0 transition-all"
           >
             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-              <Camera className="text-white w-10 h-10" />
+              <Activity className="text-white w-10 h-10" />
             </div>
             <div>
-              <h3 className="font-heading text-3xl font-extrabold text-white leading-tight">Phòng tập<br/>Camera</h3>
-              <p className="text-white/80 font-body font-bold text-sm mt-2">Luyện tập biểu cảm gương mặt.</p>
+              <h3 className="font-heading text-3xl font-extrabold text-white leading-tight">Góc<br/>Hoạt động</h3>
+              <p className="text-white/80 font-body font-bold text-sm mt-2">Vẽ tranh, trò chơi và tập luyện!</p>
             </div>
           </div>
 
