@@ -30,11 +30,11 @@ const QuizPage = () => {
   const [loading, setLoading] = useState(true);
   const [mediaType, setMediaType] = useState<MediaType>("image");
   const [mediaError, setMediaError] = useState(false);
-  const [resultDialog, setResultDialog] = useState<{
-    isOpen: boolean;
-    isCorrect?: boolean;
-    correctAnswer?: AnswerChoice;
-  }>({ isOpen: false });
+  const [selectedAnswerState, setSelectedAnswerState] = useState<{
+    choice: AnswerChoice;
+    isCorrect: boolean;
+    correctAnswer: AnswerChoice;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // TTS & Sound
@@ -138,12 +138,12 @@ const QuizPage = () => {
   }
 
   const handleChoice = (choice: AnswerChoice) => {
-    if (!currentQuestion) return;
+    if (!currentQuestion || selectedAnswerState) return;
 
     const isCorrect = choice === currentQuestion.correctAnswer;
 
-    setResultDialog({
-      isOpen: true,
+    setSelectedAnswerState({
+      choice,
       isCorrect,
       correctAnswer: currentQuestion.correctAnswer,
     });
@@ -162,7 +162,7 @@ const QuizPage = () => {
     });
 
     setTimeout(() => {
-      setResultDialog({ isOpen: false });
+      setSelectedAnswerState(null);
       if (currentIdx === quiz!.questions.length - 1) {
         setShowResult(true);
         playComplete();
@@ -171,7 +171,7 @@ const QuizPage = () => {
       } else {
         setCurrentIdx((i) => i + 1);
       }
-    }, 1800);
+    }, 1500);
   };
 
   const submitQuizResults = async () => {
@@ -306,25 +306,7 @@ const QuizPage = () => {
 
   return (
     <>
-      {/* ── Result Dialog Overlay ── */}
-      {resultDialog.isOpen && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[100] animate-scale-in">
-          <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl text-center max-w-sm w-full mx-4 border-4 border-white">
-            <div className="text-6xl mb-4">
-              {resultDialog.isCorrect ? "🎉" : "💪"}
-            </div>
-            <h2 className="text-3xl font-heading font-extrabold mb-3 text-[#5b4f9f]">
-              {resultDialog.isCorrect ? "Chính xác!" : "Thử lại nhé!"}
-            </h2>
-            {!resultDialog.isCorrect && (
-              <p className="text-xl text-[#64748b] font-bold">
-                Đáp án đúng là:<br/>
-                <span className="text-[#e27676] text-2xl mt-2 block">{resultDialog.correctAnswer}</span>
-              </p>
-            )}
-          </div>
-        </div>
-      )}
+
 
       <div className="min-h-screen app-bg flex flex-col font-body overflow-hidden relative">
 
@@ -436,13 +418,35 @@ const QuizPage = () => {
         <div className="grid grid-cols-2 gap-6 max-w-4xl mx-auto">
           {options.map(({ choice, text, emoji }, index) => {
             const btnStyle = buttonColors[index % buttonColors.length];
+            
+            let currentBg = btnStyle.bg;
+            let currentBorder = btnStyle.border;
+            let opacity = "";
+            let transformClasses = `${btnStyle.activeShadow} active:border-b-[4px] active:translate-y-2`;
+
+            if (selectedAnswerState) {
+              transformClasses = ""; // Disable active effects when an answer is selected
+              if (choice === selectedAnswerState.correctAnswer) {
+                currentBg = "bg-[#4ade80]";
+                currentBorder = "border-[#22c55e]";
+              } else if (choice === selectedAnswerState.choice && !selectedAnswerState.isCorrect) {
+                currentBg = "bg-[#f87171]";
+                currentBorder = "border-[#ef4444]";
+              } else {
+                currentBg = "bg-[#e2e8f0]";
+                currentBorder = "border-[#cbd5e1]";
+                opacity = "opacity-50";
+              }
+            }
+
             return (
               <button
                 key={choice}
                 onClick={() => handleChoice(choice)}
-                className={`h-32 md:h-40 rounded-xl flex flex-col items-center justify-center gap-2 group ${btnStyle.bg} border-b-[12px] ${btnStyle.border} ${btnStyle.shadow} ${btnStyle.activeShadow} active:border-b-[4px] active:translate-y-2 transition-all duration-150`}
+                disabled={!!selectedAnswerState}
+                className={`h-32 md:h-40 rounded-xl flex flex-col items-center justify-center gap-2 group ${currentBg} border-b-[12px] ${currentBorder} ${btnStyle.shadow} ${transformClasses} ${opacity} transition-all duration-300`}
               >
-                <div className={`${btnStyle.text} group-hover:scale-110 transition-transform text-4xl`}>
+                <div className={`${btnStyle.text} ${!selectedAnswerState ? 'group-hover:scale-110' : ''} transition-transform text-4xl`}>
                   {emoji || "🤔"}
                 </div>
                 <span className={`font-heading text-2xl font-extrabold ${btnStyle.text}`}>

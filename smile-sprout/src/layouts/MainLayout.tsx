@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import mascot from "@/assets/mascot.png";
 import { useState, useEffect } from "react";
 import { api } from "@/lib/axios";
-import { getStoredUser } from "@/lib/auth-session";
+import { getStoredUser, clearSession } from "@/lib/auth-session";
 
 export const MainLayout = () => {
   const navigate = useNavigate();
@@ -80,10 +80,13 @@ export const MainLayout = () => {
         {/* Action Button */}
         <div className="mt-auto">
           <button
-            onClick={() => navigate("/levels")}
-            className="w-full flex items-center justify-center py-4 rounded-3xl font-heading font-extrabold text-2xl text-white bg-[#5b4f9f] shadow-[0_6px_0_#463b82] hover:-translate-y-1 hover:shadow-[0_8px_0_#463b82] active:translate-y-2 active:shadow-none transition-all duration-200"
+            onClick={() => {
+              clearSession();
+              navigate("/auth");
+            }}
+            className="w-full flex items-center justify-center py-4 rounded-3xl font-heading font-extrabold text-xl text-white bg-[#e57f7f] shadow-[0_6px_0_#c25b5b] hover:-translate-y-1 hover:shadow-[0_8px_0_#c25b5b] active:translate-y-2 active:shadow-none transition-all duration-200"
           >
-            Go Play!
+            Đăng xuất
           </button>
         </div>
       </aside>
