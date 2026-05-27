@@ -89,6 +89,11 @@ export class LevelService {
       },
     });
 
-    return quizzes;
+    return quizzes.map(quiz => ({
+      id: quiz.id,
+      title: quiz.title,
+      maxScore: quiz.attempts[0]?.maxScore ?? 0,
+      attemptCounts: quiz.attempts[0]?.attemptsCount ?? 0,
+    }));
   }
 }

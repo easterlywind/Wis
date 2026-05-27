@@ -64,7 +64,7 @@ const answerTextToEmotionId: Record<string, string> = {
 
 export const getEmotionEmoji = (answerText: string) => {
   const emotionId = answerTextToEmotionId[answerText];
-  return EMOTIONS.find((e) => e.id === emotionId)?.emoji ?? "unknow";
+  return EMOTIONS.find((e) => e.id === emotionId)?.emoji ?? "❓";
 };
 
 export const getEmotionColor = (answerText: string) => {

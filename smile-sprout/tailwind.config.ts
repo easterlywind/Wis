@@ -144,7 +144,7 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        heading: ["Fredoka", "sans-serif"],
+        heading: ["Quicksand", "sans-serif"],
         body: ["Nunito", "sans-serif"],
       },
       keyframes: {

@@ -26,11 +26,11 @@ const LandingPage = () => {
             box-shadow: 0 0px 0 0 #c9c4d4;
             transform: translateY(8px);
         }
-        .font-display-lg { font-family: 'Fredoka', sans-serif; font-size: 3rem; line-height: 1.1; letter-spacing: -0.025em; font-weight: 800; }
+        .font-display-lg { font-family: 'Quicksand', sans-serif; font-size: 3rem; line-height: 1.1; letter-spacing: -0.025em; font-weight: 800; }
         .text-display-lg { font-size: 3rem; line-height: 1.1; letter-spacing: -0.025em; font-weight: 800; }
-        .font-headline-lg { font-family: 'Fredoka', sans-serif; font-size: 2.25rem; line-height: 1.2; letter-spacing: -0.025em; font-weight: 800; }
+        .font-headline-lg { font-family: 'Quicksand', sans-serif; font-size: 2.25rem; line-height: 1.2; letter-spacing: -0.025em; font-weight: 800; }
         .text-headline-lg { font-size: 2.25rem; line-height: 1.2; letter-spacing: -0.025em; font-weight: 800; }
-        .font-headline-md { font-family: 'Fredoka', sans-serif; font-size: 1.875rem; line-height: 1.2; font-weight: 700; }
+        .font-headline-md { font-family: 'Quicksand', sans-serif; font-size: 1.875rem; line-height: 1.2; font-weight: 700; }
         .text-headline-md { font-size: 1.875rem; line-height: 1.2; font-weight: 700; }
         .font-body-lg { font-family: 'Nunito', sans-serif; font-size: 1.125rem; line-height: 1.5; font-weight: 700; }
         .text-body-lg { font-size: 1.125rem; line-height: 1.5; font-weight: 700; }
