@@ -138,9 +138,10 @@ const Practice = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return false;
 
-    canvas.width = 640;
-    canvas.height = 360;
-    ctx.drawImage(videoRef.current, 0, 0, 640, 360);
+    // Use actual video dimensions to prevent face squashing/distortion which hurts AI accuracy
+    canvas.width = videoRef.current.videoWidth || 640;
+    canvas.height = videoRef.current.videoHeight || 480;
+    ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
     const blob = await new Promise<Blob>((resolve) =>
       canvas.toBlob((b) => resolve(b as Blob), "image/jpeg")
@@ -445,7 +446,7 @@ const Practice = () => {
                 autoPlay
                 playsInline
                 muted
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain transform -scale-x-100"
               />
             ) : (
               <div className="text-center p-8">
