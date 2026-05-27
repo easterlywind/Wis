@@ -130,6 +130,16 @@ const Practice = () => {
     }
   }, [stream, showCamera]);
 
+  const autoModeRef = useRef(autoMode);
+  const emotionIndexRef = useRef(emotionIndex);
+  const selectedEmotionRef = useRef(selectedEmotion);
+  const hasMatchedRef = useRef(hasMatched);
+
+  useEffect(() => { autoModeRef.current = autoMode; }, [autoMode]);
+  useEffect(() => { emotionIndexRef.current = emotionIndex; }, [emotionIndex]);
+  useEffect(() => { selectedEmotionRef.current = selectedEmotion; }, [selectedEmotion]);
+  useEffect(() => { hasMatchedRef.current = hasMatched; }, [hasMatched]);
+
   // ============ 2. GỬI 1 FRAME LÊN API ============
   const detectOneFrame = async (): Promise<boolean> => {
     if (!videoRef.current || !showCamera) return false;
@@ -169,7 +179,7 @@ const Practice = () => {
       const confidence =
         confidenceRaw <= 1 ? Math.round(confidenceRaw * 100) : Math.round(confidenceRaw);
 
-      const targetId = autoMode ? emotions[emotionIndex].id : selectedEmotion.id;
+      const targetId = autoModeRef.current ? emotions[emotionIndexRef.current].id : selectedEmotionRef.current.id;
 
       const isSameLabel = detected === targetId;
 
@@ -177,10 +187,10 @@ const Practice = () => {
         ? confidence
         : Math.floor(Math.random() * 51);
 
-      if (autoMode) {
+      if (autoModeRef.current) {
         setMatchPercentage(displayConfidence);
       } else {
-        if (!hasMatched) {
+        if (!hasMatchedRef.current) {
           setMatchPercentage(displayConfidence);
         }
       }
@@ -201,19 +211,22 @@ const Practice = () => {
     let cancelled = false;
 
     const loop = async () => {
-      if (!autoMode && hasMatched) return;
-
       while (!cancelled && cameraActive) {
+        if (!autoModeRef.current && hasMatchedRef.current) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          continue;
+        }
+
         const ok = await detectOneFrame();
 
-        if (autoMode) {
+        if (autoModeRef.current) {
           if (ok) {
-            toast.success(`Hoàn thành: ${emotions[emotionIndex].name}! 🎉`);
+            toast.success(`Hoàn thành: ${emotions[emotionIndexRef.current].name}! 🎉`);
             
             // Lưu kết quả thực hành vào backend
             try {
               await api.post('/practices/submit', {
-                emotionId: emotions[emotionIndex].dbId,
+                emotionId: emotions[emotionIndexRef.current].dbId,
                 attemptsCount: 3, 
                 correctCount: 1,
                 durationMinutes: 1
@@ -222,9 +235,9 @@ const Practice = () => {
               console.error("Lỗi khi lưu kết quả thực hành:", error);
             }
 
-            await new Promise((resolve) => setTimeout(resolve, 1200));
+            await new Promise((resolve) => setTimeout(resolve, 1500));
 
-            const next = emotionIndex + 1;
+            const next = emotionIndexRef.current + 1;
             if (next < emotions.length) {
               setEmotionIndex(next);
               setMatchPercentage(0);
@@ -232,7 +245,9 @@ const Practice = () => {
               toast.success("🎉 Bạn đã hoàn thành tất cả cảm xúc!");
               setAutoMode(false);
             }
-            break;
+            // Wait an extra moment so it doesn't immediately check the new emotion in the same frame
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            continue;
           }
         } else {
           if (ok) {
@@ -242,7 +257,7 @@ const Practice = () => {
             // Lưu kết quả thực hành vào backend
             try {
               await api.post('/practices/submit', {
-                emotionId: selectedEmotion.dbId,
+                emotionId: selectedEmotionRef.current.dbId,
                 attemptsCount: 3, 
                 correctCount: 1,
                 durationMinutes: 1
@@ -250,12 +265,11 @@ const Practice = () => {
             } catch (error) {
               console.error("Lỗi khi lưu kết quả thực hành:", error);
             }
-
-            break;
+            continue;
           }
         }
 
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await new Promise((resolve) => setTimeout(resolve, 400));
       }
     };
 
@@ -264,7 +278,7 @@ const Practice = () => {
     return () => {
       cancelled = true;
     };
-  }, [cameraActive, autoMode, emotionIndex, hasMatched, showCamera]);
+  }, [cameraActive, showCamera]);
 
   useEffect(() => {
     if (autoMode) {
