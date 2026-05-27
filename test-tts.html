@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <button onclick="play()">Play</button>
+  <script>
+    function play() {
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=vi&q=${encodeURIComponent("Xin chào các bạn")}`;
+      new Audio(url).play();
+    }
+  </script>
+</body>
+</html>
