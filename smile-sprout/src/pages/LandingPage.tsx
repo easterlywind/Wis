@@ -36,6 +36,7 @@ const LandingPage = () => {
         .text-body-lg { font-size: 1.125rem; line-height: 1.5; font-weight: 700; }
         .font-body-md { font-family: 'Nunito', sans-serif; font-size: 1rem; line-height: 1.5; font-weight: 600; }
         .text-body-md { font-size: 1rem; line-height: 1.5; font-weight: 600; }
+        html { scroll-behavior: smooth; }
       `}</style>
       
 
@@ -45,10 +46,10 @@ const LandingPage = () => {
 <span className="font-display-lg text-display-lg text-primary">Smile Sprout</span>
 </div>
 <div className="hidden md:flex items-center gap-8">
-<Link className="text-primary font-bold transition-all hover:scale-105" to="/">Chơi</Link>
-<Link className="text-on-surface-variant transition-all hover:scale-105" to="/">Khu Vườn</Link>
-<Link className="text-on-surface-variant transition-all hover:scale-105" to="/">Bạn Bè</Link>
-<Link className="text-on-surface-variant transition-all hover:scale-105" to="/">Giải Thưởng</Link>
+<a className="text-on-surface-variant transition-all hover:scale-105 hover:text-primary cursor-pointer" href="#how-it-works">Cách Hoạt Động</a>
+<a className="text-on-surface-variant transition-all hover:scale-105 hover:text-primary cursor-pointer" href="#garden">Khu Vườn</a>
+<a className="text-on-surface-variant transition-all hover:scale-105 hover:text-primary cursor-pointer" href="#features">Tính Năng</a>
+<a className="text-on-surface-variant transition-all hover:scale-105 hover:text-primary cursor-pointer" href="#testimonials">Cộng Đồng</a>
 </div>
 <div className="flex items-center gap-4">
 <Link to="/auth" className="px-6 py-2 rounded-lg font-headline-md text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95">
@@ -94,7 +95,7 @@ const LandingPage = () => {
 </div>
 </div>
 {/*  How it Works Section  */}
-<section>
+<section id="how-it-works" className="scroll-mt-32">
 <div className="text-center mb-12">
 <h2 className="font-display-lg text-display-lg text-primary mb-4">Cách Hoạt Động</h2>
 <p className="font-body-lg text-body-lg text-on-surface-variant">Hành trình 3 bước đơn giản để bé hiểu về chính mình.</p>
@@ -127,7 +128,7 @@ const LandingPage = () => {
 </div>
 </section>
 {/*  Moodboard Section  */}
-<section>
+<section id="garden" className="scroll-mt-32">
 <div className="text-center mb-12">
 <h2 className="font-display-lg text-display-lg text-primary mb-4">Hôm nay bé cảm thấy thế nào?</h2>
 <p className="font-body-lg text-body-lg text-on-surface-variant">Chạm vào một mầm cây để bắt đầu câu chuyện về cảm xúc đó.</p>
@@ -166,7 +167,7 @@ const LandingPage = () => {
 </div>
 </section>
 {/*  Features Grid Section  */}
-<section>
+<section id="features" className="scroll-mt-32">
 <div className="text-center mb-12">
 <h2 className="font-display-lg text-display-lg text-primary mb-4">Tính Năng Nổi Bật</h2>
 </div>
@@ -190,7 +191,7 @@ const LandingPage = () => {
 </div>
 </section>
 {/*  Testimonials Section  */}
-<section>
+<section id="testimonials" className="scroll-mt-32">
 <div className="text-center mb-12">
 <h2 className="font-display-lg text-display-lg text-primary mb-4">Cảm Nhận Từ Phụ Huynh</h2>
 </div>
