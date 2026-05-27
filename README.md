@@ -6,6 +6,7 @@ Hệ thống được thiết kế linh hoạt với kiến trúc Client-Server:
 - **Frontend**: React + Vite + TailwindCSS.
 - **Backend**: NestJS + Prisma ORM.
 - **Database**: PostgreSQL.
+- **AI Microservices**: FastAPI + OpenCV (Nhận diện cảm xúc qua AI).
 - **Deployment**: Docker Compose.
 
 ---
@@ -57,6 +58,8 @@ docker compose ps
 Nếu thành công, bạn có thể truy cập các dịch vụ tại:
 - 🌐 **Frontend (Giao diện người dùng):** [http://localhost:8080](http://localhost:8080)
 - 🔧 **Backend API:** [http://localhost:3000/api](http://localhost:3000/api)
+- 🤖 **AI Mapping Service:** [http://localhost:8000](http://localhost:8000)
+- 🧠 **AI Emotrack Service:** [http://localhost:8502](http://localhost:8502)
 - 📚 **Swagger Docs (Tài liệu API):** [http://localhost:3000/api/docs](http://localhost:3000/api/docs) *(nếu đã cấu hình swagger)*
 
 ---
@@ -116,6 +119,7 @@ KHMT/
 │   │   ├── components/            # Các UI component tái sử dụng
 │   │   ├── pages/                 # Các trang chính (Dashboard, Practice, Draw...)
 │   │   └── ...
+│   └── AI/                        # AI Microservices (Emotrack & Mapping)
 │
 ├── support-autism-children-be/    # Backend (NestJS)
 │   ├── prisma/                    # Schema cơ sở dữ liệu và files Seed
